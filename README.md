@@ -1,6 +1,7 @@
 # NoteTaking
 This is a simple application that can store your notes
 
+https://github.com/matthewzelten/NoteTaking
 
 The UI prototype can be viewed here: ____insert link to prototype____
 
@@ -15,7 +16,10 @@ When ready to push code changes for the first time, run these commands:
 
 # How to pull and merge from main
 
-1) git swtich main
+1) git switch main
 2) git pull
 3) git checkout {your branch}
 4) git merge origin/main
+
+# Running the Application .... (work in progress)
+
