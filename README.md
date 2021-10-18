@@ -5,21 +5,29 @@ https://github.com/matthewzelten/NoteTaking
 
 The UI prototype can be viewed here: ____insert link to prototype____
 
+# Initializing
+
+Clone the repo with
+```
+$ git clone {repo url}
+```
+
 # Creating your own branch
 
 When ready to push code changes for the first time, run these commands:
-1) git branch {name of your branch, preferably just your name}
-2) git switch {branch name}
-3) git add .
-4) git commit -m "{message}"
-5) git push
-
+```
+$ git branch {name of your branch, preferably just your name}
+$ git switch {branch name}
+$ git add .
+$ git commit -m "{message}"
+$ git push
+```
 # How to pull and merge from main
-
-1) git switch main
-2) git pull
-3) git checkout {your branch}
-4) git merge origin/main
-
+```
+$ git switch main
+$ git pull
+$ git checkout {your branch}
+$ git merge origin/main
+```
 # Running the Application .... (work in progress)
 
