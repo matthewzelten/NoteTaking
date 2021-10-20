@@ -30,4 +30,10 @@ $ git checkout {your branch}
 $ git merge origin/main
 ```
 # Running the Application .... (work in progress)
+```
+$ cd backend
+$ npm run dev
+$ cd ../frontend
+$ npm start
+```
 
