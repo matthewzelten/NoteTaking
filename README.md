@@ -3,7 +3,7 @@ This is a simple application that can store your notes
 
 https://github.com/matthewzelten/NoteTaking
 
-The UI prototype can be viewed here: ____insert link to prototype____
+The UI prototype can be viewed here: https://www.figma.com/file/3ST6u85SmZqZ4lhWHBuwsq/Untitled?node-id=3%3A16
 
 # Initializing
 
