@@ -1,6 +1,6 @@
 import FolderContainer from "./components/FolderContainer";
 import "./App.css";
-import Header from "./shared/header";
+import Header from "./components/shared/header";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import CreateFolder from "./components/CreateFolder";
 function App() {
