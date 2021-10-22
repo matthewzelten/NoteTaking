@@ -1,22 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
+import { Link } from "react-router-dom"
 
-function CreateFolder() {
-    const [privateNote, setPrivateNote] = useState(false)
+function CreateFolder(props) {
+    const [newFolderName, setNewFolderName] = useState("")
     return (
         <div>
-            <h1>Add New Note</h1>
-            <input type="text" placeholder="Enter Note Name"/>
-            <div>
-                <h2>Choose Color</h2>
-            </div>
-            <div>
-                <h2>Set as private note?</h2>
-                <input type="checkbox" onClick={() => setPrivateNote(!privateNote)}/>
-            </div>
-            <input disabled={!privateNote} type="text" placeholder="Enter Password"/>
-            <input disabled={!privateNote} type="text" placeholder="Confirm Password"/>
+            <h1>Add New Folder</h1>
+            <input type="text" placeholder="Enter Folder Name" onChange={(e) => setNewFolderName(e.target.value)}/>
+            <Link to="/folder">
+                <button onClick={() => props.setFolderName(newFolderName)}>Create</button>
+            </Link>
         </div>
-    )
+    );
 }
 
-export default CreateFolder
+export default CreateFolder;
