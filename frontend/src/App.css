@@ -36,3 +36,12 @@
     transform: rotate(360deg);
   }
 }
+
+.blue {
+  background-color:cornflowerblue;
+}
+
+.alter-height {
+  padding-top: 30px;
+  padding-bottom: 15px;
+}
