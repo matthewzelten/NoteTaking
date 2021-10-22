@@ -1,6 +1,6 @@
 import Sample from './components/sample'
 import './App.css';
-import Header from './shared/header';
+import Header from './components/shared/header';
 
 function App() {
   return (
