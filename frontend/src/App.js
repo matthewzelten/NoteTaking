@@ -6,10 +6,12 @@ import CreateFolder from "./components/CreateFolder";
 import Folder from "./components/Folder";
 import { useState } from "react";
 import CreateNote from "./components/CreateNote";
+import Modal from 'react-modal';
 
 function App() {
     const [folderName, setFolderName] = useState("");
     const [noteName, setNoteName] = useState([]);
+    const [showModal, setShowModal] = useState(false);
 
     return (
         <div className="App">
@@ -24,24 +26,17 @@ function App() {
                                 width: "40%",
                             }}
                         >
-                            <FolderContainer />
-                            <FolderContainer />
-                            <FolderContainer />
-                            <FolderContainer />
-                            <FolderContainer />
-                            <FolderContainer />
+                            <FolderContainer setShowModal={setShowModal}/>
                         </div>
                     </Route>
-                    <Route path="/create-folder">
-                        <CreateFolder setFolderName={setFolderName} />
-                    </Route>
                     <Route exact path="/folder">
-                        <Folder folderName={folderName} noteName={noteName} />
-                    </Route>
-                    <Route path="/folder/create-note">
-                        <CreateNote />
+                        <Folder folderName={folderName} noteName={noteName}/>
                     </Route>
                 </Switch>
+                <Modal isOpen={showModal}>
+                    <button onClick={() => setShowModal(false)}>Close Modal</button>
+                    <CreateFolder setFolderName={setFolderName} setShowModal={setShowModal}/>
+                </Modal>
             </Router>
         </div>
     );
