@@ -1,18 +1,8 @@
-import React from 'react'
-
-let privateNote = false;
-
-function setPrivateNote(isPrivate) {
-    //needs some work
-    privateNote = !privateNote;
-}
-
-function addNewNote() {
-    //do something here (interact with the database)
-}
-
+import React, { useState } from 'react'
 
 function CreateNote() {
+    const [disablePassword, setDisablePassword] = useState(true)
+    
     return (
         <div>
             <h1>Add New Note</h1>
@@ -37,13 +27,13 @@ function CreateNote() {
             <div>
                 <h2>
                     Set as private note?   
-                    <input class="create-space" type="checkbox" onClick={() => setPrivateNote(!privateNote)}/>
+                    <input class="create-space" type="checkbox" onClick={() => setDisablePassword(!disablePassword)}/>
                 </h2>
             </div>
-            <input disabled={!privateNote} type="text" placeholder="Enter Password"/>
-            <input disabled={!privateNote} type="text" placeholder="Confirm Password"/>
+            <input disabled={disablePassword} type="text" placeholder="Enter Password"/>
+            <input disabled={disablePassword} type="text" placeholder="Confirm Password"/>
 
-            <button onClick={ () => addNewNote()}> Create Note </button>
+            <button> Create Note </button>
         </div>
     )
 }
