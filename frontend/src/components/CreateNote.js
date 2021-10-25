@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 function CreateNote() {
     const [disablePassword, setDisablePassword] = useState(true)
@@ -32,8 +33,9 @@ function CreateNote() {
             </div>
             <input disabled={disablePassword} type="text" placeholder="Enter Password"/>
             <input disabled={disablePassword} type="text" placeholder="Confirm Password"/>
-
-            <button> Create Note </button>
+            <Link to="/note">
+                <button> Create Note </button>
+            </Link>
         </div>
     )
 }

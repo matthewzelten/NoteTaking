@@ -7,6 +7,7 @@ import Folder from "./components/Folder";
 import { useState } from "react";
 import CreateNote from "./components/CreateNote";
 import Modal from 'react-modal';
+import Note from "./components/Note";
 
 function App() {
     const [folderName, setFolderName] = useState("");
@@ -31,6 +32,9 @@ function App() {
                     </Route>
                     <Route exact path="/folder">
                         <Folder folderName={folderName} noteName={noteName}/>
+                    </Route>
+                    <Route path="/note">
+                        <Note />
                     </Route>
                 </Switch>
                 <Modal isOpen={showModal}>
