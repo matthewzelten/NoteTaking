@@ -8,6 +8,7 @@ import { useState } from "react";
 import CreateNote from "./components/CreateNote";
 import Modal from 'react-modal';
 import Note from "./components/Note";
+import React from 'react';
 
 function App() {
     const [folderName, setFolderName] = useState("");
