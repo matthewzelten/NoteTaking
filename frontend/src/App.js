@@ -6,7 +6,6 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import CreateFolder from "./components/CreateFolder";
 import Folder from "./components/Folder";
 import { useState } from "react";
-import CreateNote from "./components/CreateNote";
 import Modal from 'react-modal';
 import Note from "./components/Note";
 

@@ -1,28 +1,29 @@
-import React from "react";
-import { Editor, EditorState } from "draft-js";
-import "draft-js/dist/Draft.css";
+import React, { useState } from 'react';
+import {EditorState} from "draft-js";
+import {Editor} from "react-draft-wysiwyg"
 
-export default function Note() {
-  const [editorState, setEditorState] = React.useState(() =>
-    EditorState.createEmpty()
-  );
+function Note(props) {
+  const [editorState, setEditorState] = useState(EditorState.createEmpty())
 
-  const editor = React.useRef(null);
-  function focusEditor() {
-    editor.current.focus();
+  const onEditorStateChange = (editorState) => {
+    setEditorState(editorState)
   }
-
   return (
-    <div
-      style={{ border: "1px solid black", minHeight: "6em", cursor: "text" }}
-      onClick={focusEditor}
-    >
+    <div>
       <Editor
-        ref={editor}
         editorState={editorState}
-        onChange={setEditorState}
-        placeholder="Write something!"
+        onEditorStateChange={onEditorStateChange}    
+        toolbar={{
+          inline: { inDropdown: true },
+          list: { inDropdown: true },
+          textAlign: { inDropdown: true },
+          link: { inDropdown: true },
+          history: { inDropdown: true },
+        }}
+        placeholder="Write something awesome!"
       />
     </div>
-  );
+  )
 }
+
+export default Note
