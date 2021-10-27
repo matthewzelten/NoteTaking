@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import {EditorState} from "draft-js";
 import {Editor} from "react-draft-wysiwyg"
@@ -27,3 +28,17 @@ function Note(props) {
 }
 
 export default Note
+=======
+import React from "react";
+import PropTypes from "prop-types";
+
+function Note(props) {
+  return (
+    <div>
+      <input style={{ width: "100%", height: "200px" }} placeholder={"Notes"} />
+    </div>
+  );
+}
+
+export default Note;
+>>>>>>> origin/main

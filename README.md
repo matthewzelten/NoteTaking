@@ -37,3 +37,12 @@ $ cd ../frontend
 $ npm start
 ```
 
+# Styling Code
+ We use prettier to style our code :)
+
+## Recommended Plugins 
+
+### Prettier
+  - 4 Space indentation
+
+
