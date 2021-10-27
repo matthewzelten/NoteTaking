@@ -1,12 +1,15 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
+import {Editor, EditorState} from 'draft-js';
+import 'draft-js/dist/Draft.css';
 
-function Note(props) {
-    return (
-        <div>
-            <input style={{width: "100%", height: "200px"}} placeholder={"Notes"}/>
-        </div>
-    )
+function Note() {
+  const [editorState, setEditorState] = useState(
+    () => EditorState.createEmpty(),
+  );
+
+  return <Editor editorState={editorState} onChange={setEditorState} />;
 }
 
+ReactDOM.render(<Note />, document.getElementById('container'));
 export default Note
