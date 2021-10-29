@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const port = 5000;
-const cors = require("cors");
 const { json } = require("express");
 
 const folders = {
@@ -23,7 +22,7 @@ function addNote(fName, noteToAdd) {
     .find((fold) => fold.name === fName)
     .notes.push(noteToAdd);
 }
-app.use(cors());
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
