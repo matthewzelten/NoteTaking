@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React from 'react';
-=======
 import React from "react";
->>>>>>> origin/main
 import FolderContainer from "./components/FolderContainer";
 import "./App.css";
 import Header from "./components/shared/header";
@@ -10,12 +6,8 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import CreateFolder from "./components/CreateFolder";
 import Folder from "./components/Folder";
 import { useState } from "react";
-<<<<<<< HEAD
-import Modal from 'react-modal';
-=======
 import CreateNote from "./components/CreateNote";
 import Modal from "react-modal";
->>>>>>> origin/main
 import Note from "./components/Note";
 
 function App() {

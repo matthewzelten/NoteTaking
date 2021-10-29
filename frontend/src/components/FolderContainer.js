@@ -1,8 +1,4 @@
 import React from "react";
-<<<<<<< HEAD
-=======
-import { Link } from "react-router-dom";
->>>>>>> origin/main
 
 function FolderContainer(props) {
   return (
