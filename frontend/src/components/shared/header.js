@@ -1,11 +1,14 @@
 import React from "react";
+import { Link } from 'react-router-dom'
 
 function Header(props) {
-    return (
-        <header class="blue alter-height">
-            <h1>Notes Made Easy</h1>
-        </header>
-    );
+  return (
+    <header class="blue alter-height">
+      <Link to="/">
+        <h1>Notes Made Easy</h1>
+      </Link>
+    </header>
+  );
 }
 
 export default Header;
