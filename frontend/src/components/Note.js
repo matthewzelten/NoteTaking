@@ -5,10 +5,17 @@ import "react-quill/dist/quill.snow.css";
 
 function Note() {
     return (
-        <div>
+        <form>
             <Editor placeholder={"Write something awesome..."} />
-        </div>
+            <div class="alter-height">
+                <button onClick={saveNote()}>Save Note</button>
+            </div>
+        </form>
     );
+}
+
+function saveNote(){
+    //implement this to save to backend
 }
 
 class Editor extends React.Component {
