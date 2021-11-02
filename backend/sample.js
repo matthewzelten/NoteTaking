@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require('cors');
 const port = 5000;
 const { json } = require("express");
 
@@ -11,8 +12,17 @@ const folders = {
       isPrivate: false,
       password: "",
     },
+    {
+      name: "folder2",
+      notes: null,
+    }
   ],
 };
+
+app.use(cors())
+app.use(express.json());
+
+
 function findFolder(name) {
   return folders["folderList"].find((fold) => fold["name"] === name);
 }
