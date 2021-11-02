@@ -120,7 +120,9 @@ app.post("/", (req, res) => {
   const fName = folderToAdd.name;
   isDup = findFolder(fName);
   if (isDup === undefined || isDup.length == 0) {
-    folderToAdd.notes = [{}];
+    folderToAdd.name = fName;
+    folderToAdd.color = folderToAdd.color
+    folderToAdd.notes = folderToAdd.notes;
     addFolder(folderToAdd);
     res.status(201).send(folderToAdd).end();
   } else {
