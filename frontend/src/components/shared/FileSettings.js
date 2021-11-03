@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 function FileSettings(props) {
+<<<<<<< HEAD
     const [disablePassword, setDisablePassword] = useState(true);
     return (
         <div>
@@ -24,6 +25,31 @@ function FileSettings(props) {
             <PrivateNote data={disablePassword} />
         </div>
     );
+=======
+  const [disablePassword, setDisablePassword] = useState(true);
+  return (
+    <div>
+      <div>
+        <h2>
+          Choose Color
+          <p class="create-space" style={{ color: "blue" }}>
+            blue
+            <input class="create-space" name="color" type="radio" />
+          </p>
+          <p class="create-space" style={{ color: "green" }}>
+            green
+            <input class="create-space" name="color" type="radio" />
+          </p>
+          <p class="create-space" style={{ color: "red" }}>
+            red
+            <input class="create-space" name="color" type="radio" />
+          </p>
+        </h2>
+      </div>
+      <PrivateNote data={disablePassword} />
+    </div>
+  );
+>>>>>>> origin/main
 }
 
 function PrivateNote(props) {

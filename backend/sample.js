@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose")
 const app = express();
+const cors = require('cors');
 const port = 5000;
 const { json } = require("express");
 const dotenv = require("dotenv");
@@ -29,8 +30,17 @@ const folders = {
       isPrivate: false,
       password: "",
     },
+    {
+      name: "folder2",
+      notes: null,
+    }
   ],
 };
+
+app.use(cors())
+app.use(express.json());
+
+
 function findFolder(name) {
   return folders["folderList"].find((fold) => fold["name"] === name);
 }
@@ -128,7 +138,9 @@ app.post("/", (req, res) => {
   const fName = folderToAdd.name;
   isDup = findFolder(fName);
   if (isDup === undefined || isDup.length == 0) {
-    folderToAdd.notes = [{}];
+    folderToAdd.name = fName;
+    folderToAdd.color = folderToAdd.color
+    folderToAdd.notes = folderToAdd.notes;
     addFolder(folderToAdd);
     res.status(201).send(folderToAdd).end();
   } else {
