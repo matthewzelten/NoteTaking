@@ -5,15 +5,36 @@ import Header from "./components/shared/header";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import CreateFolder from "./components/CreateFolder";
 import Folder from "./components/Folder";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CreateNote from "./components/CreateNote";
 import Modal from "react-modal";
 import Note from "./components/Note";
+import axios from 'axios';
 
 function App() {
   const [folderName, setFolderName] = useState("");
   const [noteName, setNoteName] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [folders, setFolders] = useState([])
+
+  useEffect(() => {
+    fetchAllFolders().then(result => {
+      if(result){
+        setFolders(result)
+      }
+    });
+  }, [])
+
+  async function fetchAllFolders() {
+    try {
+      const response = await axios.get('http://localhost:5000/');
+      return response.data.folderList;
+    }
+    catch(error) {
+      console.log(error);
+      return false;
+    }
+  }
 
   return (
     <div className="App">
@@ -28,7 +49,7 @@ function App() {
                 width: "40%",
               }}
             >
-              <FolderContainer setShowModal={setShowModal} />
+              <FolderContainer folderData={folders} setShowModal={setShowModal} />
             </div>
           </Route>
           <Route exact path="/folder">

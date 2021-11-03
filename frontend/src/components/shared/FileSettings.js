@@ -9,15 +9,15 @@ function FileSettings(props) {
           Choose Color
           <p class="create-space" style={{ color: "blue" }}>
             blue
-            <input class="create-space" type="checkbox" />
+            <input class="create-space" name="color" type="radio" />
           </p>
           <p class="create-space" style={{ color: "green" }}>
             green
-            <input class="create-space" type="checkbox" />
+            <input class="create-space" name="color" type="radio" />
           </p>
           <p class="create-space" style={{ color: "red" }}>
             red
-            <input class="create-space" type="checkbox" />
+            <input class="create-space" name="color" type="radio" />
           </p>
         </h2>
       </div>
@@ -28,38 +28,25 @@ function FileSettings(props) {
 
 function PrivateNote(props) {
   const [disablePassword, setDisablePassword] = useState(true);
-  if (disablePassword) {
+  return (
+    <div>
+      <h2>
+        Set as private?
+        <input
+          class="create-space"
+          type="checkbox"
+          onClick={() => setDisablePassword(!disablePassword)}
+        />
+        <PasswordForm disablePassword={disablePassword}/>
+      </h2>
+    </div>
+  );
+}
+
+function PasswordForm({disablePassword}){
+  if(!disablePassword) {
     return (
       <div>
-        <h2>
-          Set as private?
-          <button onClick={() => setDisablePassword(!disablePassword)}>
-            yes
-          </button>
-          <input
-            class="create-space"
-            type="checkbox"
-            onClick={() => setDisablePassword(!disablePassword)}
-          />
-        </h2>
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        <div>
-          <h2>
-            Set as private?
-            <button onClick={() => setDisablePassword(!disablePassword)}>
-              no
-            </button>
-            <input
-              class="create-space"
-              type="checkbox"
-              onClick={() => setDisablePassword(!disablePassword)}
-            />
-          </h2>
-        </div>
         <input
           disabled={disablePassword}
           type="text"
@@ -71,7 +58,12 @@ function PrivateNote(props) {
           placeholder="Confirm Password"
         />
       </div>
-    );
+    )
+  }
+  else {
+    return (
+      <div></div>
+    )
   }
 }
 

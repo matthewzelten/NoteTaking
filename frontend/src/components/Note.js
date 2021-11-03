@@ -1,15 +1,27 @@
-import React from "react";
-import PropTypes from "prop-types";
-
+import React from 'react';
+import PropTypes from 'prop-types'
 import ReactQuill from "react-quill";
+import { Link } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
 
 function Note() {
     return (
         <div>
-            <Editor placeholder={"Write something..."} />
+            <Link to="/folder">
+                <button>Return</button>
+            </Link>
+             <form>
+                <Editor placeholder={"Write something awesome..."} />
+                <div class="alter-height">
+                    <button onClick={saveNote()}>Save Note</button>
+                </div>
+            </form>
         </div>
     );
+}
+
+function saveNote(){
+    //implement this to save to backend
 }
 
 class Editor extends React.Component {
