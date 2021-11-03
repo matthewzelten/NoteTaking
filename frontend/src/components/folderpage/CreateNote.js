@@ -7,10 +7,17 @@ function CreateNote(props) {
     return (
         <div>
             <h1>Add New Note</h1>
-            <input type="text" placeholder="Enter Note Name" onChange={(e) => setName(e.target.value)}/>
+            <input
+                type="text"
+                placeholder="Enter Note Name"
+                onChange={(e) => setName(e.target.value)}
+            />
             <FileSettings />
             <Link to="/note">
-                <button onClick={() => props.setNoteName(name)}> Create Note </button>
+                <button onClick={() => props.setNoteName(name)}>
+                    {" "}
+                    Create Note{" "}
+                </button>
             </Link>
         </div>
     );

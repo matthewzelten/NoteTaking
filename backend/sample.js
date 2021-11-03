@@ -1,7 +1,25 @@
 const express = require("express");
+const mongoose = require("mongoose")
 const app = express();
 const port = 5000;
 const { json } = require("express");
+const dotenv = require("dotenv");
+dotenv.config();
+
+mongoose.connect(
+  "mongodb+srv://" +
+  process.env.MONGO_USER + 
+  ":" +
+  process.env.MONGO_PWD + 
+  "@cluster0.yohuh.mongodb.net/" + 
+  process.env.MONGO_DB + 
+  "?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+)
+.catch((error) => console.log(error))
 
 const folders = {
   folderList: [
