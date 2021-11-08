@@ -28,6 +28,12 @@ function FileSettings(props) {
 
 function PrivateNote(props) {
     const [disablePassword, setDisablePassword] = useState(true);
+
+    function handleDisablePassword() {
+        setDisablePassword(!disablePassword)
+        props.setIsPrivate(!props.isPrivate)
+    }
+
     return (
         <div>
             <h2>
@@ -35,7 +41,7 @@ function PrivateNote(props) {
                 <input
                     class="create-space"
                     type="checkbox"
-                    onClick={() => setDisablePassword(!disablePassword)}
+                    onClick={() => handleDisablePassword()}
                 />
                 <PasswordForm disablePassword={disablePassword} />
             </h2>

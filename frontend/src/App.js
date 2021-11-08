@@ -27,7 +27,7 @@ function App() {
 
   async function fetchAllFolders() {
     try {
-      const response = await axios.get('http://localhost:4000/');
+      const response = await axios.get('http://localhost:5000/');
       return response.data;
     }
     catch(error) {
