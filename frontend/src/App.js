@@ -3,7 +3,7 @@ import FolderContainer from "./components/landingpage/FolderContainer";
 import "./App.css";
 import Header from "./components/shared/header";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import CreateFolder from "./components/CreateFolder";
+import CreateFolder from "./components/landingpage/CreateFolder";
 import Folder from "./components/folderpage/Folder";
 import { useState, useEffect } from "react";
 import CreateNote from "./components/folderpage/CreateNote";
