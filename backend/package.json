@@ -6,13 +6,22 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettier": "npx prettier --write .",
+<<<<<<< HEAD
     "dev": "nodemon sample.js",
     "start": "node sample.js"
+=======
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+>>>>>>> origin/main
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mongoose": "^6.0.12",
+    "nodemon": "^2.0.14"
   },
   "devDependencies": {
     "nodemon": "^2.0.14",

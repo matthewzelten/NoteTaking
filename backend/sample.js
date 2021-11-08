@@ -1,6 +1,9 @@
 const express = require("express");
+const mongoose = require("mongoose");
+const Folder = require("./Database/Models/folderSchema")
 const app = express();
-const port = 5000;
+const cors = require('cors');
+const port = 4000;
 const { json } = require("express");
 
 const folders = {
@@ -11,12 +14,25 @@ const folders = {
       isPrivate: false,
       password: "",
     },
+    {
+      name: "folder2",
+      notes: null,
+    }
   ],
 };
-function findFolder(name) {
+
+app.use(cors())
+app.use(express.json());
+
+async function getAllFolders() {
+  let result = await Folder.find({})
+  return result
+}
+
+async function findFolder(name) {
   return folders["folderList"].find((fold) => fold["name"] === name);
 }
-function findNote(folderName, noteName) {
+async function findNote(folderName, noteName) {
   let result = folders["folderList"].find(
     (fold) => fold["name"] === folderName
   ).notes;
@@ -26,15 +42,15 @@ function findNote(folderName, noteName) {
     return result.find((note) => note["name"] === noteName);
   }
 }
-function addFolder(folderName) {
-  folders["folderList"].push(folderName);
+async function addFolder(folder) {
+  folderModel.insertOne(folder);
 }
-function addNote(fName, noteToAdd) {
+async function addNote(fName, noteToAdd) {
   folders["folderList"]
     .find((fold) => fold.name === fName)
     .notes.push(noteToAdd);
 }
-function deleteFolder(folderToDelete) {
+async function deleteFolder(folderToDelete) {
   for (var i = 1; i < folders["folderList"].length; i++) {
     if (folders["folderList"][i].name === folderToDelete) {
       result = folders["folderList"].splice(i, 1);
@@ -42,7 +58,7 @@ function deleteFolder(folderToDelete) {
     }
   }
 }
-function deleteNote(fName, nName) {
+async function deleteNote(fName, nName) {
   let noteList = folders["folderList"].find(
     (folder) => folder["name"] === fName
   ).notes;
@@ -55,9 +71,9 @@ function deleteNote(fName, nName) {
 }
 app.use(express.json());
 // main page: get all folders
-app.get("/", (req, res) => {
-  //res.send('Note App');
-  res.send(folders);
+app.get("/", async (req, res) => {
+  const allFolders = await getAllFolders()
+  res.send(allFolders);
 });
 // folder page: get all notes
 app.post("/:folderName", (req, res) => {
@@ -112,12 +128,11 @@ app.get("/:folderName", (req, res)=>{
 })
 //add folder
 app.post("/", (req, res) => {
-  const folderToAdd = req.body;
-  const fName = folderToAdd.name;
-  isDup = findFolder(fName);
-  if (isDup === undefined || isDup.length == 0) {
-    folderToAdd.notes = [{}];
-    addFolder(folderToAdd);
+  const {name, color, isPrivate} = req.body;
+  isDup = findFolder(name);
+  if (true) {
+    const folderToAdd = new Folder({name, color, isPrivate});
+    folderToAdd.save()
     res.status(201).send(folderToAdd).end();
   } else {
     res.status(404).send("Duplicate file name.").end();
