@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const Folder = require("./Database/Models/folderSchema")
+const Folder = require("./Database/Models/folderSchema");
+const Note = require("./Database/Models/noteSchema");
 const app = express();
 const cors = require('cors');
 const port = 4000;
@@ -30,33 +31,40 @@ async function getAllFolders() {
 }
 
 async function findFolder(name) {
-  return folders["folderList"].find((fold) => fold["name"] === name);
+  return Folder.find({'name':name});
 }
 async function findNote(folderName, noteName) {
-  let result = folders["folderList"].find(
-    (fold) => fold["name"] === folderName
-  ).notes;
-  if (result === null) {
-    return undefined;
-  } else {
-    return result.find((note) => note["name"] === noteName);
-  }
+  return Note.find({'name':noteName, 'folder':folderName});
 }
 async function addFolder(folder) {
-  folderModel.insertOne(folder);
+  Folder.insertOne(folder);
 }
 async function addNote(fName, noteToAdd) {
-  folders["folderList"]
-    .find((fold) => fold.name === fName)
-    .notes.push(noteToAdd);
+  Note.insertOne(noteToAdd);
 }
 async function deleteFolder(folderToDelete) {
-  for (var i = 1; i < folders["folderList"].length; i++) {
+  const folder = Folder.find({'name':folderToDelete});
+  if(folder===undefined||folder.length==0){
+    return false;
+  }
+  else{
+    const folderId = folder["id"];
+    try{
+      if(Folder.findByIdAndDelete(folderId)){
+        return true;
+      }
+    }
+    catch(error){
+      console.log(error);
+      return false;
+    }
+  }
+  /*for (var i = 1; i < folders["folderList"].length; i++) {
     if (folders["folderList"][i].name === folderToDelete) {
       result = folders["folderList"].splice(i, 1);
       return;
     }
-  }
+  }*/
 }
 async function deleteNote(fName, nName) {
   let noteList = folders["folderList"].find(
