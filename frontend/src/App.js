@@ -53,7 +53,7 @@ function App() {
             </div>
           </Route>
           <Route exact path="/folder">
-            <Folder folderName={folderName} noteName={noteName} />
+            <Folder setNoteName={setNoteName} folderName={folderName} noteName={noteName} />
           </Route>
           <Route path="/note">
             <Note />
