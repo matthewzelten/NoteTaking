@@ -5,7 +5,9 @@
   "main": "sample.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prettier": "npx prettier --write ."
+    "prettier": "npx prettier --write .",
+    "dev": "nodemon sample.js",
+    "start": "node sample.js"
   },
   "author": "",
   "license": "ISC",
@@ -13,6 +15,7 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
+    "nodemon": "^2.0.14",
     "prettier": "2.4.1"
   }
 }
