@@ -1,13 +1,16 @@
 const mongoose = require("mongoose");
-const noteSchema = require("noteSchema");
-
-const collectionName = "placeholder";
+const {folderConnection} = require("../../connections")
+const collectionName = "Folders";
 
 const folderSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
         trim: true,
+    },
+    color: {
+      type: String,
+      required: false
     },
     isPrivate: {
       type: Boolean,
@@ -18,16 +21,8 @@ const folderSchema = new mongoose.Schema({
         required: false,
         trim: true
     },
-    notes: {
-        type: [noteSchema],
-        required: true
-    },
-    isLocked: {
-        type: Boolean,
-        required: true
-    }
 }, {collection : collectionName});
 
-const User = mongoose.model("Folder", folderSchema);
+const Folder = folderConnection.model("Folder", folderSchema);
 
-module.exports = User;
+module.exports = Folder;

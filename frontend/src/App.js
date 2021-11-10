@@ -1,14 +1,14 @@
 import React from "react";
-import FolderContainer from "./components/FolderContainer";
+import FolderContainer from "./components/landingpage/FolderContainer";
 import "./App.css";
 import Header from "./components/shared/header";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import CreateFolder from "./components/CreateFolder";
-import Folder from "./components/Folder";
+import CreateFolder from "./components/landingpage/CreateFolder";
+import Folder from "./components/folderpage/Folder";
 import { useState, useEffect } from "react";
-import CreateNote from "./components/CreateNote";
+import CreateNote from "./components/folderpage/CreateNote";
 import Modal from "react-modal";
-import Note from "./components/Note";
+import Note from "./components/notepage/Note";
 import axios from 'axios';
 
 function App() {
@@ -28,7 +28,7 @@ function App() {
   async function fetchAllFolders() {
     try {
       const response = await axios.get('http://localhost:5000/');
-      return response.data.folderList;
+      return response.data;
     }
     catch(error) {
       console.log(error);
@@ -70,7 +70,7 @@ function App() {
             </div>
           </Route>
           <Route exact path="/folder">
-            <Folder folderName={folderName} noteName={noteName} />
+            <Folder setNoteName={setNoteName} folderName={folderName} noteName={noteName} />
           </Route>
           <Route path="/note">
             <Note handleSubmit={updateNote} noteID={null}/>

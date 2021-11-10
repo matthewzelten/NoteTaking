@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types";
 import ReactQuill from "react-quill";
 import { Link } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
@@ -32,7 +32,8 @@ function Note(props) {
             <Link to="/folder">
                 <button>Return</button>
             </Link>
-             <form>
+            <h1>{props.noteName}</h1>
+            <form>
                 <Editor handleUpdate={saveNote} placeholder={"Write something awesome..."} />
                 <div>
                     <button onClick={saveNote}>Save Note</button>
@@ -40,8 +41,10 @@ function Note(props) {
             </form>
         </div>
     );
+}
 
-
+function saveNote() {
+    //implement this to save to backend
 }
 
 
