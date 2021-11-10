@@ -4,7 +4,7 @@ const Folder = require("./Database/Models/folderSchema");
 const Note = require("./Database/Models/noteSchema");
 const app = express();
 const cors = require('cors');
-const port = 4000;
+const port = 5000;
 const { json } = require("express");
 
 const folders = {
