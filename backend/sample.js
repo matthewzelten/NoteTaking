@@ -39,9 +39,7 @@ async function findNote(folderName, noteName) {
 async function addFolder(folder) {
   Folder.insertOne(folder);
 }
-async function addNote(fName, noteToAdd) {
-  Note.insertOne(noteToAdd);
-}
+
 async function deleteFolder(folderToDelete) {
   const folder = Folder.find({'name':folderToDelete});
   if(folder===undefined||folder.length==0){
@@ -66,14 +64,20 @@ async function deleteFolder(folderToDelete) {
     }
   }*/
 }
-async function deleteNote(fName, nName) {
-  let noteList = folders["folderList"].find(
-    (folder) => folder["name"] === fName
-  ).notes;
-  for (var i = 1; i < noteList.length; i++) {
-    if (noteList[i].name === nName) {
-      result = noteList.splice(i, 1);
-      return;
+async function deleteNote(fName, noteName) {
+  const noteToDelete = Note.find({'name': noteName, 'folder':fName});
+  if(noteToDelete===undefined||noteToDelete.length==0){
+    return false;
+  }
+  else{
+    const noteId = noteToDelete["id"];
+    try{
+      if(Note.findByIdAndDelete(noteId)){
+        return true;
+      }
+    }catch(error){
+      console.log(error);
+      return false;
     }
   }
 }
@@ -84,6 +88,9 @@ app.get("/", async (req, res) => {
   res.send(allFolders);
 });
 // folder page: get all notes
+//I use post methods here because it needs to get password for provate folders 
+//and I can't think of an alternative.  
+//Please comment if you have any suggestions or alternative solutions!!!
 app.post("/:folderName", (req, res) => {
   const folderName = req.params["folderName"];
   const passw = req.body;
@@ -105,6 +112,9 @@ app.post("/:folderName", (req, res) => {
   }
 });
 //open note
+//I use post methods here because it needs to get password for provate notes 
+//and I can't think of an alternative. 
+//Please comment if you have any suggestions or alternative solutions!!!
 app.post("/:folderName/:note", (req, res) => {
   const fName = req.params["folderName"];
   const noteToGet = req.params["note"];
@@ -131,7 +141,7 @@ app.post("/:folderName/:note", (req, res) => {
 });
 
 //search note
-app.get("/:folderName", (req, res)=>{
+app.post("/:folderName", (req, res)=>{
 
 })
 //add folder
@@ -147,16 +157,23 @@ app.post("/", (req, res) => {
   }
 });
 //add note
+async function addNote(note){
+  try{
+    const noteToAdd = new Note(note);
+    if(await noteToAdd.save()){
+      return true;
+    }
+  }catch(error){
+    console.log(error);
+    return false;
+  }
+}
 app.post("/:folderName", (req, res) => {
-  const noteToAdd = req.body;
-  const fName = req.params["folderName"];
-  let result = findNote(fName, noteToAdd["name"]);
-  if (result === undefined || result.length == 0) {
-    noteToAdd.noteContent = [{}];
-    addNote(fName, noteToAdd);
-    res.status(201).send(noteToAdd).end();
+  const note = req.body;
+  if (addNote(req.body)) {
+    res.status(201).end();
   } else {
-    res.status(404).send("Duplicate note name.").end();
+    res.status(404).end();
   }
 });
 //delete folder
@@ -173,12 +190,11 @@ app.delete("/", (req, res) => {
 //delete note
 app.delete("/:folderName", (req, res) => {
   const noteToDelete = req.body["name"];
-  let result = findNote(folderName, noteToDelete);
-  if (result === undefined || result.length == 0) {
-    res.status(404).send(noteToDelete);
-  } else {
-    deleteNote(folderName, noteToDelete);
+  const folderN = req.params["folderName"];
+  if (deleteNote(folderN, noteToDelete)) {
     res.status(204).end();
+  } else {
+    res.status(404).end();
   }
 });
 app.listen(port, () => {
