@@ -5,7 +5,7 @@ import axios from 'axios'
 
 function CreateFolder(props) {
   const [newFolderName, setNewFolderName] = useState("");
-  const [newFolderColor, setNewColorFolder] = useState("");
+  const [color, setColor] = useState("");
   const [isPrivate, setIsPrivate] = useState(false)
 
   function submitFolderName() {
@@ -13,8 +13,8 @@ function CreateFolder(props) {
     props.setShowModal(false);
     const folder = {
       name: newFolderName,
-      color: newFolderColor,
-        isPrivate: isPrivate,
+      color: color,
+      isPrivate: isPrivate,
       notes: [],
     }
     postNewFolder(folder).then( result => {
@@ -43,7 +43,7 @@ function CreateFolder(props) {
         placeholder="Enter Folder Name"
         onChange={(e) => setNewFolderName(e.target.value)}
       />
-      <FileSettings isPrivate={isPrivate} setIsPrivate={setIsPrivate}/>
+      <FileSettings isPrivate={isPrivate} setIsPrivate={setIsPrivate} color={color} setColor={setColor}/>
       <Link to="/folder">
         <button onClick={() => submitFolderName()}>Create</button>
       </Link>
