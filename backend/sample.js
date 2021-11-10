@@ -75,6 +75,7 @@ app.get("/", async (req, res) => {
   const allFolders = await getAllFolders()
   res.send(allFolders);
 });
+
 // folder page: get all notes
 app.post("/:folderName", (req, res) => {
   const folderName = req.params["folderName"];

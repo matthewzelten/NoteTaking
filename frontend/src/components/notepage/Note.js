@@ -43,11 +43,6 @@ function Note(props) {
     );
 }
 
-function saveNote() {
-    //implement this to save to backend
-}
-
-
 
 class Editor extends React.Component {
     constructor(props) {
