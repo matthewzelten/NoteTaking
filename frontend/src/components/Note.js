@@ -1,28 +1,50 @@
-import React from 'react';
+import React, { useState } from "react";
 import PropTypes from 'prop-types'
 import ReactQuill from "react-quill";
 import { Link } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
 
-function Note() {
+let noteDelta = null;
+
+function Note(props) {
+    const [note, setNote] = useState(
+        {
+            delta: null,
+            noteID: null
+        }
+    );
+
+    function saveNote(noteDelta){
+        setNote({
+            delta: noteDelta,
+            noteID: props.noteID
+        });
+        props.handleSubmit(note);
+
+        setNote({
+            delta: null,
+            noteID: null
+        });
+    }
+
     return (
         <div>
             <Link to="/folder">
                 <button>Return</button>
             </Link>
              <form>
-                <Editor placeholder={"Write something awesome..."} />
-                <div class="alter-height">
-                    <button onClick={saveNote()}>Save Note</button>
+                <Editor handleUpdate={saveNote} placeholder={"Write something awesome..."} />
+                <div>
+                    <button onClick={saveNote}>Save Note</button>
                 </div>
             </form>
         </div>
     );
+
+
 }
 
-function saveNote(){
-    //implement this to save to backend
-}
+
 
 class Editor extends React.Component {
     constructor(props) {
@@ -33,6 +55,8 @@ class Editor extends React.Component {
 
     handleChange(html) {
         this.setState({ editorHtml: html });
+        noteDelta = this.editor.getContents();
+        this.handleUpdate(noteDelta);
     }
 
     render() {

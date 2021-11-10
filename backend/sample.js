@@ -26,6 +26,7 @@ app.use(express.json());
 function findFolder(name) {
   return folders["folderList"].find((fold) => fold["name"] === name);
 }
+
 function findNote(folderName, noteName) {
   let result = folders["folderList"].find(
     (fold) => fold["name"] === folderName
@@ -36,14 +37,17 @@ function findNote(folderName, noteName) {
     return result.find((note) => note["name"] === noteName);
   }
 }
+
 function addFolder(folderName) {
   folders["folderList"].push(folderName);
 }
+
 function addNote(fName, noteToAdd) {
   folders["folderList"]
     .find((fold) => fold.name === fName)
     .notes.push(noteToAdd);
 }
+
 function deleteFolder(folderToDelete) {
   for (var i = 1; i < folders["folderList"].length; i++) {
     if (folders["folderList"][i].name === folderToDelete) {

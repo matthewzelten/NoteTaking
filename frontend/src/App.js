@@ -36,6 +36,23 @@ function App() {
     }
   }
 
+  // TODO edit to fit this app
+  function updateNote(note) {
+    makePostCall(note).then( result => {
+      //if(result && result.status === 201) setCharacters([...characters, result.data]);
+    });
+  }
+
+  async function makePostCall(note) {
+    try {
+      return await axios.post('http://localhost:5000/notes', note);
+      console.log(`Posted ${note}`);
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
   return (
     <div className="App">
       <Router>
@@ -56,7 +73,7 @@ function App() {
             <Folder folderName={folderName} noteName={noteName} />
           </Route>
           <Route path="/note">
-            <Note />
+            <Note handleSubmit={updateNote} noteID={null}/>
           </Route>
         </Switch>
         <Modal isOpen={showModal}>
