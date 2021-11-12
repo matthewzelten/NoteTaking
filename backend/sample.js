@@ -22,7 +22,7 @@ const folders = {
   ],
 };
 
-app.use(cors())
+app.use(cors());
 app.use(express.json());
 
 async function getAllFolders() {
@@ -32,6 +32,9 @@ async function getAllFolders() {
 
 async function findFolder(name) {
   return Folder.find({'name':name});
+}
+async function findNotesByFolder(fName){
+  return Note.find({'folder':fName});
 }
 async function findNote(folderName, noteName) {
   return Note.find({'name':noteName, 'folder':folderName});
@@ -88,8 +91,8 @@ app.get("/", async (req, res) => {
   res.send(allFolders);
 });
 // folder page: get all notes
-//I use post methods here because it needs to get password for provate folders 
-//and I can't think of an alternative.  
+//I use post methods here because it needs to get password for private folders 
+//and I can't think of an alternative. 
 //Please comment if you have any suggestions or alternative solutions!!!
 app.post("/:folderName", (req, res) => {
   const folderName = req.params["folderName"];
@@ -99,11 +102,11 @@ app.post("/:folderName", (req, res) => {
     res.status(404).send("Folder not found.");
   } else {
     if (!result["isPrivate"]) {
-      result = result.notes;
+      result = findNotesByFolder(folderName);
       res.status(201).send(result);
     } else {
       if (passw["password"] === result["password"]) {
-        res.status(201).send(result.notes);
+        res.status(201).send(findNotesByFolder(folderName));
       } else {
         //res.status(404).send(req.body);
         res.status(404).send("Wrong password. Access denied.");
@@ -112,7 +115,7 @@ app.post("/:folderName", (req, res) => {
   }
 });
 //open note
-//I use post methods here because it needs to get password for provate notes 
+//I use post methods here because it needs to get password for private notes 
 //and I can't think of an alternative. 
 //Please comment if you have any suggestions or alternative solutions!!!
 app.post("/:folderName/:note", (req, res) => {
