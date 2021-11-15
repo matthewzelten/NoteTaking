@@ -78,9 +78,9 @@ app.get("/", async (req, res) => {
 });
 
 // folder page: get all notes
-app.post("/:folderName", async (req, res) => {
+app.get("/:folderName", async (req, res) => {
     const folderName = req.params["folderName"];
-    const passw = req.body;
+    const passw = req.query["pass"];
     const result = await findFolder(folderName);
     if (result === undefined || result.length == 0) {
         res.status(404).send("Folder not found.");
@@ -138,8 +138,8 @@ app.post("/", (req, res) => {
     }
 });
 //add note
-app.post("/:folderName", (req, res) => {
-    const noteToAdd = req.body;
+app.post("/:folderName/:noteName", (req, res) => {
+    const noteToAdd = req.params["noteName"];
     const fName = req.params["folderName"];
     let result = findNote(fName, noteToAdd["name"]);
     if (result === undefined || result.length == 0) {
