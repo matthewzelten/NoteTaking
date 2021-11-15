@@ -6,6 +6,7 @@ function FileSettings(props) {
     function handleColorChange(selectedColor) {
       props.setColor(selectedColor);
     }
+
     return (
         <div>
             <div>
@@ -27,7 +28,7 @@ function FileSettings(props) {
                 </form>
                 </h2>
             </div>
-            <PrivateNote data={disablePassword} />
+            <PrivateNote data={disablePassword} setPasswordA={props.setPasswordA} setPasswordB={props.setPasswordB} setIsPrivate={props.setIsPrivate} />
         </div>
     );
 }
@@ -49,25 +50,27 @@ function PrivateNote(props) {
                     type="checkbox"
                     onClick={() => handleDisablePassword()}
                 />
-                <PasswordForm disablePassword={disablePassword} />
+                <PasswordForm disablePassword={disablePassword} setPasswordA={props.setPasswordA} setPasswordB={props.setPasswordB} />
             </h2>
         </div>
     );
 }
 
-function PasswordForm({ disablePassword }) {
-    if (!disablePassword) {
+function PasswordForm(props) {
+    if (!props.disablePassword) {
         return (
             <div>
                 <input
-                    disabled={disablePassword}
+                    disabled={props.disablePassword}
                     type="text"
                     placeholder="Enter Password"
+                    onChange={(e) => props.setPasswordA(e.target.value)}
                 />
                 <input
-                    disabled={disablePassword}
+                    disabled={props.disablePassword}
                     type="text"
                     placeholder="Confirm Password"
+                    onChange={(e) => props.setPasswordB(e.target.value)}
                 />
             </div>
         );
