@@ -139,7 +139,7 @@ app.post("/:folderName/:note", (req, res) => {
 
 //search note
 app.post("/:folderName", (req, res)=>{
-
+  const keyword = req.body["keyword"];
 })
 //add folder
 app.post("/", (req, res) => {
@@ -150,7 +150,7 @@ app.post("/", (req, res) => {
     folderToAdd.save()
     res.status(201).send(folderToAdd).end();
   } else {
-    res.status(404).send("Duplicate file name.").end();
+    //res.status(404).send("Duplicate file name.").end();
   }
 });
 //add note
