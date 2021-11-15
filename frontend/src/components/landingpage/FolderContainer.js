@@ -1,29 +1,42 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function ShowFolders(props) {
     const folders = props.folderData.map((row, index) => {
+        const buttonColor =
+            row.color === undefined || row.color === ""
+                ? "#0000FF"
+                : `#${row.color}`;
         return (
-            <span key={index}>
-                <button onClick={openFolder()}>{row.name}</button>
-            </span>
+            <Link to="/folder">
+                <button
+                    style={{
+                        width: "200px",
+                        height: "50px",
+                        background: `${buttonColor}`,
+                    }}
+                    onClick={() => props.getFolder(row.name)}
+                >
+                    {row.name}
+                </button>
+            </Link>
         );
     });
-    return <div>{folders}</div>;
+    return folders;
 }
 
 function FolderContainer(props) {
     return (
-        <div>
-            <ShowFolders folderData={props.folderData} />
-            <button class="btn" onClick={() => props.setShowModal(true)}>
+        <div style={{ display: "grid" }}>
+            <ShowFolders
+                getFolder={props.getFolder}
+                folderData={props.folderData}
+            />
+            <button onClick={() => props.setShowModal(true)}>
                 Add New Folder
             </button>
         </div>
     );
-}
-
-function openFolder(name) {
-    //implement this
 }
 
 export default FolderContainer;

@@ -31,6 +31,15 @@ const folderConnection = makeNewConnection(
         "@cluster0.yohuh.mongodb.net/Folders?retryWrites=true&w=majority"
 );
 
+const noteConnection = makeNewConnection(
+    "mongodb+srv://" +
+        process.env.MONGO_USER +
+        ":" +
+        process.env.MONGO_PWD +
+        "@cluster0.yohuh.mongodb.net/Notes?retryWrites=true&w=majority"
+);
+
 module.exports = {
-    folderConnection
+    folderConnection,
+    noteConnection
 }

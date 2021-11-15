@@ -35,6 +35,16 @@ function App() {
         }
     }
 
+    async function getFolder(name) {
+        try {
+            const response = await axios.post(`http://localhost:5000/${name}`);
+            const data = response.data[0];
+            setFolderName(data.name);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <div className="App">
             <Router>
@@ -49,6 +59,7 @@ function App() {
                             }}
                         >
                             <FolderContainer
+                                getFolder={getFolder}
                                 folderData={folders}
                                 setShowModal={setShowModal}
                             />
