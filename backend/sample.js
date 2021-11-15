@@ -60,12 +60,6 @@ async function deleteFolder(folderToDelete) {
       return false;
     }
   }
-  /*for (var i = 1; i < folders["folderList"].length; i++) {
-    if (folders["folderList"][i].name === folderToDelete) {
-      result = folders["folderList"].splice(i, 1);
-      return;
-    }
-  }*/
 }
 async function deleteNote(fName, noteName) {
   const noteToDelete = Note.find({'name': noteName, 'folder':fName});
@@ -182,12 +176,12 @@ app.post("/:folderName", (req, res) => {
 //delete folder
 app.delete("/", (req, res) => {
   const folderToDelete = req.body["name"];
-  let result = findFolder(folderToDelete);
-  if (result === undefined || result.length == 0) {
-    res.status(404).send(folderToDelete);
-  } else {
+  if (deleteFolder(folderToDelete)) {
     deleteFolder(folderToDelete);
     res.status(204).end();
+    
+  } else {
+    res.status(404).send(folderToDelete);
   }
 });
 //delete note
