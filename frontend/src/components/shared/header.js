@@ -1,13 +1,14 @@
 import React from "react";
 import { Link } from 'react-router-dom'
+import { Heading, Center } from '@chakra-ui/react'
 
 function Header(props) {
   return (
-    <header class="blue alter-height">
+    <Center h="100px" bg="#216869">
       <Link to="/">
-        <h1>Notes Made Easy</h1>
+        <Heading color="white">Notes Made Easy</Heading>
       </Link>
-    </header>
+    </Center>
   );
 }
 
