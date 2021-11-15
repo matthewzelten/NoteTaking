@@ -7,6 +7,7 @@ import CreateFolder from "./components/landingpage/CreateFolder";
 import Folder from "./components/folderpage/Folder";
 import { useState, useEffect } from "react";
 import CreateNote from "./components/folderpage/CreateNote";
+import { ChakraProvider } from "@chakra-ui/react";
 import Modal from "react-modal";
 import Note from "./components/notepage/Note";
 import axios from "axios";
@@ -46,7 +47,7 @@ function App() {
     }
 
     return (
-        <div className="App">
+        <ChakraProvider>
             <Router>
                 <Header />
                 <Switch>
@@ -73,7 +74,7 @@ function App() {
                         />
                     </Route>
                     <Route path="/note">
-                        <Note />
+                        <Note noteName={noteName} />
                     </Route>
                 </Switch>
                 <Modal isOpen={showModal}>
@@ -86,7 +87,7 @@ function App() {
                     />
                 </Modal>
             </Router>
-        </div>
+        </ChakraProvider>
     );
 }
 
