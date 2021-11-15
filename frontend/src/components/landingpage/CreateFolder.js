@@ -6,7 +6,7 @@ import axios from 'axios'
 function CreateFolder(props) {
   const [newFolderName, setNewFolderName] = useState("");
   const [color, setColor] = useState("");
-  const [isPrivate, setIsPrivate] = useState(false)
+  const [isPrivate, setIsPrivate] = useState(false);
 
   function submitFolderName() {
     props.setFolderName(newFolderName);

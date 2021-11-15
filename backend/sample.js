@@ -1,11 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const Folder = require("./Database/Models/folderSchema")
+const Folder = require("./Database/Models/folderSchema").folder;
+const Note = require("./Database/Models/noteSchema").note;
 const app = express();
 const cors = require('cors');
 const port = 5000;
 const { json } = require("express");
+const { note } = require("./Database/Models/noteSchema");
 
+/*
 const folders = {
   folderList: [
     {
@@ -20,18 +23,25 @@ const folders = {
     }
   ],
 };
+ */
 
-app.use(cors())
+app.use(cors());
 app.use(express.json());
 
 async function getAllFolders() {
-  let result = await Folder.find({})
-  return result
+  return Folder.find({});
 }
 
+/*
 async function findFolder(name) {
   return folders["folderList"].find((fold) => fold["name"] === name);
+}*/
+async function findFolder(name) {
+  return Folder.findOne({"name": name});
+  //return folders["folderList"].find((fold) => fold["name"] === name);
 }
+
+/*
 async function findNote(folderName, noteName) {
   let result = folders["folderList"].find(
     (fold) => fold["name"] === folderName
@@ -41,15 +51,64 @@ async function findNote(folderName, noteName) {
   } else {
     return result.find((note) => note["name"] === noteName);
   }
+}*/
+
+async function findNote(folderName, noteName) {
+  let noteFolder = await findFolder(folderName);
+
+  let result = noteFolder.notes.filter(note => note.name === noteName);
+
+  if (result.length < 1) {
+    return undefined;
+  } else {
+    return result[0];
+  }
 }
+
 async function addFolder(folder) {
-  folderModel.insertOne(folder);
+  let existingFolder = await Folder.findOne({"name" : folder.name});
+  if(existingFolder) {
+    throw `addFolder: folder with name "${folder.name}" already exists.`;
+  } else {
+    try {
+      const folderToAdd = new Folder(folder);
+      return folderToAdd.save();
+    } catch(e) {
+      console.log(e);
+      return false;
+    }
+
+  }
 }
+
+/*
 async function addNote(fName, noteToAdd) {
   folders["folderList"]
     .find((fold) => fold.name === fName)
     .notes.push(noteToAdd);
+}*/
+
+async function addNote(fName, noteToAdd) {
+  let thisFolder = await findFolder(fName);
+  let notesList = thisFolder.notes.filter(note => note.name === noteToAdd.name);
+
+  if(notesList.length !== 0) {
+    throw `addNote: note with name "${noteToAdd.name}" already exists in folder "${fName}".`;
+  } else {
+    try {
+      const noteToAdd = new Note(noteToAdd);
+      console.log(noteToAdd);
+      thisFolder.notes.push(noteToAdd);
+      await thisFolder.save();
+    } catch(e) {
+      console.log(e);
+      return false;
+    }
+
+  }
 }
+
+/*
 async function deleteFolder(folderToDelete) {
   for (var i = 1; i < folders["folderList"].length; i++) {
     if (folders["folderList"][i].name === folderToDelete) {
@@ -57,7 +116,13 @@ async function deleteFolder(folderToDelete) {
       return;
     }
   }
+}*/
+
+async function deleteFolder(folderName) {
+  Folder.findOneAndDelete({"name": folderName});
 }
+
+/*
 async function deleteNote(fName, nName) {
   let noteList = folders["folderList"].find(
     (folder) => folder["name"] === fName
@@ -68,7 +133,15 @@ async function deleteNote(fName, nName) {
       return;
     }
   }
+}*/
+
+async function deleteNote(fName, nName) {
+  let thisFolder = findFolder(fName);
+  let newNotes = thisFolder.notes.filter(note => note.name !== nName);
+  thisFolder.notes = newNotes;
+  thisFolder.save();
 }
+
 app.use(express.json());
 // main page: get all folders
 app.get("/", async (req, res) => {
@@ -97,6 +170,9 @@ app.post("/:folderName", (req, res) => {
     }
   }
 });
+
+
+
 //open note
 app.post("/:folderName/:note", (req, res) => {
   const fName = req.params["folderName"];
@@ -126,11 +202,26 @@ app.post("/:folderName/:note", (req, res) => {
 //search note
 app.get("/:folderName", (req, res)=>{
 
-})
+});
+
 //add folder
-app.post("/", (req, res) => {
+app.post("/", async (req, res) => {
   const {name, color, isPrivate} = req.body;
-  isDup = findFolder(name);
+
+  try {
+    let result = await addFolder({
+      "name": name,
+      "color": color,
+      "isPrivate" : isPrivate,
+      "notes": []
+    });
+    res.status(201).send(result).end();
+  } catch(e) {
+    console.log(e);
+    res.status(404).send(e).end();
+  }
+
+  /*isDup = findFolder(name);
   if (true) {
     const folderToAdd = new Folder({name, color, isPrivate});
     folderToAdd.save()
@@ -138,7 +229,30 @@ app.post("/", (req, res) => {
   } else {
     res.status(404).send("Duplicate file name.").end();
   }
+   */
 });
+
+//add note
+app.post("/:folderName", async (req, res) => {
+  const noteToAdd = req.body;
+  const fName = req.params["folderName"];
+
+  try {
+    let result = await addNote(fName, {
+      "name": noteToAdd.name,
+      "contents": [{}],
+      "isPrivate" : noteToAdd.isPrivate,
+      "isLocked": false,
+      "color": noteToAdd.color
+    });
+    res.status(201).send(result).end();
+  } catch(e) {
+    console.log(e);
+    res.status(404).send(e).end();
+  }
+});
+
+/*
 //add note
 app.post("/:folderName", (req, res) => {
   const noteToAdd = req.body;
@@ -151,7 +265,8 @@ app.post("/:folderName", (req, res) => {
   } else {
     res.status(404).send("Duplicate note name.").end();
   }
-});
+});*/
+
 //delete folder
 app.delete("/", (req, res) => {
   const folderToDelete = req.body["name"];
@@ -163,6 +278,7 @@ app.delete("/", (req, res) => {
     res.status(204).end();
   }
 });
+
 //delete note
 app.delete("/:folderName", (req, res) => {
   const noteToDelete = req.body["name"];
@@ -174,6 +290,7 @@ app.delete("/:folderName", (req, res) => {
     res.status(204).end();
   }
 });
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
