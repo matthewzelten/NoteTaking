@@ -127,10 +127,10 @@ app.post("/:folderName/:note", (req, res) => {
 app.get("/:folderName", (req, res) => {});
 //add folder
 app.post("/", (req, res) => {
-    const { name, color, isPrivate } = req.body;
+    const { name, color, isPrivate, password } = req.body;
     isDup = findFolder(name);
     if (true) {
-        const folderToAdd = new Folder({ name, color, isPrivate });
+        const folderToAdd = new Folder({ name, color, isPrivate, password });
         folderToAdd.save();
         res.status(201).send(folderToAdd).end();
     } else {
