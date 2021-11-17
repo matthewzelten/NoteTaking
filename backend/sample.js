@@ -89,6 +89,8 @@ async function addNote(fName, noteToAdd) {
 }*/
 
 async function addNote(fName, noteToAdd) {
+  console.log(`Adding note to ${fName}`);
+
   let thisFolder = await findFolder(fName);
   let notesList = thisFolder.notes.filter(note => note.name === noteToAdd.name);
 
@@ -96,9 +98,9 @@ async function addNote(fName, noteToAdd) {
     throw `addNote: note with name "${noteToAdd.name}" already exists in folder "${fName}".`;
   } else {
     try {
-      const noteToAdd = new Note(noteToAdd);
-      console.log(noteToAdd);
-      thisFolder.notes.push(noteToAdd);
+      const note = await new Note(noteToAdd);
+      console.log(note);
+      thisFolder.notes.push(note);
       await thisFolder.save();
     } catch(e) {
       console.log(e);
@@ -149,8 +151,11 @@ app.get("/", async (req, res) => {
   res.send(allFolders);
 });
 
+/*
 // folder page: get all notes
 app.post("/:folderName", (req, res) => {
+  console.log(`IS IT THIS ONE???`);
+
   const folderName = req.params["folderName"];
   const passw = req.body;
   result = findFolder(folderName);
@@ -170,11 +175,12 @@ app.post("/:folderName", (req, res) => {
     }
   }
 });
-
-
+*/
 
 //open note
 app.post("/:folderName/:note", (req, res) => {
+  console.log(`IS IT THIS??? IS THIS BREAKING IT???`);
+
   const fName = req.params["folderName"];
   const noteToGet = req.params["note"];
   result = findFolder(fName);
@@ -206,7 +212,10 @@ app.get("/:folderName", (req, res)=>{
 
 //add folder
 app.post("/", async (req, res) => {
+
   const {name, color, isPrivate} = req.body;
+
+  console.log(`Adding folder ${name}`);
 
   try {
     let result = await addFolder({
@@ -233,18 +242,25 @@ app.post("/", async (req, res) => {
 });
 
 //add note
-app.post("/:folderName", async (req, res) => {
+app.post("/notes", async (req, res) => {
   const noteToAdd = req.body;
-  const fName = req.params["folderName"];
+
+  console.log(`Posting note to ${noteToAdd.folder}`);
+
+  console.log(`Random data ${noteToAdd.name} ${noteToAdd.isPrivate} ${noteToAdd.color}`);
 
   try {
-    let result = await addNote(fName, {
+    let newNote = {
       "name": noteToAdd.name,
       "contents": [{}],
+      "folder": noteToAdd.folder,
+      "color": noteToAdd.color,
       "isPrivate" : noteToAdd.isPrivate,
-      "isLocked": false,
-      "color": noteToAdd.color
-    });
+      "password": noteToAdd.password,
+      "isLocked": noteToAdd.isLocked
+    };
+
+    let result = await addNote(noteToAdd.folder, newNote);
     res.status(201).send(result).end();
   } catch(e) {
     console.log(e);

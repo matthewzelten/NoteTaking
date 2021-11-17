@@ -16,6 +16,14 @@ function App() {
   const [noteName, setNoteName] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [folders, setFolders] = useState([])
+  const [noteData, setNoteData] = useState({
+    name: null,
+    folder: null,
+    color: null,
+    isPrivate: null,
+    password: null,
+    isLocked: null
+  });
 
   useEffect(() => {
     fetchAllFolders().then(result => {
@@ -70,10 +78,10 @@ function App() {
             </div>
           </Route>
           <Route exact path="/folder">
-            <Folder setNoteName={setNoteName} folderName={folderName} noteName={noteName} />
+            <Folder setNoteData={setNoteData} setNoteName={setNoteName} folderName={folderName} noteName={noteName} />
           </Route>
           <Route path="/note">
-            <Note handleSubmit={updateNote} noteID={null}/>
+            <Note handleSubmit={updateNote} folderName={folderName} noteData={noteData}/>
           </Route>
         </Switch>
         <Modal isOpen={showModal}>

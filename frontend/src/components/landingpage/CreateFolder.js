@@ -8,6 +8,7 @@ function CreateFolder(props) {
   const [color, setColor] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
 
+
   function submitFolderName() {
     props.setFolderName(newFolderName);
     props.setShowModal(false);

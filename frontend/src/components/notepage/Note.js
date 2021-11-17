@@ -9,22 +9,40 @@ let noteDelta = null;
 function Note(props) {
     const [note, setNote] = useState(
         {
-            delta: null,
-            noteID: null
+            name: null,
+            contents: null,
+            folder: null,
+            color: null,
+            isPrivate: null,
+            password: null,
+            isLocked: null
         }
     );
 
     function saveNote(noteDelta){
+        console.log(`Saving current note`);
+
         setNote({
-            delta: noteDelta,
-            noteID: props.noteID
+            name: props.noteData.name,
+            contents: noteDelta,
+            folder: props.folderName,
+            color: props.noteData.color,
+            isPrivate: props.noteData.isPrivate,
+            password: props.noteData.password,
+            isLocked: props.noteData.isLocked
         });
         props.handleSubmit(note);
 
         setNote({
-            delta: null,
-            noteID: null
+            name: null,
+            contents: null,
+            folder: null,
+            color: null,
+            isPrivate: null,
+            password: null,
+            isLocked: null
         });
+
     }
 
     return (

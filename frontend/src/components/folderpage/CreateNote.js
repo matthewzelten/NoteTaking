@@ -13,25 +13,39 @@ function CreateNote(props) {
     function submitNote() {
         const note = {
             name: newNoteName,
+            folder: props.folderName,
             color: color,
-            isPrivate: isPrivate
+            isPrivate: isPrivate,
+            password: null,
+            isLocked: isPrivate
         }
 
         postNewNote(note).then( result => {
         });
+
+        props.setNoteData({
+            name: newNoteName,
+            folder: props.folderName,
+            color: color,
+            isPrivate: isPrivate,
+            password: null,
+            isLocked: isPrivate
+        });
+
     }
 
 
 
     async function postNewNote(note) {
-        console.log(`Posting ${note}`);
+        console.log(`Posting ${note} to ${props.folderName}`);
 
         try {
-            const response = await axios.post('http://localhost:5000/' + props.folderName, note);
+            const response = await axios.post('http://localhost:5000/notes', note);
             console.log(response);
             return response;
         }
         catch (error) {
+            console.log(`Error posting new note`);
             console.log(error);
             return false;
         }
@@ -49,6 +63,7 @@ function CreateNote(props) {
             <Link to="/note">
                 <button onClick={() => {
                     props.setNoteName(newNoteName);
+
                     submitNote();
                 }}>
                     {" "}
