@@ -17,9 +17,6 @@ function CreateFolder(props) {
   const history = useHistory();
 
   function submitFolderName() {
-    if(!verifyMatchingPasswords()) {
-      return;
-    }
     props.setFolderName(newFolderName);
     props.setShowModal(false);
     const folder = {
@@ -40,7 +37,7 @@ function CreateFolder(props) {
     if(!isPrivate){
       return true;
     }
-    if(passwordA === passwordB) {
+    if(passwordA === passwordB && passwordA.length > 0) {
       return true;
     }
     return false;
@@ -73,7 +70,7 @@ function CreateFolder(props) {
         setPasswordB={setPasswordB}
         />
       <Link to="/folder">
-        <button onClick={() => submitFolderName()}>Create</button>
+        <button disabled={!verifyMatchingPasswords()} onClick={() => submitFolderName()}>Create</button>
       </Link>
     </form>
   );
