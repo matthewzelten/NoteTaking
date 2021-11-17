@@ -13,7 +13,7 @@
     "react-draft-wysiwyg": "^1.14.7",
     "react-konva": "^17.0.2-5",
     "react-modal": "^3.14.3",
-    "react-quill": "^2.0.0-beta.3",
+    "react-quill": "^2.0.0-beta.4",
     "react-router-dom": "^5.3.0",
     "react-scripts": "^3.4.4",
     "rich-markdown-editor": "^11.18.12",
