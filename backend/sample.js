@@ -6,21 +6,6 @@ const cors = require("cors");
 const port = 5000;
 const { json } = require("express");
 
-const folders = {
-    folderList: [
-        {
-            name: "sampleFolder",
-            notes: [{}],
-            isPrivate: false,
-            password: "",
-        },
-        {
-            name: "folder2",
-            notes: null,
-        },
-    ],
-};
-
 app.use(cors());
 app.use(express.json());
 
