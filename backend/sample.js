@@ -136,7 +136,12 @@ app.post("/:folderName/:note", (req, res) => {
     }
   }
 });
-
+//search folder
+app.get("/:color", (req, res)=>{
+  const color = req.params['color'];
+  let result = Folder.find({'color':color});
+  res.send(result).end();
+})
 //search note
 app.post("/:folderName", (req, res)=>{
   const keyword = req.body["keyword"];
@@ -156,8 +161,10 @@ app.post("/", (req, res) => {
 //add note
 async function addNote(note){
   try{
+    //const folder = findFolder(note["folder"]);
     const noteToAdd = new Note(note);
     if(await noteToAdd.save()){
+    //if(await folder["notes"].insertOne(noteToAdd)){
       return true;
     }
   }catch(error){
