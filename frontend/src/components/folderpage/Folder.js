@@ -15,7 +15,7 @@ function Folder(props) {
       <button onClick={() => setShowNoteModal(true)}>+ Add New Note</button>
       <Modal isOpen={showNoteModal}>
         <button onClick={() => setShowNoteModal(false)}>Close Modal</button>
-        <CreateNote setNoteName={props.setNoteName}/>
+        <CreateNote setNoteName={props.setNoteName} setShowNoteModal={setShowNoteModal}/>
       </Modal>
     </div>
   );
