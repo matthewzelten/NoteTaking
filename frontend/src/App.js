@@ -7,6 +7,7 @@ import CreateFolder from "./components/landingpage/CreateFolder";
 import Folder from "./components/folderpage/Folder";
 import { useState, useEffect } from "react";
 import CreateNote from "./components/folderpage/CreateNote";
+import { ChakraProvider } from "@chakra-ui/react"
 import Modal from "react-modal";
 import Note from "./components/notepage/Note";
 import axios from 'axios';
@@ -61,8 +62,19 @@ function App() {
     }
   }
 
+  async function getFolder(name) {
+    try {
+      const response = await axios.post(`http://localhost:5000/${name}`)
+      const data = response.data[0]
+      setFolderName(data.name)
+    }
+    catch(error) {
+      console.log(error)
+    }
+  }
+
   return (
-    <div className="App">
+    <ChakraProvider>
       <Router>
         <Header />
         <Switch>
@@ -74,7 +86,7 @@ function App() {
                 width: "40%",
               }}
             >
-              <FolderContainer folderData={folders} setShowModal={setShowModal} />
+              <FolderContainer getFolder={getFolder} folderData={folders} setShowModal={setShowModal} />
             </div>
           </Route>
           <Route exact path="/folder">
@@ -92,7 +104,7 @@ function App() {
           />
         </Modal>
       </Router>
-    </div>
+    </ChakraProvider>
   );
 }
 

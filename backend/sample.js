@@ -3,25 +3,25 @@ const mongoose = require("mongoose");
 const Folder = require("./Database/Models/folderSchema").folder;
 const Note = require("./Database/Models/noteSchema").note;
 const app = express();
-const cors = require('cors');
+const cors = require("cors");
 const port = 5000;
 const { json } = require("express");
 const { note } = require("./Database/Models/noteSchema");
 
 /*
 const folders = {
-  folderList: [
-    {
-      name: "sampleFolder",
-      notes: [{}],
-      isPrivate: false,
-      password: "",
-    },
-    {
-      name: "folder2",
-      notes: null,
-    }
-  ],
+    folderList: [
+        {
+            name: "sampleFolder",
+            notes: [{}],
+            isPrivate: false,
+            password: "",
+        },
+        {
+            name: "folder2",
+            notes: null,
+        },
+    ],
 };
  */
 
@@ -36,6 +36,7 @@ async function getAllFolders() {
 async function findFolder(name) {
   return folders["folderList"].find((fold) => fold["name"] === name);
 }*/
+
 async function findFolder(name) {
   return Folder.findOne({"name": name});
   //return folders["folderList"].find((fold) => fold["name"] === name);
@@ -147,68 +148,62 @@ async function deleteNote(fName, nName) {
 app.use(express.json());
 // main page: get all folders
 app.get("/", async (req, res) => {
-  const allFolders = await getAllFolders()
-  res.send(allFolders);
+    const allFolders = await getAllFolders();
+    res.send(allFolders);
 });
+
 
 /*
 // folder page: get all notes
-app.post("/:folderName", (req, res) => {
-  console.log(`IS IT THIS ONE???`);
-
-  const folderName = req.params["folderName"];
-  const passw = req.body;
-  result = findFolder(folderName);
-  if (result === undefined || result.length == 0) {
-    res.status(404).send("Folder not found.");
-  } else {
-    if (!result["isPrivate"]) {
-      result = result.notes;
-      res.status(201).send(result);
+app.get("/:folderName", async (req, res) => {
+    const folderName = req.params["folderName"];
+    const passw = req.query["pass"];
+    const result = await findFolder(folderName);
+    if (result === undefined || result.length == 0) {
+        res.status(404).send("Folder not found.");
     } else {
-      if (passw["password"] === result["password"]) {
-        res.status(201).send(result.notes);
-      } else {
-        //res.status(404).send(req.body);
-        res.status(404).send("Wrong password. Access denied.");
-      }
+        if (!result["isPrivate"]) {
+            res.status(201).send(result);
+        } else {
+            if (passw["password"] === result["password"]) {
+                res.status(201).send(result);
+            } else {
+                //res.status(404).send(req.body);
+                res.status(404).send("Wrong password. Access denied.");
+            }
+        }
     }
-  }
 });
 */
 
 //open note
 app.post("/:folderName/:note", (req, res) => {
-  console.log(`IS IT THIS??? IS THIS BREAKING IT???`);
-
-  const fName = req.params["folderName"];
-  const noteToGet = req.params["note"];
-  result = findFolder(fName);
-  if (result === undefined || result.length == 0) {
-    res.status(404).send("Folder not found.");
-  } else {
-    result = findNote(fName, noteToGet);
+    const fName = req.params["folderName"];
+    const noteToGet = req.params["note"];
+    const result = findFolder(fName);
     if (result === undefined || result.length == 0) {
-      res.status(404).send("Note not found.");
+        res.status(404).send("Folder not found.");
     } else {
-      if (!result["isPrivate"]) {
-        res.status(201).send(result).end();
-      } else {
-        const passw = req.body;
-        if (passw["password"] === result["password"]) {
-          res.status(201).send(result).end();
+        result = findNote(fName, noteToGet);
+        if (result === undefined || result.length == 0) {
+            res.status(404).send("Note not found.");
         } else {
-          res.status(404).send("Wrong password. Access denied.");
+            if (!result["isPrivate"]) {
+                res.status(201).send(result).end();
+            } else {
+                const passw = req.body;
+                if (passw["password"] === result["password"]) {
+                    res.status(201).send(result).end();
+                } else {
+                    res.status(404).send("Wrong password. Access denied.");
+                }
+            }
         }
-      }
     }
-  }
 });
 
 //search note
-app.get("/:folderName", (req, res)=>{
-
-});
+app.get("/:folderName", (req, res)=>{});
 
 //add folder
 app.post("/", async (req, res) => {
@@ -285,28 +280,28 @@ app.post("/:folderName", (req, res) => {
 
 //delete folder
 app.delete("/", (req, res) => {
-  const folderToDelete = req.body["name"];
-  let result = findFolder(folderToDelete);
-  if (result === undefined || result.length == 0) {
-    res.status(404).send(folderToDelete);
-  } else {
-    deleteFolder(folderToDelete);
-    res.status(204).end();
-  }
+    const folderToDelete = req.body["name"];
+    let result = findFolder(folderToDelete);
+    if (result === undefined || result.length == 0) {
+        res.status(404).send(folderToDelete);
+    } else {
+        deleteFolder(folderToDelete);
+        res.status(204).end();
+    }
 });
 
 //delete note
 app.delete("/:folderName", (req, res) => {
-  const noteToDelete = req.body["name"];
-  let result = findNote(folderName, noteToDelete);
-  if (result === undefined || result.length == 0) {
-    res.status(404).send(noteToDelete);
-  } else {
-    deleteNote(folderName, noteToDelete);
-    res.status(204).end();
-  }
+    const noteToDelete = req.body["name"];
+    let result = findNote(folderName, noteToDelete);
+    if (result === undefined || result.length == 0) {
+        res.status(404).send(noteToDelete);
+    } else {
+        deleteNote(folderName, noteToDelete);
+        res.status(204).end();
+    }
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+    console.log(`Example app listening at http://localhost:${port}`);
 });
