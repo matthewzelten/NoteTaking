@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "sample.js",
+  "test": "sample.test.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "prettier": "npx prettier --write .",
     "dev": "nodemon sample.js",
-    "start": "node sample.js"
+    "start": "node sample.js",
+    "test": "jest" 
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +16,8 @@
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "jest": "^27.3.1",
+    "jest-cli": "^27.3.1",
     "mongoose": "^6.0.12",
     "nodemon": "^2.0.14"
   },

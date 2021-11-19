@@ -1,5 +1,4 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const Folder = require("./Database/Models/folderSchema");
 const Note = require("./Database/Models/noteSchema");
 const app = express();
