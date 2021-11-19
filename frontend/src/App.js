@@ -45,7 +45,6 @@ function App() {
     }
   }
 
-  // TODO edit to fit this app
   function updateNote(note) {
     makePostCall(note).then( result => {
       //if(result && result.status === 201) setCharacters([...characters, result.data]);
@@ -64,12 +63,13 @@ function App() {
 
   async function getFolder(name) {
     try {
-      const response = await axios.post(`http://localhost:5000/${name}`)
-      const data = response.data[0]
-      setFolderName(data.name)
+      const response = await axios.get(`http://localhost:5000/${name}`)
+      console.log(`Got folder name: ${response.data.folder.name}`);
+      setFolderName(response.data.folder.name)
+
     }
     catch(error) {
-      console.log(error)
+      console.log(`Error in getFolder: ${error}`);
     }
   }
 

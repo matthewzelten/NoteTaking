@@ -26,5 +26,6 @@ const folderSchema = new mongoose.Schema({
 }, {collection : collectionName});
 
 const Folder = folderConnection.model("Folder", folderSchema);
+//const Folder = mongoose.model("Folder", folderSchema);
 
 exports.folder = Folder;

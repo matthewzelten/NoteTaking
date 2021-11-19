@@ -38,7 +38,9 @@ async function findFolder(name) {
 }*/
 
 async function findFolder(name) {
-  return Folder.findOne({"name": name});
+    let folder = await Folder.findOne({"name": name});
+    console.log(`Found folder ${folder}`);
+    return folder;
   //return folders["folderList"].find((fold) => fold["name"] === name);
 }
 
@@ -180,7 +182,7 @@ app.get("/:folderName", async (req, res) => {
 app.post("/:folderName/:note", (req, res) => {
     const fName = req.params["folderName"];
     const noteToGet = req.params["note"];
-    const result = findFolder(fName);
+    let result = findFolder(fName);
     if (result === undefined || result.length == 0) {
         res.status(404).send("Folder not found.");
     } else {
@@ -202,8 +204,17 @@ app.post("/:folderName/:note", (req, res) => {
     }
 });
 
-//search note
-app.get("/:folderName", (req, res)=>{});
+//getFolder
+app.get("/:folderName", async (req, res) => {
+    console.log(`getFolder: ${req.params.folderName}`)
+    let result = await findFolder(req.params.folderName);
+    if (result === undefined || result.length === 0) {
+        res.status(404).send(`Folder ${req.params.folderName} not found.`);
+    }else {
+        result = {folder: result};
+        res.send(result);
+    }
+});
 
 //add folder
 app.post("/", async (req, res) => {
@@ -241,7 +252,6 @@ app.post("/notes", async (req, res) => {
   const noteToAdd = req.body;
 
   console.log(`Posting note to ${noteToAdd.folder}`);
-
   console.log(`Random data ${noteToAdd.name} ${noteToAdd.isPrivate} ${noteToAdd.color}`);
 
   try {

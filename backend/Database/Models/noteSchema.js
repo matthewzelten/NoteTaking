@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const collectionName = "Notes";
-const {noteConnection} = require("../../connections")
-const collectionName = "Notes";
+const {noteConnection} = require("../../connections");
 
 //https://stackoverflow.com/questions/18001478/referencing-another-schema-in-mongoose
 
