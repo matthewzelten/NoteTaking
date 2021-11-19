@@ -1,4 +1,12 @@
 const express = require("express");
+const Folder = require("./Database/Models/folderSchema");
+const {getAllFolders,
+    findFolder,
+    findNote,
+    addFolder,
+    addNote,
+    deleteFolder,
+    deleteNote} = require('./connections');
 const mongoose = require("mongoose");
 const Folder = require("./Database/Models/folderSchema").folder;
 const Note = require("./Database/Models/noteSchema").note;
