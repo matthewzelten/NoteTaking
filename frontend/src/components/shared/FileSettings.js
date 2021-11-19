@@ -14,7 +14,6 @@ function FileSettings(props) {
 
     return (
         <div>
-<<<<<<< HEAD
             <Heading as="h3" size="lg">Choose Color</Heading>
             <RadioGroup value={props.color} onChange={handleColorChange}>
                 <Stack>
@@ -24,28 +23,6 @@ function FileSettings(props) {
                 </Stack>
             </RadioGroup>
             <PrivateNote data={disablePassword} setIsPrivate={props.setIsPrivate}/>
-=======
-            <div>
-              <h2>
-                <form>
-                    Choose Color
-                    <p class="create-space" style={{ color: "blue" }}>
-                        blue
-                        <input class="create-space" name="color" type="radio" value="0000FF" onClick={() => handleColorChange("0000FF")}/>
-                    </p>
-                    <p class="create-space" style={{ color: "green" }}>
-                        green
-                        <input class="create-space" name="color" type="radio" value="00FF00" onClick={() => handleColorChange("00FF00")}/>
-                    </p>
-                    <p class="create-space" style={{ color: "red" }}>
-                        red
-                        <input class="create-space" name="color" type="radio" value="FF0000" onClick={() => handleColorChange("FF0000")}/>
-                    </p>
-                </form>
-                </h2>
-            </div>
-            <PrivateNote data={disablePassword} setPasswordA={props.setPasswordA} setPasswordB={props.setPasswordB} setIsPrivate={props.setIsPrivate} />
->>>>>>> origin/main
         </div>
     );
 }
@@ -60,20 +37,8 @@ function PrivateNote(props) {
 
     return (
         <div>
-<<<<<<< HEAD
             <Checkbox onChange={() => handleDisablePassword()}>Set as private?</Checkbox>
             <PasswordForm disablePassword={disablePassword} />
-=======
-            <h2>
-                Set as private?
-                <input
-                    class="create-space"
-                    type="checkbox"
-                    onClick={() => handleDisablePassword()}
-                />
-                <PasswordForm disablePassword={disablePassword} setPasswordA={props.setPasswordA} setPasswordB={props.setPasswordB} />
-            </h2>
->>>>>>> origin/main
         </div>
     );
 }
