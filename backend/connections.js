@@ -27,11 +27,25 @@ async function findNote(folderName, noteName) {
 async function addFolder(folder) {
     folderModel.insertOne(folder);
 }
-async function addNote(fName, noteToAdd) {
+//add note
+async function addNote(note){
+    try{
+      //const folder = findFolder(note["folder"]);
+      const noteToAdd = new Note(note);
+      if(await noteToAdd.save()){
+      //if(await folder["notes"].insertOne(noteToAdd)){
+        return true;
+      }
+    }catch(error){
+      console.log(error);
+      return false;
+    }
+  }
+/*async function addNote(fName, noteToAdd) {
     folders["folderList"]
         .find((fold) => fold.name === fName)
         .notes.push(noteToAdd);
-}
+}*/
 async function deleteFolder(folderToDelete) {
     for (var i = 1; i < folders["folderList"].length; i++) {
         if (folders["folderList"][i].name === folderToDelete) {

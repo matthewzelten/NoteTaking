@@ -6,7 +6,13 @@ const cors = require('cors');
 const port = 5000;
 const { json } = require("express");
 const e = require("express");
-
+const {getAllFolders,
+  findFolder,
+  findNote,
+  addFolder,
+  addNote,
+  deleteFolder,
+  deleteNote} = require('./connections');
 const folders = {
   folderList: [
     {
@@ -25,66 +31,32 @@ const folders = {
 app.use(cors());
 app.use(express.json());
 
-async function getAllFolders() {
-  let result = await Folder.find({})
-  return result
-}
 
-async function findFolder(name) {
-  return await Folder.find({'name':name});
-}
-
-async function findNote(folderName, noteName) {
-  return await Note.find({'name':noteName, 'folder':folderName});
-}
-async function findNotesByFolder(fName){
-  return await Note.find({'folder':fName});
-}
-async function addFolder(folder) {
-  Folder.insertOne(folder);
-}
-async function deleteFolder(folderToDelete) {
-  const folder = Folder.find({'name':folderToDelete});
-  if(folder===undefined||folder.length==0){
-    return false;
-  }
-  else{
-    const folderId = folder["id"];
-    try{
-      if(Folder.findByIdAndDelete(folderId)){
-        return true;
-      }
-    }
-    catch(error){
-      console.log(error);
-      return false;
-    }
-  }
-}
-async function deleteNote(fName, noteName) {
-  const noteToDelete = Note.find({'name': noteName, 'folder':fName});
-  if(noteToDelete===undefined||noteToDelete.length==0){
-    return false;
-  }
-  else{
-    const noteId = noteToDelete["id"];
-    try{
-      if(Note.findByIdAndDelete(noteId)){
-        return true;
-      }
-    }catch(error){
-      console.log(error);
-      return false;
-    }
-  }
-}
 app.use(express.json());
 // main page: get all folders
 app.get("/", async (req, res) => {
   const allFolders = await getAllFolders();
   res.send(allFolders);
 });
-
+app.get("/:folderName", async (req, res) => {
+  const folderName = req.params["folderName"];
+  const passw = req.query["pass"];
+  const result = await findFolder(folderName);
+  if (result === undefined || result.length == 0) {
+      res.status(404).send("Folder not found.");
+  } else {
+      if (!result["isPrivate"]) {
+          res.status(201).send(result);
+      } else {
+          if (passw["password"] === result["password"]) {
+              res.status(201).send(result);
+          } else {
+              //res.status(404).send(req.body);
+              res.status(404).send("Wrong password. Access denied.");
+          }
+      }
+  }
+});
 // handle open folder, add folder and search folder
 //I use post methods here because it needs to get password for private folders 
 //and I can't think of an alternative. 
@@ -95,9 +67,12 @@ app.post("/", async (req, res)=>{
   if((folder===undefined||folder.length==0)&&(keyword===undefined||keyword.length==0)){
     let isDup = await findFolder(req.body["name"]);
     if (isDup===undefined||isDup.length==0) {
-      const folderToAdd = new Folder(req.body);
+      try{const folderToAdd = new Folder(req.body);
       folderToAdd.save()
-      res.status(200).send(folderToAdd).end();
+      res.status(200).send(folderToAdd).end();}catch(error) {
+        console.log(error);
+        res.status(404).end();
+    }   
     } else {
       res.status(404).send("Duplicate file name. "+isDup).end();
     }
@@ -133,9 +108,7 @@ app.post("/", async (req, res)=>{
     //res.status(200).send(result).end();
   }
 })
-function searchFolder(keyword){
 
-}
 /*add folder
  Comment: These two are merged into one post function (see above). But I keep them for now just in case.
 app.post("/", async (req, res) => {
@@ -229,20 +202,7 @@ app.post("/:folderName", async (req, res) => {
       }});
   }
 });
-//add note
-async function addNote(note){
-  try{
-    //const folder = findFolder(note["folder"]);
-    const noteToAdd = new Note(note);
-    if(await noteToAdd.save()){
-    //if(await folder["notes"].insertOne(noteToAdd)){
-      return true;
-    }
-  }catch(error){
-    console.log(error);
-    return false;
-  }
-}
+
 /* merged into one post function. but I keep this for now just in case.
 app.post("/:folderName", async (req, res) => {
   const noteToAdd = req.body;
