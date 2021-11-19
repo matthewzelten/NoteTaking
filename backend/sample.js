@@ -8,6 +8,7 @@ const port = 5000;
 const { json } = require("express");
 const { note } = require("./Database/Models/noteSchema");
 
+
 /*
 const folders = {
     folderList: [
@@ -95,19 +96,26 @@ async function addNote(fName, noteToAdd) {
   console.log(`Adding note to ${fName}`);
 
   let thisFolder = await findFolder(fName);
+
+  console.log("About to try and populate");
+  //await thisFolder.populate("notes");
+  //console.log(thisFolder.populated("notes"));
   let notesList = thisFolder.notes.filter(note => note.name === noteToAdd.name);
 
   if(notesList.length !== 0) {
     throw `addNote: note with name "${noteToAdd.name}" already exists in folder "${fName}".`;
   } else {
     try {
-      const note = await new Note(noteToAdd);
-      console.log(note);
-      thisFolder.notes.push(note);
-      await thisFolder.save();
+        const note = await new Note(noteToAdd);
+        await note.save();
+
+        console.log(note);
+
+        thisFolder.notes.push(note._id);
+        await thisFolder.save();
     } catch(e) {
-      console.log(e);
-      return false;
+        console.log(e);
+        return false;
     }
 
   }
@@ -142,8 +150,7 @@ async function deleteNote(fName, nName) {
 
 async function deleteNote(fName, nName) {
   let thisFolder = findFolder(fName);
-  let newNotes = thisFolder.notes.filter(note => note.name !== nName);
-  thisFolder.notes = newNotes;
+  thisFolder.notes = thisFolder.notes.filter(note => note.name !== nName);
   thisFolder.save();
 }
 
@@ -183,11 +190,11 @@ app.post("/:folderName/:note", (req, res) => {
     const fName = req.params["folderName"];
     const noteToGet = req.params["note"];
     let result = findFolder(fName);
-    if (result === undefined || result.length == 0) {
+    if (result === undefined || result.length === 0) {
         res.status(404).send("Folder not found.");
     } else {
         result = findNote(fName, noteToGet);
-        if (result === undefined || result.length == 0) {
+        if (result === undefined || result.length === 0) {
             res.status(404).send("Note not found.");
         } else {
             if (!result["isPrivate"]) {
@@ -254,11 +261,13 @@ app.post("/notes", async (req, res) => {
   console.log(`Posting note to ${noteToAdd.folder}`);
   console.log(`Random data ${noteToAdd.name} ${noteToAdd.isPrivate} ${noteToAdd.color}`);
 
+  let folder = findFolder(noteToAdd.folder);
+
   try {
     let newNote = {
       "name": noteToAdd.name,
       "contents": [{}],
-      "folder": noteToAdd.folder,
+      "folder": folder._id,
       "color": noteToAdd.color,
       "isPrivate" : noteToAdd.isPrivate,
       "password": noteToAdd.password,
@@ -292,7 +301,7 @@ app.post("/:folderName", (req, res) => {
 app.delete("/", (req, res) => {
     const folderToDelete = req.body["name"];
     let result = findFolder(folderToDelete);
-    if (result === undefined || result.length == 0) {
+    if (result === undefined || result.length === 0) {
         res.status(404).send(folderToDelete);
     } else {
         deleteFolder(folderToDelete);
@@ -304,7 +313,7 @@ app.delete("/", (req, res) => {
 app.delete("/:folderName", (req, res) => {
     const noteToDelete = req.body["name"];
     let result = findNote(folderName, noteToDelete);
-    if (result === undefined || result.length == 0) {
+    if (result === undefined || result.length === 0) {
         res.status(404).send(noteToDelete);
     } else {
         deleteNote(folderName, noteToDelete);

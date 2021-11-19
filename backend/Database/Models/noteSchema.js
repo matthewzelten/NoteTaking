@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
 const collectionName = "Notes";
 const {noteConnection} = require("../../connections");
+const Schema = mongoose.Schema;
+const Folder = require("./folderSchema").folder;
 
 //https://stackoverflow.com/questions/18001478/referencing-another-schema-in-mongoose
 
-const noteSchema = new mongoose.Schema({
+const noteSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -15,7 +17,7 @@ const noteSchema = new mongoose.Schema({
         required: true
     },
     folder: {
-        type: String,
+        type: Schema.Types.ObjectId, ref: 'Folder',
         required: true
     },
     color: {

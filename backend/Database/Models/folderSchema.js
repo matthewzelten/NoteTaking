@@ -2,8 +2,10 @@ const mongoose = require("mongoose");
 const {folderConnection} = require("../../connections")
 const collectionName = "Folders";
 const noteSchema = require("./noteSchema").noteSchema;
+const Schema = mongoose.Schema;
+const Note = require("./noteSchema").note;
 
-const folderSchema = new mongoose.Schema({
+const folderSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -22,7 +24,7 @@ const folderSchema = new mongoose.Schema({
         required: false,
         trim: true
     },
-    notes: [noteSchema]
+    notes: [{ type: Schema.Types.ObjectId, ref: 'Note' }]
 }, {collection : collectionName});
 
 const Folder = folderConnection.model("Folder", folderSchema);
