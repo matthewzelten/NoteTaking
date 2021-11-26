@@ -10,6 +10,18 @@ function CreateFolder(props) {
     const [newFolderName, setNewFolderName] = useState("");
     const [color, setColor] = useState("");
     const [isPrivate, setIsPrivate] = useState(false);
+    const [passwordA, setPasswordA] = useState("");
+    const [passwordB, setPasswordB] = useState("");
+
+    function verifyMatchingPasswords(){
+      if(!isPrivate){
+        return true;
+      }
+      if(passwordA === passwordB && passwordA.length > 0) {
+        return true;
+      }
+      return false;
+    }
 
     function submitFolderName() {
         props.setFolderName(newFolderName);
@@ -55,9 +67,11 @@ function CreateFolder(props) {
                 setIsPrivate={setIsPrivate}
                 color={color}
                 setColor={setColor}
+                setPasswordA={setPasswordA}
+                setPasswordB={setPasswordB}
             />
             <Link to={`/folder/${newFolderName}`}>
-                <Button colorScheme="brand" onClick={() => submitFolderName()}>
+                <Button disabled={!verifyMatchingPasswords()} colorScheme="brand" onClick={() => submitFolderName()}>
                     Create
                 </Button>
             </Link>

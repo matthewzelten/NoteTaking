@@ -22,7 +22,11 @@ function FileSettings(props) {
                     <Radio value="F4D6CC">Silk</Radio>
                 </Stack>
             </RadioGroup>
-            <PrivateNote data={disablePassword} setIsPrivate={props.setIsPrivate}/>
+            <PrivateNote 
+                data={disablePassword} 
+                setIsPrivate={props.setIsPrivate}
+                setPasswordA={props.setPasswordA}
+                setPasswordB={props.setPasswordB}/>
         </div>
     );
 }
@@ -38,7 +42,10 @@ function PrivateNote(props) {
     return (
         <div>
             <Checkbox onChange={() => handleDisablePassword()}>Set as private?</Checkbox>
-            <PasswordForm disablePassword={disablePassword} />
+            <PasswordForm 
+                disablePassword={disablePassword} 
+                setPasswordA={props.setPasswordA} 
+                setPasswordB={props.setPasswordB}/>
         </div>
     );
 }
