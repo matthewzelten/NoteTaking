@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Flex, Button } from "@chakra-ui/react";
 
 function ShowFolders(props) {
     const folders = props.folderData.map((row, index) => {
@@ -27,15 +28,29 @@ function ShowFolders(props) {
 
 function FolderContainer(props) {
     return (
-        <div style={{ display: "grid" }}>
-            <ShowFolders
-                getFolder={props.getFolder}
-                folderData={props.folderData}
-            />
-            <button onClick={() => props.setShowModal(true)}>
-                Add New Folder
-            </button>
-        </div>
+        <Flex
+            paddingTop="8vh"
+            paddingLeft="41vh"
+            alignItems="center"
+            justifyContent="center"
+            colorScheme="white"
+        >
+            <div>
+                <ShowFolders
+                    getFolder={props.getFolder}
+                    folderData={props.folderData}
+                />
+                <Button
+                    mb={10}
+                    color="black"
+                    fontFamily="Avantgarde"
+                    borderColor="black"
+                    onClick={() => props.setShowModal(true)}
+                >
+                    Add New Folder
+                </Button>
+            </div>
+        </Flex>
     );
 }
 

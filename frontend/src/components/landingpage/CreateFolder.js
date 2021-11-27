@@ -2,11 +2,24 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import FileSettings from "../shared/FileSettings";
 import axios from "axios";
+import {
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalHeader,
+    ModalFooter,
+    ModalContent,
+    ModalOverlay,
+    Button,
+    useDisclosure,
+    Input,
+} from "@chakra-ui/react";
 
 function CreateFolder(props) {
     const [newFolderName, setNewFolderName] = useState("");
     const [color, setColor] = useState("");
     const [isPrivate, setIsPrivate] = useState(false);
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     function submitFolderName() {
         props.setFolderName(newFolderName);
@@ -37,9 +50,11 @@ function CreateFolder(props) {
     return (
         <form>
             <h1>Add New Folder</h1>
-            <input
+            <Input
                 type="text"
                 placeholder="Enter Folder Name"
+                variant="filled"
+                mb={3}
                 onChange={(e) => setNewFolderName(e.target.value)}
             />
             <FileSettings
@@ -49,7 +64,13 @@ function CreateFolder(props) {
                 setColor={setColor}
             />
             <Link to="/folder">
-                <button onClick={() => submitFolderName()}>Create</button>
+                <Button
+                    color="black"
+                    marginTop="2vh"
+                    onClick={() => submitFolderName()}
+                >
+                    Create
+                </Button>
             </Link>
         </form>
     );
