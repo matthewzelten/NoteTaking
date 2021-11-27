@@ -1,6 +1,7 @@
+import { Button } from "@chakra-ui/button";
 import React from "react";
 import { Link } from "react-router-dom";
-import { Flex, Button } from "@chakra-ui/react";
+import { Box, Wrap, WrapItem } from "@chakra-ui/layout";
 
 function ShowFolders(props) {
     const folders = props.folderData.map((row, index) => {
@@ -8,19 +9,23 @@ function ShowFolders(props) {
             row.color === undefined || row.color === ""
                 ? "#0000FF"
                 : `#${row.color}`;
+        const replaced = row.name.split(" ").join("+");
         return (
-            <Link to="/folder">
-                <button
-                    style={{
-                        width: "200px",
-                        height: "50px",
-                        background: `${buttonColor}`,
-                    }}
-                    onClick={() => props.getFolder(row.name)}
-                >
-                    {row.name}
-                </button>
-            </Link>
+            <WrapItem>
+                <Link to={`/folder/${replaced}`}>
+                    <Button
+                        style={{
+                            width: "200px",
+                            height: "50px",
+                            background: `${buttonColor}`,
+                            margin: "5px",
+                        }}
+                        onClick={() => props.redirectFolder(row.name)}
+                    >
+                        {row.name}
+                    </Button>
+                </Link>
+            </WrapItem>
         );
     });
     return folders;
@@ -28,29 +33,27 @@ function ShowFolders(props) {
 
 function FolderContainer(props) {
     return (
-        <Flex
-            paddingTop="8vh"
-            paddingLeft="41vh"
-            alignItems="center"
-            justifyContent="center"
-            colorScheme="white"
-        >
-            <div>
+        <Box style={{ display: "flex", flexDirection: "row" }}>
+            <Wrap marginLeft="90px" width="1300px" jusitfy="center">
                 <ShowFolders
-                    getFolder={props.getFolder}
+                    redirectFolder={props.redirectFolder}
                     folderData={props.folderData}
                 />
-                <Button
-                    mb={10}
-                    color="black"
-                    fontFamily="Avantgarde"
-                    borderColor="black"
-                    onClick={() => props.setShowModal(true)}
-                >
-                    Add New Folder
-                </Button>
-            </div>
-        </Flex>
+                <WrapItem>
+                    <Button
+                        colorScheme="brand.200"
+                        style={{
+                            width: "200px",
+                            height: "50px",
+                            margin: "5px",
+                        }}
+                        onClick={() => props.setShowModal(true)}
+                    >
+                        Add New Folder
+                    </Button>
+                </WrapItem>
+            </Wrap>
+        </Box>
     );
 }
 

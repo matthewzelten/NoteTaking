@@ -6,14 +6,15 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import CreateFolder from "./components/landingpage/CreateFolder";
 import Folder from "./components/folderpage/Folder";
 import { useState, useEffect } from "react";
-import CreateNote from "./components/folderpage/CreateNote";
-import { ChakraProvider } from "@chakra-ui/react";
 import Modal from "react-modal";
 import Note from "./components/notepage/Note";
 import axios from "axios";
+import { Button } from "@chakra-ui/button";
+import { Box } from "@chakra-ui/layout";
 
 function App() {
     const [folderName, setFolderName] = useState("");
+    const [folderURL, setFolderURL] = useState("");
     const [noteName, setNoteName] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [folders, setFolders] = useState([]);
@@ -38,16 +39,22 @@ function App() {
 
     async function getFolder(name) {
         try {
-            const response = await axios.post(`http://localhost:5000/${name}`);
+            const response = await axios.get(`http://localhost:5000/${name}`);
             const data = response.data[0];
-            setFolderName(data.name);
+            return data;
         } catch (error) {
             console.log(error);
         }
     }
 
+    function redirectFolder(name) {
+        const replaced = name.split(" ").join("+");
+        setFolderName(name);
+        setFolderURL(replaced);
+    }
+
     return (
-        <ChakraProvider>
+        <Box>
             <Router>
                 <Header />
                 <Switch>
@@ -55,22 +62,23 @@ function App() {
                         <div
                             style={{
                                 display: "flex",
-                                flexWrap: "wrap",
-                                width: "40%",
+                                flexDirection: "row",
                             }}
                         >
                             <FolderContainer
-                                getFolder={getFolder}
+                                redirectFolder={redirectFolder}
                                 folderData={folders}
                                 setShowModal={setShowModal}
                             />
                         </div>
                     </Route>
-                    <Route exact path="/folder">
+                    <Route path={`/folder/`}>
                         <Folder
                             setNoteName={setNoteName}
+                            setFolderName={setFolderName}
                             folderName={folderName}
                             noteName={noteName}
+                            getFolder={getFolder}
                         />
                     </Route>
                     <Route path="/note">
@@ -78,16 +86,20 @@ function App() {
                     </Route>
                 </Switch>
                 <Modal isOpen={showModal}>
-                    <button onClick={() => setShowModal(false)}>
+                    <Button
+                        colorScheme="brand"
+                        onClick={() => setShowModal(false)}
+                    >
                         Close Modal
-                    </button>
+                    </Button>
                     <CreateFolder
+                        folderName={folderName}
                         setFolderName={setFolderName}
                         setShowModal={setShowModal}
                     />
                 </Modal>
             </Router>
-        </ChakraProvider>
+        </Box>
     );
 }
 

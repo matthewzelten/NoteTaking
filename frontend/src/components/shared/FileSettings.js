@@ -1,3 +1,8 @@
+import { Checkbox } from "@chakra-ui/checkbox";
+import { Heading, Stack } from "@chakra-ui/layout";
+import { Radio, RadioGroup } from "@chakra-ui/radio";
+import { Table, Th, Thead, Tr } from "@chakra-ui/table";
+import { Tab } from "@chakra-ui/tabs";
 import React, { useState } from "react";
 
 function FileSettings(props) {
@@ -6,46 +11,27 @@ function FileSettings(props) {
     function handleColorChange(selectedColor) {
         props.setColor(selectedColor);
     }
+
     return (
         <div>
-            <div>
-                <h2>
-                    <form>
-                        Choose Color
-                        <p class="create-space" style={{ color: "blue" }}>
-                            blue
-                            <input
-                                class="create-space"
-                                name="color"
-                                type="radio"
-                                value="0000FF"
-                                onClick={() => handleColorChange("0000FF")}
-                            />
-                        </p>
-                        <p class="create-space" style={{ color: "#216869" }}>
-                            green
-                            <input
-                                class="create-space"
-                                name="color"
-                                type="radio"
-                                value="216869"
-                                onClick={() => handleColorChange("216869")}
-                            />
-                        </p>
-                        <p class="create-space" style={{ color: "#C83E4D" }}>
-                            red
-                            <input
-                                class="create-space"
-                                name="color"
-                                type="radio"
-                                value="C83E4D"
-                                onClick={() => handleColorChange("C83E4D")}
-                            />
-                        </p>
-                    </form>
-                </h2>
-            </div>
-            <PrivateNote data={disablePassword} />
+            <Heading as="h3" size="lg">
+                Choose Color
+            </Heading>
+            <RadioGroup value={props.color} onChange={handleColorChange}>
+                <Stack>
+                    <Radio value="C83E4D" color="brand.500">
+                        Brick Red
+                    </Radio>
+                    <Radio value="F4B860">Sunray</Radio>
+                    <Radio value="F4D6CC">Silk</Radio>
+                </Stack>
+            </RadioGroup>
+            <PrivateNote
+                data={disablePassword}
+                setIsPrivate={props.setIsPrivate}
+                setPasswordA={props.setPasswordA}
+                setPasswordB={props.setPasswordB}
+            />
         </div>
     );
 }
@@ -60,32 +46,33 @@ function PrivateNote(props) {
 
     return (
         <div>
-            <h2>
+            <Checkbox onChange={() => handleDisablePassword()}>
                 Set as private?
-                <input
-                    class="create-space"
-                    type="checkbox"
-                    onClick={() => handleDisablePassword()}
-                />
-                <PasswordForm disablePassword={disablePassword} />
-            </h2>
+            </Checkbox>
+            <PasswordForm
+                disablePassword={disablePassword}
+                setPasswordA={props.setPasswordA}
+                setPasswordB={props.setPasswordB}
+            />
         </div>
     );
 }
 
-function PasswordForm({ disablePassword }) {
-    if (!disablePassword) {
+function PasswordForm(props) {
+    if (!props.disablePassword) {
         return (
             <div>
                 <input
-                    disabled={disablePassword}
+                    disabled={props.disablePassword}
                     type="text"
                     placeholder="Enter Password"
+                    onChange={(e) => props.setPasswordA(e.target.value)}
                 />
                 <input
-                    disabled={disablePassword}
+                    disabled={props.disablePassword}
                     type="text"
                     placeholder="Confirm Password"
+                    onChange={(e) => props.setPasswordB(e.target.value)}
                 />
             </div>
         );

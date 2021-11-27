@@ -1,40 +1,45 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import FileSettings from "../shared/FileSettings";
 import axios from "axios";
-import {
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalHeader,
-    ModalFooter,
-    ModalContent,
-    ModalOverlay,
-    Button,
-    useDisclosure,
-    Input,
-} from "@chakra-ui/react";
+import { Heading } from "@chakra-ui/layout";
+import { Input } from "@chakra-ui/input";
+import { Button } from "@chakra-ui/button";
 
 function CreateFolder(props) {
     const [newFolderName, setNewFolderName] = useState("");
     const [color, setColor] = useState("");
     const [isPrivate, setIsPrivate] = useState(false);
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [passwordA, setPasswordA] = useState("");
+    const [passwordB, setPasswordB] = useState("");
+
+    function verifyMatchingPasswords() {
+        if (!isPrivate) {
+            return true;
+        }
+        if (passwordA === passwordB && passwordA.length > 0) {
+            return true;
+        }
+        return false;
+    }
 
     function submitFolderName() {
         props.setFolderName(newFolderName);
         props.setShowModal(false);
-        const folder = {
-            name: newFolderName,
-            color: color,
-            isPrivate: isPrivate,
-            notes: [],
-        };
-        postNewFolder(folder).then((result) => {
-            if (result && result.status === 200)
-                props.setFolders([...props.folders, newFolderName]);
-            props.setShowModal(false);
-        });
+        if (newFolderName !== "" && color !== "") {
+            const folder = {
+                name: newFolderName,
+                color: color,
+                isPrivate: isPrivate,
+                notes: [],
+            };
+            postNewFolder(folder).then((result) => {
+                if (result && result.status === 200) {
+                    props.setFolders([...props.folders, newFolderName]);
+                    props.setShowModal(false);
+                }
+            });
+        }
     }
 
     async function postNewFolder(folder) {
@@ -48,25 +53,27 @@ function CreateFolder(props) {
     }
 
     return (
-        <form>
-            <h1>Add New Folder</h1>
+        <form margin="5px">
+            <Heading as="h2" size="2xl">
+                Add New Folder
+            </Heading>
             <Input
-                type="text"
                 placeholder="Enter Folder Name"
-                variant="filled"
-                mb={3}
                 onChange={(e) => setNewFolderName(e.target.value)}
+                size="lg"
             />
             <FileSettings
                 isPrivate={isPrivate}
                 setIsPrivate={setIsPrivate}
                 color={color}
                 setColor={setColor}
+                setPasswordA={setPasswordA}
+                setPasswordB={setPasswordB}
             />
-            <Link to="/folder">
+            <Link to={`/folder/${newFolderName}`}>
                 <Button
-                    color="black"
-                    marginTop="2vh"
+                    disabled={!verifyMatchingPasswords()}
+                    colorScheme="brand"
                     onClick={() => submitFolderName()}
                 >
                     Create
