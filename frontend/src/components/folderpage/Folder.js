@@ -3,11 +3,12 @@ import { Link } from "react-router-dom";
 import Modal from "react-modal";
 import CreateNote from "./CreateNote";
 import { Button } from "@chakra-ui/button";
-import { Spinner } from "@chakra-ui/spinner";
-import { Center } from "@chakra-ui/layout";
+import { Center, Box } from "@chakra-ui/layout";
 
 function Folder(props) {
-    const [currentFolder, setCurrentFolder] = useState({});
+    const [currentFolder, setCurrentFolder] = useState({
+        color:"white"
+    });
     const [showNoteModal, setShowNoteModal] = useState(false);
 
     useEffect(() => {
@@ -15,30 +16,63 @@ function Folder(props) {
     }, []);
 
     function getCurrentFolder() {
-        const folderURL = window.location.pathname.split("/")[2]
+        const folderURL = window.location.pathname.split("/")[2];
         const replaced = folderURL.split("+").join(" ");
-        props
-            .getFolder(replaced)
-            .then((data) => setCurrentFolder(data));
+        props.getFolder(replaced).then((data) => setCurrentFolder(data));
     }
 
     return (
-        <div>
+        <Box>
             <Link to="/">
-                <Button>Return</Button>
+                <Button
+                    style={{
+                        width: "200px",
+                        height: "50px",
+                        background: `#${currentFolder === undefined ? "white": currentFolder.color}`,
+                        color: "black",
+                        margin: "5px",
+                    }}
+                >
+                    Return
+                </Button>
             </Link>
-            <h2>{currentFolder === undefined ? props.folderName : currentFolder.name}</h2>
+            <h2>
+                {currentFolder === undefined
+                    ? props.folderName
+                    : currentFolder.name}
+            </h2>
             <input type="text" placeholder="Search" />
-            <Button onClick={() => setShowNoteModal(true)}>
+            <Button
+                style={{
+                    width: "200px",
+                    height: "50px",
+                    background: `#${currentFolder.color}`,
+                    color: "black",
+                    margin: "5px",
+                }}
+                onClick={() => setShowNoteModal(true)}
+            >
                 + Add New Note
             </Button>
             <Modal isOpen={showNoteModal}>
-                <Button onClick={() => setShowNoteModal(false)}>
+                <Button
+                    style={{
+                        width: "200px",
+                        height: "50px",
+                        background: `#${currentFolder.color}`,
+                        color: "black",
+                        margin: "5px",
+                    }}
+                    onClick={() => setShowNoteModal(false)}
+                >
                     Close Modal
                 </Button>
-                <CreateNote setNoteName={props.setNoteName} setShowNoteModal={setShowNoteModal}/>
+                <CreateNote
+                    setNoteName={props.setNoteName}
+                    setShowNoteModal={setShowNoteModal}
+                />
             </Modal>
-        </div>
+        </Box>
     );
 }
 
