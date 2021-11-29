@@ -1,37 +1,102 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const folderSchema = require("./Database/Models/folderSchema");
+const Folder = require("./Database/Models/folderSchema");
+const noteSchema = require("./Database/Models/noteSchema");
 dotenv.config();
 
 async function getAllFolders() {
     const Folder = folderConnection.model("Folder", folderSchema);
-    let result = await Folder.find({});
-    return result;
+    return await Folder.find({});
 }
+
 
 async function findFolder(name) {
     const Folder = folderConnection.model("Folder", folderSchema);
-    const result = await Folder.find({name: name})
-    return result
+    let folder = await Folder.findOne({"name": name});
+    console.log(`Found folder ${folder}`);
+    return folder;
 }
+
 async function findNote(folderName, noteName) {
-    let result = folders["folderList"].find(
-        (fold) => fold["name"] === folderName
-    ).notes;
-    if (result === null) {
+    let noteFolder = await findFolder(folderName);
+
+    let result = noteFolder.notes.filter(note => note.name === noteName);
+
+    if (result.length < 1) {
         return undefined;
     } else {
-        return result.find((note) => note["name"] === noteName);
+        return result[0];
     }
 }
+
 async function addFolder(folder) {
-    folderModel.insertOne(folder);
+    const Folder = folderConnection.model("Folder", folderSchema);
+    let existingFolder = await Folder.findOne({"name" : folder.name});
+    if(existingFolder) {
+        throw `addFolder: folder with name "${folder.name}" already exists.`;
+    } else {
+        try {
+            const folderToAdd = new Folder(folder);
+            return folderToAdd.save();
+        } catch(e) {
+            console.log(e);
+            return false;
+        }
+    }
 }
+
 async function addNote(fName, noteToAdd) {
     folders["folderList"]
         .find((fold) => fold.name === fName)
         .notes.push(noteToAdd);
 }
+
+async function addNote(fName, noteToAdd) {
+    const Note = folderConnection.model("Note", noteSchema);
+
+    console.log(`Adding note to ${fName}`);
+    console.log(`Note: ${noteToAdd}`);
+
+    let thisFolder = await findFolder(fName);
+
+    console.log("About to try and populate");
+    await thisFolder.populate("notes");
+    console.log(`POPULATED! ${thisFolder.populated("notes")}`);
+
+    let notesList = thisFolder.notes.filter(note => note.name === noteToAdd.name);
+
+    if(notesList.length !== 0) {
+        throw `addNote: note with name "${noteToAdd.name}" already exists in folder "${fName}".`;
+    } else {
+        console.log(`Checkpoint 1`);
+
+        try {
+            const note = await new Note(noteToAdd);
+            await note.save();
+
+            console.log(`Checkpoint 2`);
+            console.log(note);
+
+            thisFolder.notes.push(note._id);
+
+            console.log(`Checkpoint 3`);
+
+            await thisFolder.save();
+        } catch(e) {
+            console.log(e);
+            return false;
+        }
+
+    }
+}
+
+
+async function deleteFolder(folderName) {
+    Folder.findOneAndDelete({"name": folderName});
+}
+
+/*
 async function deleteFolder(folderToDelete) {
     for (var i = 1; i < folders["folderList"].length; i++) {
         if (folders["folderList"][i].name === folderToDelete) {
@@ -39,7 +104,15 @@ async function deleteFolder(folderToDelete) {
             return;
         }
     }
+}*/
+
+async function deleteNote(fName, nName) {
+    let thisFolder = findFolder(fName);
+    thisFolder.notes = thisFolder.notes.filter(note => note.name !== nName);
+    thisFolder.save();
 }
+
+/*
 async function deleteNote(fName, nName) {
     let noteList = folders["folderList"].find(
         (folder) => folder["name"] === fName
@@ -50,7 +123,7 @@ async function deleteNote(fName, nName) {
             return;
         }
     }
-}
+}*/
 
 function makeNewConnection(URI) {
     const db = mongoose.createConnection(URI,

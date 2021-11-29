@@ -21,7 +21,7 @@ const folderSchema = new Schema({
         required: false,
         trim: true
     },
-    notes: [{ type: Schema.Types.ObjectId, ref: 'Note' }]
+    notes: [{ type: Schema.Types.ObjectId, ref: 'Note'}]
 }, {collection : collectionName});
 
 

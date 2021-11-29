@@ -43,7 +43,4 @@ const noteSchema = new Schema({
     }
 }, {collection : collectionName});
 
-const Note = noteConnection.model("Note", noteSchema);
-
-exports.note = Note;
-exports.noteSchema = noteSchema;
+module.exports = noteSchema;
