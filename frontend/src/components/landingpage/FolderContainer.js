@@ -1,7 +1,7 @@
 import { Button } from "@chakra-ui/button";
 import React from "react";
 import { Link } from "react-router-dom";
-import { Box, Wrap, WrapItem } from "@chakra-ui/layout";
+import { Box, Flex, Wrap, WrapItem } from "@chakra-ui/layout";
 
 function ShowFolders(props) {
     const folders = props.folderData.map((row, index) => {
@@ -33,8 +33,8 @@ function ShowFolders(props) {
 
 function FolderContainer(props) {
     return (
-        <Box style={{ display: "flex", flexDirection: "row" }}>
-            <Wrap marginLeft="90px" width="1300px" jusitfy="center">
+        <Flex direction="row">
+            <Wrap marginLeft="90px" jusitfy="center">
                 <ShowFolders
                     redirectFolder={props.redirectFolder}
                     folderData={props.folderData}
@@ -53,7 +53,7 @@ function FolderContainer(props) {
                     </Button>
                 </WrapItem>
             </Wrap>
-        </Box>
+        </Flex>
     );
 }
 

@@ -11,6 +11,7 @@ import Note from "./components/notepage/Note";
 import axios from "axios";
 import { Button } from "@chakra-ui/button";
 import { Box } from "@chakra-ui/layout";
+import { Text } from "@chakra-ui/layout";
 
 function App() {
     const [folderName, setFolderName] = useState("");
@@ -49,11 +50,13 @@ function App() {
 
     async function deleteFolder(folder) {
         try {
-            console.log(folder)
-            const response = await axios.delete(`http://localhost:5000/`, {data: folder})
-            window.location.reload()
+            console.log(folder);
+            const response = await axios.delete(`http://localhost:5000/`, {
+                data: folder,
+            });
+            window.location.reload();
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     }
 
@@ -69,7 +72,7 @@ function App() {
                 <Header />
                 <Switch>
                     <Route exact path="/">
-                        <div
+                        <Box
                             style={{
                                 display: "flex",
                                 flexDirection: "row",
@@ -80,7 +83,7 @@ function App() {
                                 folderData={folders}
                                 setShowModal={setShowModal}
                             />
-                        </div>
+                        </Box>
                     </Route>
                     <Route path={`/folder/`}>
                         <Folder
