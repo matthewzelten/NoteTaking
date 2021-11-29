@@ -1,6 +1,7 @@
 const express = require("express");
-const Folder = require("./Database/Models/folderSchema");
-const {getAllFolders,
+const {
+    Folder,
+    getAllFolders,
     findFolder,
     findNote,
     addFolder,

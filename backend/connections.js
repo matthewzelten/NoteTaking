@@ -1,9 +1,12 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const folderSchema = require("./Database/Models/folderSchema");
-const Folder = require("./Database/Models/folderSchema");
+//const Folder = require("./Database/Models/folderSchema");
 const noteSchema = require("./Database/Models/noteSchema");
 dotenv.config();
+
+const Folder = folderConnection.model("Folder", folderSchema);
+const Note = noteConnection.model("Note", noteSchema);
 
 async function getAllFolders() {
     const Folder = folderConnection.model("Folder", folderSchema);
@@ -13,9 +16,8 @@ async function getAllFolders() {
 
 async function findFolder(name) {
     const Folder = folderConnection.model("Folder", folderSchema);
-    let folder = await Folder.findOne({"name": name});
-    console.log(`Found folder ${folder}`);
-    return folder;
+    const result = await Folder.find({name: name})
+    return result
 }
 
 async function findNote(folderName, noteName) {
@@ -112,18 +114,6 @@ async function deleteNote(fName, nName) {
     thisFolder.save();
 }
 
-/*
-async function deleteNote(fName, nName) {
-    let noteList = folders["folderList"].find(
-        (folder) => folder["name"] === fName
-    ).notes;
-    for (var i = 1; i < noteList.length; i++) {
-        if (noteList[i].name === nName) {
-            result = noteList.splice(i, 1);
-            return;
-        }
-    }
-}*/
 
 function makeNewConnection(URI) {
     const db = mongoose.createConnection(URI,
@@ -162,8 +152,10 @@ const noteConnection = makeNewConnection(
         "@cluster0.yohuh.mongodb.net/Notes?retryWrites=true&w=majority"
 );
 
+
+
 module.exports = {
-    folderConnection,
+    Folder,
     noteConnection,
     getAllFolders,
     findFolder,

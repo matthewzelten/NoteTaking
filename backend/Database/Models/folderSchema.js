@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const {folderConnection} = require("../../connections")
 const collectionName = "Folders";
 const Schema = mongoose.Schema;
 
@@ -23,6 +24,5 @@ const folderSchema = new Schema({
     },
     notes: [{ type: Schema.Types.ObjectId, ref: 'Note'}]
 }, {collection : collectionName});
-
 
 module.exports = folderSchema;

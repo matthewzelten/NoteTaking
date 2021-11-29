@@ -6,17 +6,14 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import CreateFolder from "./components/landingpage/CreateFolder";
 import Folder from "./components/folderpage/Folder";
 import { useState, useEffect } from "react";
-import CreateNote from "./components/folderpage/CreateNote";
-import { ChakraProvider } from "@chakra-ui/react"
 import Modal from "react-modal";
 import Note from "./components/notepage/Note";
-import axios from 'axios';
+import axios from "axios";
+import { Button } from "@chakra-ui/button";
+import { Box } from "@chakra-ui/layout";
 
 function App() {
-  const [folderName, setFolderName] = useState("");
-  const [noteName, setNoteName] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [folders, setFolders] = useState([])
+
   const [noteData, setNoteData] = useState({
     name: null,
     folder: null,
@@ -25,25 +22,29 @@ function App() {
     password: null,
     isLocked: null
   });
+    const [folderName, setFolderName] = useState("");
+    const [folderURL, setFolderURL] = useState("");
+    const [noteName, setNoteName] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [folders, setFolders] = useState([]);
 
-  useEffect(() => {
-    fetchAllFolders().then(result => {
-      if(result){
-        setFolders(result)
-      }
-    });
-  }, [])
+    useEffect(() => {
+        fetchAllFolders().then((result) => {
+            if (result) {
+                setFolders(result);
+            }
+        });
+    }, []);
 
-  async function fetchAllFolders() {
-    try {
-      const response = await axios.get('http://localhost:5000/');
-      return response.data;
+    async function fetchAllFolders() {
+        try {
+            const response = await axios.get("http://localhost:5000/");
+            return response.data;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
     }
-    catch(error) {
-      console.log(error);
-      return false;
-    }
-  }
 
   function updateNote(note) {
     makePostCall(note).then( result => {
@@ -61,17 +62,21 @@ function App() {
     }
   }
 
-  async function getFolder(name) {
-    try {
-      const response = await axios.get(`http://localhost:5000/${name}`)
-      console.log(`Got folder name: ${response.data.folder.name}`);
-      setFolderName(response.data.folder.name)
+    async function getFolder(name) {
+        try {
+            const response = await axios.get(`http://localhost:5000/${name}`);
+            const data = response.data[0];
+            return data;
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
+    function redirectFolder(name) {
+        const replaced = name.split(" ").join("+");
+        setFolderName(name);
+        setFolderURL(replaced);
     }
-    catch(error) {
-      console.log(`Error in getFolder: ${error}`);
-    }
-  }
 
   return (
     <ChakraProvider>
@@ -106,6 +111,54 @@ function App() {
       </Router>
     </ChakraProvider>
   );
+    return (
+        <Box>
+            <Router>
+                <Header />
+                <Switch>
+                    <Route exact path="/">
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "row",
+                            }}
+                        >
+                            <FolderContainer
+                                redirectFolder={redirectFolder}
+                                folderData={folders}
+                                setShowModal={setShowModal}
+                            />
+                        </div>
+                    </Route>
+                    <Route path={`/folder/`}>
+                        <Folder
+                            setNoteName={setNoteName}
+                            setFolderName={setFolderName}
+                            folderName={folderName}
+                            noteName={noteName}
+                            getFolder={getFolder}
+                        />
+                    </Route>
+                    <Route path="/note">
+                        <Note noteName={noteName} />
+                    </Route>
+                </Switch>
+                <Modal isOpen={showModal}>
+                    <Button
+                        colorScheme="brand"
+                        onClick={() => setShowModal(false)}
+                    >
+                        Close Modal
+                    </Button>
+                    <CreateFolder
+                        folderName={folderName}
+                        setFolderName={setFolderName}
+                        setShowModal={setShowModal}
+                    />
+                </Modal>
+            </Router>
+        </Box>
+    );
 }
 
 export default App;
