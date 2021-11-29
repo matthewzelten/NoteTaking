@@ -47,6 +47,16 @@ function App() {
         }
     }
 
+    async function deleteFolder(folder) {
+        try {
+            console.log(folder)
+            const response = await axios.delete(`http://localhost:5000/`, {data: folder})
+            window.location.reload()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     function redirectFolder(name) {
         const replaced = name.split(" ").join("+");
         setFolderName(name);
@@ -54,7 +64,7 @@ function App() {
     }
 
     return (
-        <Box>
+        <Box style={{width:"100%", background:"#216869"}}>
             <Router>
                 <Header />
                 <Switch>
@@ -79,6 +89,7 @@ function App() {
                             folderName={folderName}
                             noteName={noteName}
                             getFolder={getFolder}
+                            deleteFolder={deleteFolder}
                         />
                     </Route>
                     <Route path="/note">

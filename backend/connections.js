@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const folderSchema = require("./Database/Models/folderSchema");
-const noteSchema = require("./Database/Models/noteSchema")
+const noteSchema = require("./Database/Models/noteSchema");
 dotenv.config();
 
 async function getAllFolders() {
@@ -12,8 +12,8 @@ async function getAllFolders() {
 
 async function findFolder(name) {
     const Folder = folderConnection.model("Folder", folderSchema);
-    const result = await Folder.find({name: name})
-    return result
+    const result = await Folder.find({ name: name });
+    return result;
 }
 async function findNote(folderName, noteName) {
     let result = folders["folderList"].find(
@@ -34,12 +34,11 @@ async function addNote(fName, noteToAdd) {
         .notes.push(noteToAdd);
 }
 async function deleteFolder(folderToDelete) {
-    for (var i = 1; i < folders["folderList"].length; i++) {
-        if (folders["folderList"][i].name === folderToDelete) {
-            result = folders["folderList"].splice(i, 1);
-            return;
+    Folder.deleteOne({ name: folderToDelete }, function (err, result) {
+        if (err) {
+            console.log(err);
         }
-    }
+    });
 }
 async function deleteNote(fName, nName) {
     let noteList = folders["folderList"].find(
@@ -54,12 +53,10 @@ async function deleteNote(fName, nName) {
 }
 
 function makeNewConnection(URI) {
-    const db = mongoose.createConnection(URI,
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        }
-    );
+    const db = mongoose.createConnection(URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
     db.on("connected", function () {
         console.log(`MongoDB :: connected ${this.name}`);
     });
@@ -71,7 +68,7 @@ function makeNewConnection(URI) {
             console.log(`MongoDB :: failed to close connection ${this.name}`)
         );
     });
-    return db
+    return db;
 }
 
 const folderConnection = makeNewConnection(
@@ -102,5 +99,5 @@ module.exports = {
     addFolder,
     addNote,
     deleteFolder,
-    deleteNote
-}
+    deleteNote,
+};
