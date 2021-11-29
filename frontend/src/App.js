@@ -64,7 +64,7 @@ function App() {
     }
 
     return (
-        <Box style={{width:"100%", background:"#216869"}}>
+        <Box style={{background:"#216869"}}>
             <Router>
                 <Header />
                 <Switch>

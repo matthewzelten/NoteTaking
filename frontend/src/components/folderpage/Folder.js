@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Modal from "react-modal";
 import CreateNote from "./CreateNote";
 import { Button } from "@chakra-ui/button";
-import { Center, Box } from "@chakra-ui/layout";
+import { Center, Box, Heading } from "@chakra-ui/layout";
 import { Text } from "@chakra-ui/layout";
 
 function Folder(props) {
@@ -54,11 +54,11 @@ function Folder(props) {
             >
                 DELETE FOLDER
             </Button>
-            <h2>
+            <Heading style={{color: "white"}}>
                 {currentFolder === undefined
                     ? props.folderName
                     : currentFolder.name}
-            </h2>
+            </Heading>
             <input type="text" placeholder="Search" />
             <Button
                 style={{
