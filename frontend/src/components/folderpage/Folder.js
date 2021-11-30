@@ -28,8 +28,8 @@ function Folder(props) {
                     style={{
                         width: "200px",
                         height: "50px",
-                        background: `#${currentFolder === undefined ? "white": currentFolder.color}`,
-                        color: "black",
+                        background: `#${currentFolder === undefined ? "FFFFFF": currentFolder.color}`,
+                        color: "000000",
                         margin: "5px",
                     }}
                 >
@@ -60,7 +60,7 @@ function Folder(props) {
                         width: "200px",
                         height: "50px",
                         background: `#${currentFolder.color}`,
-                        color: "000000",
+                        color: "black",
                         margin: "5px",
                     }}
                     onClick={() => setShowNoteModal(false)}
