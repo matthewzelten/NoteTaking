@@ -14,17 +14,10 @@ import { Box } from "@chakra-ui/layout";
 
 function App() {
 
-  const [noteData, setNoteData] = useState({
-    name: null,
-    folder: null,
-    color: null,
-    isPrivate: null,
-    password: null,
-    isLocked: null
-  });
     const [folderName, setFolderName] = useState("");
     const [folderURL, setFolderURL] = useState("");
     const [noteName, setNoteName] = useState([]);
+    const [noteContents, setNoteContents] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [folders, setFolders] = useState([]);
 
@@ -78,39 +71,6 @@ function App() {
         setFolderURL(replaced);
     }
 
-  return (
-    <ChakraProvider>
-      <Router>
-        <Header />
-        <Switch>
-          <Route exact path="/">
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                width: "40%",
-              }}
-            >
-              <FolderContainer getFolder={getFolder} folderData={folders} setShowModal={setShowModal} />
-            </div>
-          </Route>
-          <Route exact path="/folder">
-            <Folder setNoteData={setNoteData} setNoteName={setNoteName} folderName={folderName} noteName={noteName} />
-          </Route>
-          <Route path="/note">
-            <Note handleSubmit={updateNote} folderName={folderName} noteData={noteData}/>
-          </Route>
-        </Switch>
-        <Modal isOpen={showModal}>
-          <button onClick={() => setShowModal(false)}>Close Modal</button>
-          <CreateFolder
-            setFolderName={setFolderName}
-            setShowModal={setShowModal}
-          />
-        </Modal>
-      </Router>
-    </ChakraProvider>
-  );
     return (
         <Box>
             <Router>
@@ -133,6 +93,7 @@ function App() {
                     <Route path={`/folder/`}>
                         <Folder
                             setNoteName={setNoteName}
+                            noteContents={noteContents}
                             setFolderName={setFolderName}
                             folderName={folderName}
                             noteName={noteName}
@@ -140,7 +101,7 @@ function App() {
                         />
                     </Route>
                     <Route path="/note">
-                        <Note noteName={noteName} />
+                        <Note noteName={noteName} contents={noteContents} folderName={folderName}/>
                     </Route>
                 </Switch>
                 <Modal isOpen={showModal}>

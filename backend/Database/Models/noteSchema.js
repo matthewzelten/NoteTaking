@@ -13,8 +13,8 @@ const noteSchema = new Schema({
         trim: true,
     },
     contents: {
-        type: mongoose.Schema.Types.Mixed,
-        required: true
+        type: String,
+        required: false
     },
     folder: {
         type: Schema.Types.ObjectId, ref: 'Folder',

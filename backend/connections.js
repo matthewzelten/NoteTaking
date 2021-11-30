@@ -5,8 +5,7 @@ const folderSchema = require("./Database/Models/folderSchema");
 const noteSchema = require("./Database/Models/noteSchema");
 dotenv.config();
 
-const Folder = folderConnection.model("Folder", folderSchema);
-const Note = noteConnection.model("Note", noteSchema);
+
 
 async function getAllFolders() {
     const Folder = folderConnection.model("Folder", folderSchema);
@@ -17,7 +16,7 @@ async function getAllFolders() {
 async function findFolder(name) {
     const Folder = folderConnection.model("Folder", folderSchema);
     const result = await Folder.find({name: name})
-    return result
+    return result;
 }
 
 async function findNote(folderName, noteName) {
@@ -58,18 +57,26 @@ async function addNote(fName, noteToAdd) {
     const Note = folderConnection.model("Note", noteSchema);
 
     console.log(`Adding note to ${fName}`);
-    console.log(`Note: ${noteToAdd}`);
+    console.log(`Note: ${noteToAdd.name} ${noteToAdd.folder}`);
 
-    let thisFolder = await findFolder(fName);
+    let thisFolder = (await findFolder(fName))[0];
 
     console.log("About to try and populate");
-    await thisFolder.populate("notes");
-    console.log(`POPULATED! ${thisFolder.populated("notes")}`);
+    console.log(thisFolder);
+    console.log(typeof thisFolder);
+    console.log(thisFolder.constructor);
+    await thisFolder.populate('notes');
+    //console.log(`POPULATED! ${thisFolder.populated("notes")}`);
 
     let notesList = thisFolder.notes.filter(note => note.name === noteToAdd.name);
 
     if(notesList.length !== 0) {
-        throw `addNote: note with name "${noteToAdd.name}" already exists in folder "${fName}".`;
+        //throw `addNote: note with name "${noteToAdd.name}" already exists in folder "${fName}".`;
+        notesList[0].contents = noteToAdd.contents;
+        notesList[0].save();
+        console.log(`UPDATED ${notesList[0].name}`);
+        let contents = await noteConnection.model("Note", noteSchema).findOne({name: noteToAdd.name}).contents;
+        console.log(`NEW CONTENTS: ${contents}`);
     } else {
         console.log(`Checkpoint 1`);
 
@@ -152,7 +159,8 @@ const noteConnection = makeNewConnection(
         "@cluster0.yohuh.mongodb.net/Notes?retryWrites=true&w=majority"
 );
 
-
+const Folder = folderConnection.model("Folder", folderSchema);
+const Note = noteConnection.model("Note", noteSchema);
 
 module.exports = {
     Folder,

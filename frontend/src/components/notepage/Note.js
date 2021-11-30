@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import ReactQuill from "react-quill";
 import { Link } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
+import axios from "axios";
 
-let noteDelta = null;
+
 
 function Note(props) {
+    let noteContents = "";
+    /*
     const [note, setNote] = useState(
         {
             name: null,
@@ -17,32 +20,51 @@ function Note(props) {
             password: null,
             isLocked: null
         }
-    );
+    );*/
 
-    function saveNote(noteDelta){
+    async function saveNote(){
         console.log(`Saving current note`);
 
-        setNote({
-            name: props.noteData.name,
-            contents: noteDelta,
+        const tempNote = {
+            name: props.noteName,
             folder: props.folderName,
-            color: props.noteData.color,
-            isPrivate: props.noteData.isPrivate,
-            password: props.noteData.password,
-            isLocked: props.noteData.isLocked
-        });
-        props.handleSubmit(note);
-
-        setNote({
-            name: null,
-            contents: null,
-            folder: null,
             color: null,
             isPrivate: null,
             password: null,
+            contents: noteContents,
             isLocked: null
-        });
+        }
 
+        console.log(`Updating note ${tempNote}`);
+        await postNoteUpdate(tempNote);
+
+
+    }
+
+    /**
+     * Post note to the backend
+     * @param note The pre-constructed note object to submit to the backend
+     * @returns {Promise<boolean|AxiosResponse<unknown>>} the response from the backend
+     */
+    async function postNoteUpdate(note) {
+        console.log(`Updating ${note} in ${props.folderName}`);
+        console.log(`Note name: ${props.noteName} contents: ${note.contents}`);
+        console.log(`Note name: ${note.name} contents: ${note.contents}`);
+
+        try {
+            const response = await axios.post('http://localhost:5000/notes', note);
+            console.log(response);
+            return response;
+        }
+        catch (error) {
+            console.log(`Error updating note`);
+            console.log(error);
+            return false;
+        }
+    }
+
+    function handleUpdate(html) {
+        noteContents = html;
     }
 
     return (
@@ -52,7 +74,7 @@ function Note(props) {
             </Link>
             <h1>{props.noteName}</h1>
             <form>
-                <Editor handleUpdate={saveNote} placeholder={"Write something awesome..."} />
+                <Editor handleUpdate={handleUpdate} placeholder={"Write something awesome..."} defaultValue={props.contents} />
                 <div>
                     <button onClick={saveNote}>Save Note</button>
                 </div>
@@ -61,8 +83,12 @@ function Note(props) {
     );
 }
 
-
+/**
+ * The editor component
+ */
 class Editor extends React.Component {
+
+
     constructor(props) {
         super(props);
         this.state = { editorHtml: "", theme: "snow" };
@@ -70,9 +96,12 @@ class Editor extends React.Component {
     }
 
     handleChange(html) {
+        //noteDelta = this.editor.getContents();
+        console.log("CHANGE");
+        console.log(html);
+        this.props.handleUpdate(html);
         this.setState({ editorHtml: html });
-        noteDelta = this.editor.getContents();
-        this.handleUpdate(noteDelta);
+
     }
 
     render() {

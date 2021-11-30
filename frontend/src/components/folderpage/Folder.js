@@ -7,7 +7,7 @@ import { Center, Box } from "@chakra-ui/layout";
 
 function Folder(props) {
     const [currentFolder, setCurrentFolder] = useState({
-        color:"white"
+        color:"FFFFFF"
     });
     const [showNoteModal, setShowNoteModal] = useState(false);
 
@@ -60,7 +60,7 @@ function Folder(props) {
                         width: "200px",
                         height: "50px",
                         background: `#${currentFolder.color}`,
-                        color: "black",
+                        color: "000000",
                         margin: "5px",
                     }}
                     onClick={() => setShowNoteModal(false)}
@@ -70,6 +70,8 @@ function Folder(props) {
                 <CreateNote
                     setNoteName={props.setNoteName}
                     setShowNoteModal={setShowNoteModal}
+                    folderName = {props.folderName}
+                    noteContents={props.noteContents}
                 />
             </Modal>
         </Box>

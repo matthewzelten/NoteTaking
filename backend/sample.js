@@ -60,7 +60,8 @@ app.get("/:folderName", async (req, res) => {
         res.status(404).send(`Folder ${req.params.folderName} not found.`);
     }else {
         result = {folder: result};
-        res.send(result);
+        console.log(`Found folder: ${result.folder}`);
+        res.send(result.folder);
     }
 });
 
@@ -88,30 +89,33 @@ app.post("/", async (req, res) => {
 
 //add note
 app.post("/notes", async (req, res) => {
-  const noteToAdd = req.body;
+    const noteToAdd = req.body;
 
-  console.log(`Posting note to ${noteToAdd.folder}`);
-  console.log(`Random data ${noteToAdd.name} ${noteToAdd.isPrivate} ${noteToAdd.color}`);
+    console.log(`Posting note to ${noteToAdd.folder}`);
+    console.log(`Random data ${noteToAdd.name} ${noteToAdd.isPrivate} ${noteToAdd.color} \"${noteToAdd.contents}\"`);
 
-  let folder = findFolder(noteToAdd.folder);
+    let folder = await findFolder(noteToAdd.folder);
+    console.log(`FOLDER ID: ${folder[0]._id}`);
 
-  try {
-    let newNote = {
-      "name": noteToAdd.name,
-      "contents": [{}],
-      "folder": folder._id,
-      "color": noteToAdd.color,
-      "isPrivate" : noteToAdd.isPrivate,
-      "password": noteToAdd.password,
-      "isLocked": noteToAdd.isLocked
-    };
+    try {
+        let newNote = {
+            "name": noteToAdd.name,
+            "contents": noteToAdd.contents,
+            "folder": folder[0]._id,
+            "color": noteToAdd.color,
+            "isPrivate": noteToAdd.isPrivate,
+            "password": noteToAdd.password,
+            "isLocked": noteToAdd.isLocked
+        };
 
-    let result = await addNote(noteToAdd.folder, newNote);
-    res.status(201).send(result).end();
-  } catch(e) {
-    console.log(e);
-    res.status(404).send(e).end();
-  }
+        let result = await addNote(noteToAdd.folder, newNote);
+        res.status(201).send(result).end();
+    } catch (e) {
+        console.log(e);
+        res.status(404).send(e).end();
+    }
+
+
 });
 
 

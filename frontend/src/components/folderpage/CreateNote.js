@@ -25,6 +25,9 @@ function CreateNote(props) {
         return false;
     }
 
+    /**
+     * Construct note for submission to backend
+     */
     function submitNote() {
         props.setNoteName(name);
         props.setShowNoteModal(false);
@@ -34,12 +37,13 @@ function CreateNote(props) {
             color: color,
             isPrivate: isPrivate,
             password: passwordA,
-            contents: [],
+            contents: props.noteContents,
             isLocked: isPrivate
 
         }
 
-        console.log(`Submitting note ${note.name} to ${note.folder}`);
+        console.log(`Submitting note ${note.name} to ${note.folder} with ${note.color}`);
+        console.log(note);
 
         postNewNote(note).then( result => {
             if (result && result.status === 200)
@@ -48,19 +52,14 @@ function CreateNote(props) {
                 props.setShowNoteModal(false);
         });
 
-        props.setNoteData({
-            name: name,
-            folder: props.folderName,
-            color: color,
-            isPrivate: isPrivate,
-            password: passwordA,
-            isLocked: isPrivate
-        });
-
     }
 
 
-
+    /**
+     * Post note to the backend
+     * @param note The pre-constructed note object to submit to the backend
+     * @returns {Promise<boolean|AxiosResponse<unknown>>} the response from the backend
+     */
     async function postNewNote(note) {
         console.log(`Posting ${note} to ${props.folderName}`);
 
@@ -87,7 +86,8 @@ function CreateNote(props) {
             <FileSettings
                 isPrivate={isPrivate}
                 setIsPrivate={setIsPrivate}
-                color={color} setColor={setColor}
+                color={color}
+                setColor={setColor}
                 setPasswordA={setPasswordA}
                 setPasswordB={setPasswordB}
             />
