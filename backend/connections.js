@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const folderSchema = require("./Database/Models/folderSchema");
+const noteSchema = require("./Database/Models/noteSchema")
 dotenv.config();
 
 async function getAllFolders() {
@@ -103,8 +104,11 @@ const noteConnection = makeNewConnection(
         "@cluster0.yohuh.mongodb.net/Notes?retryWrites=true&w=majority"
 );
 
+const Folder = folderConnection.model("Folder", folderSchema);
+const Note = noteConnection.model("Note", noteSchema);
+
 module.exports = {
-    folderConnection,
+    Folder,
     noteConnection,
     getAllFolders,
     findFolder,
