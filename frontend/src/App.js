@@ -11,6 +11,7 @@ import Note from "./components/notepage/Note";
 import axios from "axios";
 import { Button } from "@chakra-ui/button";
 import { Box } from "@chakra-ui/layout";
+import { Text } from "@chakra-ui/layout";
 
 function App() {
 
@@ -65,6 +66,18 @@ function App() {
         }
     }
 
+    async function deleteFolder(folder) {
+        try {
+            console.log(folder);
+            const response = await axios.delete(`http://localhost:5000/`, {
+                data: folder,
+            });
+            window.location.reload();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     function redirectFolder(name) {
         const replaced = name.split(" ").join("+");
         setFolderName(name);
@@ -72,12 +85,12 @@ function App() {
     }
 
     return (
-        <Box>
+        <Box bg="#216869">
             <Router>
                 <Header />
                 <Switch>
                     <Route exact path="/">
-                        <div
+                        <Box
                             style={{
                                 display: "flex",
                                 flexDirection: "row",
@@ -88,7 +101,7 @@ function App() {
                                 folderData={folders}
                                 setShowModal={setShowModal}
                             />
-                        </div>
+                        </Box>
                     </Route>
                     <Route path={`/folder/`}>
                         <Folder
@@ -98,6 +111,7 @@ function App() {
                             folderName={folderName}
                             noteName={noteName}
                             getFolder={getFolder}
+                            deleteFolder={deleteFolder}
                         />
                     </Route>
                     <Route path="/note">
@@ -112,6 +126,8 @@ function App() {
                         Close Modal
                     </Button>
                     <CreateFolder
+                        folders={folders}
+                        setFolders={setFolders}
                         folderName={folderName}
                         setFolderName={setFolderName}
                         setShowModal={setShowModal}

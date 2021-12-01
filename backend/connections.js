@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const folderSchema = require("./Database/Models/folderSchema");
-const noteSchema = require("./Database/Models/noteSchema")
+const noteSchema = require("./Database/Models/noteSchema");
 dotenv.config();
 
 let folderConn;
@@ -41,14 +41,11 @@ function getNoteConnection() {
     return noteConn;
 }
 
-
-
 async function getAllFolders() {
     const tempF = getFolderConnection().model("Folder", folderSchema);
     let result = await tempF.find({});
     return result;
 }
-
 
 async function findFolder(name) {
     const tempF = getFolderConnection().model("Folder", folderSchema);
@@ -139,8 +136,12 @@ async function addNote(fName, noteToAdd) {
 }
 
 
-async function deleteFolder(folderName) {
-    Folder.findOneAndDelete({"name": folderName});
+async function deleteFolder(folderToDelete) {
+    Folder.deleteOne({ name: folderToDelete }, function (err, result) {
+        if (err) {
+            console.log(err);
+        }
+    });
 }
 
 /*
@@ -159,14 +160,11 @@ async function deleteNote(fName, nName) {
     thisFolder.save();
 }
 
-
 function makeNewConnection(URI) {
-    const db = mongoose.createConnection(URI,
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        }
-    );
+    const db = mongoose.createConnection(URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
     db.on("connected", function () {
         //console.log(`MongoDB :: connected ${this.name}`);
     });
@@ -178,7 +176,7 @@ function makeNewConnection(URI) {
             console.log(`MongoDB :: failed to close connection ${this.name}`)
         );
     });
-    return db
+    return db;
 }
 
 /*const folderConnection = makeNewConnection(
