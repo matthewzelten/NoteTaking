@@ -1,33 +1,43 @@
 const { test } = require("@jest/globals");
 const mongoose = require("mongoose");
 const FolderSchema = require("./Database/Models/folderSchema");
+const NoteSchema = require("./Database/Models/noteSchema");
 const connections = require("./connections");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 
-let mongoServer;
-let conn;
+let mongoServerA;
+let mongoServerB;
+let folderConn;
+let noteConn;
 let folderModel;
 
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  const uri = mongoServer.getUri();
+  mongoServerA = await MongoMemoryServer.create();
+  mongoServerB = await MongoMemoryServer.create();
+  const uriA = mongoServerA.getUri();
+  const uriB = mongoServerB.getUri();
 
   const mongooseOpts = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   };
 
-  conn = mongoose.createConnection(uri, mongooseOpts);
+  folderConn = mongoose.createConnection(uriA, mongooseOpts);
+  noteConn = mongoose.createConnection(uriB, mongooseOpts)
+  folderModel = folderConn.model("Folder", FolderSchema);
+  noteModel = noteConn.model("Note", NoteSchema);
 
-  folderModel = conn.model("Folder", FolderSchema);
-
-  connections.setConnection(conn);
+  connections.setFolderConnection(folderConn);
+  connections.setNoteConnection(noteConn);
 });
 
 afterAll(async () => {
-  await conn.dropDatabase();
-  await conn.close();
-  await mongoServer.stop();
+  await folderConn.dropDatabase();
+  await folderConn.close();
+  await mongoServerA.stop();
+  await noteConn.dropDatabase();
+  await noteConn.close();
+  await mongoServerB.stop();
 });
 
 beforeEach(async () => {
@@ -68,6 +78,7 @@ beforeEach(async () => {
 
 afterEach(async () => {
   await folderModel.deleteMany();
+  await noteModel.deleteMany();
 });
 
 test("test getAllFolders", async () => {
@@ -98,7 +109,7 @@ test("test findFolder", async () => {
 });
 
 test('test findNote', () => {
-    //looks like bad func atm
+    
 });
 
 test('test addFolder', async () => {

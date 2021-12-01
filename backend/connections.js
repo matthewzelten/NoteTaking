@@ -4,15 +4,20 @@ const folderSchema = require("./Database/Models/folderSchema");
 const noteSchema = require("./Database/Models/noteSchema")
 dotenv.config();
 
-let conn;
+let folderConn;
+let noteConn;
 
-function setConnection(newConn) {
-    return (conn = newConn);
+function setFolderConnection(newConn) {
+    return (folderConn = newConn);
+}
+
+function setNoteConnection(newConn) {
+    return (noteConn = newConn);
 }
 
 function getFolderConnection() {
-    if (!conn) {
-        conn = makeNewConnection(
+    if (!folderConn) {
+        folderConn = makeNewConnection(
             "mongodb+srv://" +
                 process.env.MONGO_USER +
                 ":" +
@@ -20,7 +25,20 @@ function getFolderConnection() {
                 "@cluster0.yohuh.mongodb.net/Folders?retryWrites=true&w=majority"
         );
     }
-    return conn;
+    return folderConn;
+}
+
+function getNoteConnection() {
+    if(!noteConn) {
+        noteConn = makeNewConnection(
+            "mongodb+srv://" +
+                process.env.MONGO_USER +
+                ":" +
+                process.env.MONGO_PWD +
+                "@cluster0.yohuh.mongodb.net/Notes?retryWrites=true&w=majority"
+        );
+    }
+    return noteConn;
 }
 
 async function getAllFolders() {
@@ -45,8 +63,8 @@ async function findNote(folderName, noteName) {
     }
 }
 async function addFolder(folder) {
-    //folder.save();
-    folderModel.insertOne(folder);
+    folder.save();
+    //folderModel.insertOne(folder); (pre test changes)
 }
 async function addNote(fName, noteToAdd) {
     folders["folderList"]
@@ -94,13 +112,13 @@ function makeNewConnection(URI) {
     return db
 }
 
-const folderConnection = makeNewConnection(
+/*const folderConnection = makeNewConnection(
     "mongodb+srv://" +
         process.env.MONGO_USER +
         ":" +
         process.env.MONGO_PWD +
         "@cluster0.yohuh.mongodb.net/Folders?retryWrites=true&w=majority"
-);
+);*/
 
 const noteConnection = makeNewConnection(
     "mongodb+srv://" +
@@ -123,5 +141,6 @@ module.exports = {
     addNote,
     deleteFolder,
     deleteNote,
-    setConnection
+    setFolderConnection,
+    setNoteConnection
 }
