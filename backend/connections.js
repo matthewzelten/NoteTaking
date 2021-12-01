@@ -4,50 +4,51 @@ const folderSchema = require("./Database/Models/folderSchema");
 const noteSchema = require("./Database/Models/noteSchema");
 dotenv.config();
 
-let folderConn;
-let noteConn;
+let conn;
 
-function setFolderConnection(newConn) {
-    return (folderConn = newConn);
+function setConnection(newConn) {
+    return (conn = newConn);
 }
 
-function setNoteConnection(newConn) {
-    return (noteConn = newConn);
-}
-
-function getFolderConnection() {
-    if (!folderConn) {
-        folderConn = makeNewConnection(
-            "mongodb+srv://" +
-                process.env.MONGO_USER +
-                ":" +
-                process.env.MONGO_PWD +
-                "@cluster0.yohuh.mongodb.net/Folders?retryWrites=true&w=majority"
-        );
+function getConnection() {
+    if (!conn) {
+        let uri = "mongodb+srv://" +
+            process.env.MONGO_USER +
+            ":" +
+            process.env.MONGO_PWD +
+            "@cluster0.yohuh.mongodb.net/Folders?retryWrites=true&w=majority";
+        let params = {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        };
+        conn = mongoose.createConnection(uri, params);
     }
-    return folderConn;
+    return conn;
 }
 
-function getNoteConnection() {
-    if(!noteConn) {
-        noteConn = makeNewConnection(
-            "mongodb+srv://" +
-                process.env.MONGO_USER +
-                ":" +
-                process.env.MONGO_PWD +
-                "@cluster0.yohuh.mongodb.net/Notes?retryWrites=true&w=majority"
-        );
+/*function getNoteConnection() {
+    if(!conn) {
+        let uri = "mongodb+srv://" +
+            process.env.MONGO_USER +
+            ":" +
+            process.env.MONGO_PWD +
+            "@cluster0.yohuh.mongodb.net/Notes?retryWrites=true&w=majority";
+        let params = {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        };
+        noteConn = mongoose.createConnection(uri, params);
     }
     return noteConn;
-}
+}*/
 
 /**
  * Returns all folders
  * @returns {Promise<*>} Array of all folders
  */
 async function getAllFolders() {
-    const tempF = getFolderConnection().model("Folder", folderSchema);
-    return await tempF.find({});
+    const tempF = getConnection().model("Folder", folderSchema);
+    return tempF.find({});
 }
 
 /**
@@ -56,9 +57,8 @@ async function getAllFolders() {
  * @returns {Promise<*>} Array of found folders
  */
 async function findFolder(name) {
-    const tempF = getFolderConnection().model("Folder", folderSchema);
-    const result = await tempF.find({name: name});
-    return result;
+    const tempF = getConnection().model("Folder", folderSchema);
+    return tempF.find({ name: name });
 }
 
 
@@ -70,7 +70,7 @@ async function findFolder(name) {
  * @returns {Promise<undefined|T>} the found note
  */
 async function findNote(folderName, noteName) {
-    const Note = getFolderConnection().model("Note", noteSchema);
+    const Note = getConnection().model("Note", noteSchema);
 
     let noteFolder = (await findFolder(folderName))[0];
 
@@ -85,7 +85,6 @@ async function findNote(folderName, noteName) {
         return result[0];
     }
 }
-
 /**
  * Adds a new folder to the database. Folder must be structured correctly.
  * @param folder
@@ -107,12 +106,26 @@ async function addFolder(folder) {
     }
 }
 
-/*
-async function addNote(fName, noteToAdd) {
+//add note
+async function addNote(note){
+    try{
+      //const folder = findFolder(note["folder"]);
+      const noteToAdd = new Note(note);
+      if(await noteToAdd.save()){
+      //if(await folder["notes"].insertOne(noteToAdd)){
+        return true;
+      }
+    }catch(error){
+      console.log(error);
+      return false;
+    }
+  }
+/*async function addNote(fName, noteToAdd) {
     folders["folderList"]
         .find((fold) => fold.name === fName)
         .notes.push(noteToAdd);
 }*/
+
 
 /**
  * Adds a new note to the database
@@ -172,11 +185,19 @@ async function addNote(fName, noteToAdd) {
  * @returns {Promise<void>}
  */
 async function deleteFolder(folderToDelete) {
-    Folder.deleteOne({ name: folderToDelete }, function (err, result) {
-        if (err) {
-            console.log(err);
+    const tempF = getConnection().model("Folder", folderSchema);
+    tempF.deleteOne({ name: folderToDelete }, function (err, result) {
+        //console.log(folderToDelete);
+        //console.log(result.deletedCount);
+        if (result.deletedCount === 0 || result.deletedCount === undefined) {
+            console.log(folderToDelete, ' + ', result.deletedCount, ' returning false');
+            //console.log(err);
+            //throw err;
+            return false;
         }
     });
+    console.log(folderToDelete, ' returning true');
+    return true;
 }
 
 /*
@@ -203,54 +224,18 @@ async function deleteNote(fName, nName) {
     return this.folder.notes.length < originalLength;
 }
 
-function makeNewConnection(URI) {
-    const db = mongoose.createConnection(URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    });
-    db.on("connected", function () {
-        //console.log(`MongoDB :: connected ${this.name}`);
-    });
-    db.on("error", function (error) {
-        console.log(
-            `MongoDB :: connection ${this.name} ${JSON.stringify(error)}`
-        );
-        db.close().catch(() =>
-            console.log(`MongoDB :: failed to close connection ${this.name}`)
-        );
-    });
-    return db;
-}
-
-/*const folderConnection = makeNewConnection(
-    "mongodb+srv://" +
-        process.env.MONGO_USER +
-        ":" +
-        process.env.MONGO_PWD +
-        "@cluster0.yohuh.mongodb.net/Folders?retryWrites=true&w=majority"
-);*/
-
-const noteConnection = makeNewConnection(
-    "mongodb+srv://" +
-        process.env.MONGO_USER +
-        ":" +
-        process.env.MONGO_PWD +
-        "@cluster0.yohuh.mongodb.net/Notes?retryWrites=true&w=majority"
-);
-
-const Folder = getFolderConnection().model("Folder", folderSchema);
-const Note = noteConnection.model("Note", noteSchema);
+const Folder = getConnection().model("Folder", folderSchema);
+const Note = getConnection().model("Note", noteSchema);
 
 module.exports = {
     Folder,
-    noteConnection,
+    Note,
     getAllFolders,
     findFolder,
     findNote,
-    addFolder,
+    //addFolder,
     addNote,
     deleteFolder,
     deleteNote,
-    setFolderConnection,
-    setNoteConnection
-}
+    setConnection,
+};
