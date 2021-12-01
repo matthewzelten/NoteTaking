@@ -106,26 +106,6 @@ async function addFolder(folder) {
     }
 }
 
-//add note
-async function addNote(note){
-    try{
-      //const folder = findFolder(note["folder"]);
-      const noteToAdd = new Note(note);
-      if(await noteToAdd.save()){
-      //if(await folder["notes"].insertOne(noteToAdd)){
-        return true;
-      }
-    }catch(error){
-      console.log(error);
-      return false;
-    }
-  }
-/*async function addNote(fName, noteToAdd) {
-    folders["folderList"]
-        .find((fold) => fold.name === fName)
-        .notes.push(noteToAdd);
-}*/
-
 
 /**
  * Adds a new note to the database
@@ -134,7 +114,7 @@ async function addNote(note){
  * @returns {Promise<boolean>} whether the note was added
  */
 async function addNote(fName, noteToAdd) {
-    const Note = getFolderConnection().model("Note", noteSchema);
+    const Note = getConnection().model("Note", noteSchema);
 
     console.log(`Adding note to ${fName}`);
     console.log(`Note: ${noteToAdd.name} ${noteToAdd.folder}`);
@@ -156,7 +136,7 @@ async function addNote(fName, noteToAdd) {
         notesList[0].contents = noteToAdd.contents;
         notesList[0].save();
         //console.log(`UPDATED ${notesList[0].name}`);
-        let contents = await noteConnection.model("Note", noteSchema).findOne({name: noteToAdd.name}).contents;
+        let contents = await getConnection().model("Note", noteSchema).findOne({name: noteToAdd.name}).contents;
         //console.log(`NEW CONTENTS: ${contents}`);
 
         return contents;
@@ -233,7 +213,7 @@ module.exports = {
     getAllFolders,
     findFolder,
     findNote,
-    //addFolder,
+    addFolder,
     addNote,
     deleteFolder,
     deleteNote,
