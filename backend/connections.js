@@ -84,14 +84,15 @@ async function addFolder(folder) {
     }
 }
 
+/*
 async function addNote(fName, noteToAdd) {
     folders["folderList"]
         .find((fold) => fold.name === fName)
         .notes.push(noteToAdd);
-}
+}*/
 
 async function addNote(fName, noteToAdd) {
-    const Note = folderConnection.model("Note", noteSchema);
+    const Note = getFolderConnection().model("Note", noteSchema);
 
     console.log(`Adding note to ${fName}`);
     console.log(`Note: ${noteToAdd.name} ${noteToAdd.folder}`);
