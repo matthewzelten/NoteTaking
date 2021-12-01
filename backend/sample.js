@@ -25,7 +25,26 @@ app.get("/", async (req, res) => {
     res.send(allFolders);
 });
 
-
+// folder page: get all notes
+app.get("/:folderName", async (req, res) => {
+    const folderName = req.params["folderName"];
+    const passw = req.query["pass"];
+    const result = await findFolder(folderName);
+    if (result === undefined || result.length == 0) {
+        res.status(404).send("Folder not found.");
+    } else {
+        if (!result["isPrivate"]) {
+            res.status(201).send(result);
+        } else {
+            if (passw["password"] === result["password"]) {
+                res.status(201).send(result);
+            } else {
+                //res.status(404).send(req.body);
+                res.status(404).send("Wrong password. Access denied.");
+            }
+        }
+    }
+});
 //open note
 app.post("/:folderName/:note", (req, res) => {
     const fName = req.params["folderName"];
@@ -52,6 +71,23 @@ app.post("/:folderName/:note", (req, res) => {
     }
 });
 
+//search note
+app.get("/:folderName", (req, res) => {});
+//add folder
+app.post("/", (req, res) => {
+    const { name, color, isPrivate, password } = req.body;
+    isDup = findFolder(name);
+    if (true) {
+        const folderToAdd = new Folder({ name, color, isPrivate, password });
+        addFolder(folderToAdd);
+        //folderToAdd.save();
+        res.status(201).send(folderToAdd).end();
+    } else {
+        res.status(404).send("Duplicate file name.").end();
+    }
+});
+
+/*
 //getFolder
 app.get("/:folderName", async (req, res) => {
     console.log(`getFolder: ${req.params.folderName}`)
@@ -64,6 +100,7 @@ app.get("/:folderName", async (req, res) => {
         res.send(result.folder);
     }
 });
+ */
 
 //add folder
 app.post("/", async (req, res) => {

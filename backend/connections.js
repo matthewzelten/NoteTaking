@@ -1,22 +1,59 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const folderSchema = require("./Database/Models/folderSchema");
-//const Folder = require("./Database/Models/folderSchema");
-const noteSchema = require("./Database/Models/noteSchema");
+const noteSchema = require("./Database/Models/noteSchema")
 dotenv.config();
+
+let folderConn;
+let noteConn;
+
+function setFolderConnection(newConn) {
+    return (folderConn = newConn);
+}
+
+function setNoteConnection(newConn) {
+    return (noteConn = newConn);
+}
+
+function getFolderConnection() {
+    if (!folderConn) {
+        folderConn = makeNewConnection(
+            "mongodb+srv://" +
+                process.env.MONGO_USER +
+                ":" +
+                process.env.MONGO_PWD +
+                "@cluster0.yohuh.mongodb.net/Folders?retryWrites=true&w=majority"
+        );
+    }
+    return folderConn;
+}
+
+function getNoteConnection() {
+    if(!noteConn) {
+        noteConn = makeNewConnection(
+            "mongodb+srv://" +
+                process.env.MONGO_USER +
+                ":" +
+                process.env.MONGO_PWD +
+                "@cluster0.yohuh.mongodb.net/Notes?retryWrites=true&w=majority"
+        );
+    }
+    return noteConn;
+}
 
 
 
 async function getAllFolders() {
-    const Folder = folderConnection.model("Folder", folderSchema);
-    return await Folder.find({});
+    const tempF = getFolderConnection().model("Folder", folderSchema);
+    let result = await tempF.find({});
+    return result;
 }
 
 
 async function findFolder(name) {
-    const Folder = folderConnection.model("Folder", folderSchema);
-    const result = await Folder.find({name: name})
-    return result;
+    const tempF = getFolderConnection().model("Folder", folderSchema);
+    const result = await tempF.find({name: name})
+    return result
 }
 
 async function findNote(folderName, noteName) {
@@ -32,7 +69,7 @@ async function findNote(folderName, noteName) {
 }
 
 async function addFolder(folder) {
-    const Folder = folderConnection.model("Folder", folderSchema);
+    const Folder = getFolderConnection().model("Folder", folderSchema);
     let existingFolder = await Folder.findOne({"name" : folder.name});
     if(existingFolder) {
         throw `addFolder: folder with name "${folder.name}" already exists.`;
@@ -130,7 +167,7 @@ function makeNewConnection(URI) {
         }
     );
     db.on("connected", function () {
-        console.log(`MongoDB :: connected ${this.name}`);
+        //console.log(`MongoDB :: connected ${this.name}`);
     });
     db.on("error", function (error) {
         console.log(
@@ -143,13 +180,13 @@ function makeNewConnection(URI) {
     return db
 }
 
-const folderConnection = makeNewConnection(
+/*const folderConnection = makeNewConnection(
     "mongodb+srv://" +
         process.env.MONGO_USER +
         ":" +
         process.env.MONGO_PWD +
         "@cluster0.yohuh.mongodb.net/Folders?retryWrites=true&w=majority"
-);
+);*/
 
 const noteConnection = makeNewConnection(
     "mongodb+srv://" +
@@ -159,7 +196,7 @@ const noteConnection = makeNewConnection(
         "@cluster0.yohuh.mongodb.net/Notes?retryWrites=true&w=majority"
 );
 
-const Folder = folderConnection.model("Folder", folderSchema);
+const Folder = getFolderConnection().model("Folder", folderSchema);
 const Note = noteConnection.model("Note", noteSchema);
 
 module.exports = {
@@ -171,5 +208,7 @@ module.exports = {
     addFolder,
     addNote,
     deleteFolder,
-    deleteNote
+    deleteNote,
+    setFolderConnection,
+    setNoteConnection
 }

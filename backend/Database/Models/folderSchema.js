@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const {folderConnection} = require("../../connections")
 const collectionName = "Folders";
 const Schema = mongoose.Schema;
 

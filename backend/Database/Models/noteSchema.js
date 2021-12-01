@@ -24,9 +24,9 @@ const noteSchema = new Schema({
         type: String,
         required: false,
         trim: true,
-        validate(value) {
-            if (value.length !==6) throw new Error("Invalid hex code.");
-        },
+        //validate(value) {
+        //    if (value.length !==6) throw new Error("Invalid hex code.");
+        //},
     },
     isPrivate: {
         type: Boolean,
