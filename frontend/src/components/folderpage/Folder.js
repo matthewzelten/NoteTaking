@@ -24,17 +24,15 @@ function Folder(props) {
         props.getFolder(replaced).then((data) => setCurrentFolder(data));
     }
 
+    let folderColor = currentFolder === undefined ? "white" : currentFolder.color
+
     return (
         <Box>
             <Link to="/">
                 <Button
                     style={{
                         height: "50px",
-                        background: `#${
-                            currentFolder === undefined
-                                ? "white"
-                                : currentFolder.color
-                        }`,
+                        background: `#${folderColor}`,
                         color: "black",
                         margin: "5px",
                     }}
@@ -45,7 +43,7 @@ function Folder(props) {
             <Button
                 style={{
                     height: "50px",
-                    background: `#${currentFolder.color}`,
+                    background: `#${folderColor}`,
                     color: "black",
                     margin: "5px",
                 }}
@@ -62,7 +60,7 @@ function Folder(props) {
             <Button
                 style={{
                     height: "50px",
-                    background: `#${currentFolder.color}`,
+                    background: `#${folderColor}`,
                     color: "black",
                     margin: "5px",
                 }}
@@ -75,7 +73,7 @@ function Folder(props) {
                 <Button
                     style={{
                         height: "50px",
-                        background: `#${currentFolder.color}`,
+                        background: `#${folderColor}`,
                         color: "black",
                         margin: "5px",
                     }}
@@ -101,7 +99,7 @@ function Folder(props) {
                     <Button
                         style={{
                             height: "50px",
-                            background: `#${currentFolder.color}`,
+                            background: `#${folderColor}`,
                             color: "black",
                             margin: "5px",
                         }}
@@ -114,7 +112,7 @@ function Folder(props) {
                 <Button
                     style={{
                         height: "50px",
-                        background: `#${currentFolder.color}`,
+                        background: `#${folderColor}`,
                         color: "black",
                         margin: "5px",
                     }}
