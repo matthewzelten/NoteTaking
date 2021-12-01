@@ -15,15 +15,10 @@ async function findFolder(name) {
     const result = await Folder.find({name: name})
     return result
 }
+
 async function findNote(folderName, noteName) {
-    let result = folders["folderList"].find(
-        (fold) => fold["name"] === folderName
-    ).notes;
-    if (result === null) {
-        return undefined;
-    } else {
-        return result.find((note) => note["name"] === noteName);
-    }
+    const result = await Note.find({name: noteName});
+    return result;
 }
 async function addFolder(folder) {
     folderModel.insertOne(folder);
