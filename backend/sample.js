@@ -4,7 +4,7 @@ const {
     getAllFolders,
     findFolder,
     findNote,
-    addFolder,
+    //addFolder,
     addNote,
     deleteFolder,
     deleteNote,
@@ -178,8 +178,8 @@ app.post("/", (req, res) => {
     isDup = findFolder(name);
     if (true) {
         const folderToAdd = new Folder({ name, color, isPrivate, password });
-        addFolder(folderToAdd);
-        //folderToAdd.save();
+        //addFolder(folderToAdd);
+        folderToAdd.save();
         res.status(201).send(folderToAdd).end();
     } else {
         res.status(404).send("Duplicate file name.").end();

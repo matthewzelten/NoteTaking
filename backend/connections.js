@@ -17,26 +17,32 @@ function setNoteConnection(newConn) {
 
 function getFolderConnection() {
     if (!folderConn) {
-        folderConn = makeNewConnection(
-            "mongodb+srv://" +
-                process.env.MONGO_USER +
-                ":" +
-                process.env.MONGO_PWD +
-                "@cluster0.yohuh.mongodb.net/Folders?retryWrites=true&w=majority"
-        );
+        let uri = "mongodb+srv://" +
+            process.env.MONGO_USER +
+            ":" +
+            process.env.MONGO_PWD +
+            "@cluster0.yohuh.mongodb.net/Folders?retryWrites=true&w=majority";
+        let params = {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        };
+        folderConn = mongoose.createConnection(uri, params);
     }
     return folderConn;
 }
 
 function getNoteConnection() {
-    if (!noteConn) {
-        noteConn = makeNewConnection(
-            "mongodb+srv://" +
-                process.env.MONGO_USER +
-                ":" +
-                process.env.MONGO_PWD +
-                "@cluster0.yohuh.mongodb.net/Notes?retryWrites=true&w=majority"
-        );
+    if(!noteConn) {
+        let uri = "mongodb+srv://" +
+            process.env.MONGO_USER +
+            ":" +
+            process.env.MONGO_PWD +
+            "@cluster0.yohuh.mongodb.net/Notes?retryWrites=true&w=majority";
+        let params = {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        };
+        noteConn = mongoose.createConnection(uri, params);
     }
     return noteConn;
 }
@@ -62,22 +68,18 @@ async function findNote(folderName, noteName) {
         return result.find((note) => note["name"] === noteName);
     }
 }
-async function addFolder(folder) {
-    folder.save();
-    //folderModel.insertOne(folder); (pre test changes)
-}
-//add note
-async function addNote(note) {
-    try {
-        //const folder = findFolder(note["folder"]);
-        const noteToAdd = new Note(note);
-        if (await noteToAdd.save()) {
-            //if(await folder["notes"].insertOne(noteToAdd)){
-            return true;
-        }
-    } catch (error) {
-        console.log(error);
-        return false;
+
+async function addNote(note){
+    try{
+      //const folder = findFolder(note["folder"]);
+      const noteToAdd = new Note(note);
+      if(await noteToAdd.save()){
+      //if(await folder["notes"].insertOne(noteToAdd)){
+        return true;
+      }
+    }catch(error){
+      console.log(error);
+      return false;
     }
 }
 /*async function addNote(fName, noteToAdd) {
@@ -85,12 +87,16 @@ async function addNote(note) {
         .find((fold) => fold.name === fName)
         .notes.push(noteToAdd);
 }*/
+
 async function deleteFolder(folderToDelete) {
     Folder.deleteOne({ name: folderToDelete }, function (err, result) {
         if (err) {
             console.log(err);
+            throw err;
+            //return false;
         }
     });
+    return true;
 }
 async function deleteNote(fName, nName) {
     let noteList = folders["folderList"].find(
@@ -104,51 +110,16 @@ async function deleteNote(fName, nName) {
     }
 }
 
-function makeNewConnection(URI) {
-    const db = mongoose.createConnection(URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    });
-    db.on("connected", function () {
-        //console.log(`MongoDB :: connected ${this.name}`);
-    });
-    db.on("error", function (error) {
-        console.log(
-            `MongoDB :: connection ${this.name} ${JSON.stringify(error)}`
-        );
-        db.close().catch(() =>
-            console.log(`MongoDB :: failed to close connection ${this.name}`)
-        );
-    });
-    return db;
-}
-
-/*const folderConnection = makeNewConnection(
-    "mongodb+srv://" +
-        process.env.MONGO_USER +
-        ":" +
-        process.env.MONGO_PWD +
-        "@cluster0.yohuh.mongodb.net/Folders?retryWrites=true&w=majority"
-);*/
-
-const noteConnection = makeNewConnection(
-    "mongodb+srv://" +
-        process.env.MONGO_USER +
-        ":" +
-        process.env.MONGO_PWD +
-        "@cluster0.yohuh.mongodb.net/Notes?retryWrites=true&w=majority"
-);
-
 const Folder = getFolderConnection().model("Folder", folderSchema);
-const Note = noteConnection.model("Note", noteSchema);
+const Note = getNoteConnection().model("Note", noteSchema);
 
 module.exports = {
     Folder,
-    noteConnection,
+    Note,
     getAllFolders,
     findFolder,
     findNote,
-    addFolder,
+    //addFolder,
     addNote,
     deleteFolder,
     deleteNote,
