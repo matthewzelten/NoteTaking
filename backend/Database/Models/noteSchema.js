@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const {noteConnection} = require("../../connections")
+const { noteConnection } = require("../../connections");
 const collectionName = "Notes";
 
 //https://stackoverflow.com/questions/18001478/referencing-another-schema-in-mongoose
@@ -12,11 +12,11 @@ const noteSchema = new mongoose.Schema({
     },
     contents: {
         type: mongoose.Schema.Types.Mixed,
-        required: true
+        required: true,
     },
     folder: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Folder'
+        ref: "Folder",
     },
     color: {
         type: String,
@@ -28,17 +28,17 @@ const noteSchema = new mongoose.Schema({
     },
     isPrivate: {
         type: Boolean,
-        required: true
+        required: true,
     },
     password: {
         type: String,
         required: false,
-        trim: true
+        trim: true,
     },
     isLocked: {
         type: Boolean,
-        required: true
-    }
+        required: true,
+    },
 });
 
 module.exports = noteSchema;

@@ -29,7 +29,7 @@ function getFolderConnection() {
 }
 
 function getNoteConnection() {
-    if(!noteConn) {
+    if (!noteConn) {
         noteConn = makeNewConnection(
             "mongodb+srv://" +
                 process.env.MONGO_USER +
@@ -49,8 +49,8 @@ async function getAllFolders() {
 
 async function findFolder(name) {
     const tempF = getFolderConnection().model("Folder", folderSchema);
-    const result = await tempF.find({name: name})
-    return result
+    const result = await tempF.find({ name: name });
+    return result;
 }
 async function findNote(folderName, noteName) {
     let result = folders["folderList"].find(
@@ -67,19 +67,19 @@ async function addFolder(folder) {
     //folderModel.insertOne(folder); (pre test changes)
 }
 //add note
-async function addNote(note){
-    try{
-      //const folder = findFolder(note["folder"]);
-      const noteToAdd = new Note(note);
-      if(await noteToAdd.save()){
-      //if(await folder["notes"].insertOne(noteToAdd)){
-        return true;
-      }
-    }catch(error){
-      console.log(error);
-      return false;
+async function addNote(note) {
+    try {
+        //const folder = findFolder(note["folder"]);
+        const noteToAdd = new Note(note);
+        if (await noteToAdd.save()) {
+            //if(await folder["notes"].insertOne(noteToAdd)){
+            return true;
+        }
+    } catch (error) {
+        console.log(error);
+        return false;
     }
-  }
+}
 /*async function addNote(fName, noteToAdd) {
     folders["folderList"]
         .find((fold) => fold.name === fName)
@@ -153,5 +153,5 @@ module.exports = {
     deleteFolder,
     deleteNote,
     setFolderConnection,
-    setNoteConnection
-}
+    setNoteConnection,
+};
