@@ -1,33 +1,43 @@
 const { test } = require("@jest/globals");
 const mongoose = require("mongoose");
 const FolderSchema = require("./Database/Models/folderSchema");
+const NoteSchema = require("./Database/Models/noteSchema");
 const connections = require("./connections");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 
-let mongoServer;
-let conn;
+let mongoServerA;
+let mongoServerB;
+let folderConn;
+let noteConn;
 let folderModel;
 
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  const uri = mongoServer.getUri();
+  mongoServerA = await MongoMemoryServer.create();
+  mongoServerB = await MongoMemoryServer.create();
+  const uriA = mongoServerA.getUri();
+  const uriB = mongoServerB.getUri();
 
   const mongooseOpts = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   };
 
-  conn = await mongoose.createConnection(uri, mongooseOpts);
+  folderConn = mongoose.createConnection(uriA, mongooseOpts);
+  noteConn = mongoose.createConnection(uriB, mongooseOpts)
+  folderModel = folderConn.model("Folder", FolderSchema);
+  noteModel = noteConn.model("Note", NoteSchema);
 
-  folderModel = conn.model("Folder", FolderSchema);
-
-  connections.setConnection(conn);
+  connections.setFolderConnection(folderConn);
+  connections.setNoteConnection(noteConn);
 });
 
 afterAll(async () => {
-  await conn.dropDatabase();
-  await conn.close();
-  await mongoServer.stop();
+  await folderConn.dropDatabase();
+  await folderConn.close();
+  await mongoServerA.stop();
+  await noteConn.dropDatabase();
+  await noteConn.close();
+  await mongoServerB.stop();
 });
 
 beforeEach(async () => {
@@ -68,40 +78,38 @@ beforeEach(async () => {
 
 afterEach(async () => {
   await folderModel.deleteMany();
+  await noteModel.deleteMany();
 });
 
 test("test getAllFolders", async () => {
     let folders = await connections.getAllFolders();
     expect(folders.length).toEqual(4);
-    expect(folder[0].name).toEqual('public_folder_1');
-    expect(folder[1].name).toEqual('private_folder_1');
-    expect(folder[2].name).toEqual('public_folder_2');
-    expect(folder[3].name).toEqual('private_folder_2');
+    expect(folders[0].name).toEqual('public_folder_1');
+    expect(folders[1].name).toEqual('private_folder_1');
+    expect(folders[2].name).toEqual('public_folder_2');
+    expect(folders[3].name).toEqual('private_folder_2');
 });
 
 test("test findFolder", async () => {
     let allFolders = await connections.getAllFolders();
     
-    //find with no parameters
-    let folders = await connections.findFolder({});
-    expect(folders.length).toEqual(4);
-    
     //find with public folder name
-    let pub1 = folders.findFolder('public_folder_1');
-    expect(pub1.name).toEqual('public_folder_1');
-    expect(pub1.isPrivate).toBeFalsy();
-    expect(pub1.color).toEqual('C83E4D');
+    let pub1 = await connections.findFolder('public_folder_1');
+    expect(pub1).toBeDefined();
+    expect(pub1[0].name).toEqual('public_folder_1');
+    expect(pub1[0].isPrivate).toBeFalsy();
+    expect(pub1[0].color).toEqual('C83E4D');
 
     //find with private folder name
-    let priv1 = folders.findFolder('private_folder_1');
-    expect(priv1.name).toEqual('private_folder_1');
-    expect(priv1.isPrivate).toBeTruthy();
-    expect(priv1.color).toEqual('C83E4D');
-    expect(priv1.password).toEqual('password');
+    let priv1 = await connections.findFolder('private_folder_1');
+    expect(priv1[0].name).toEqual('private_folder_1');
+    expect(priv1[0].isPrivate).toBeTruthy();
+    expect(priv1[0].color).toEqual('C83E4D');
+    expect(priv1[0].password).toEqual('password');
 });
 
 test('test findNote', () => {
-    //looks like bad func atm
+    
 });
 
 test('test addFolder', async () => {

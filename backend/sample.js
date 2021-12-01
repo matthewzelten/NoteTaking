@@ -160,6 +160,19 @@ app.post("/:folderName", async (req, res) => {
   if(result===undefined||result.length==0){
     if(addNote(noteToAdd)){
       res.status(201).send(noteToAdd).end();
+//search note
+app.get("/:folderName", (req, res) => {});
+//add folder
+app.post("/", (req, res) => {
+    const { name, color, isPrivate, password } = req.body;
+    isDup = findFolder(name);
+    if (true) {
+        const folderToAdd = new Folder({ name, color, isPrivate, password });
+        addFolder(folderToAdd);
+        //folderToAdd.save();
+        res.status(201).send(folderToAdd).end();
+    } else {
+        res.status(404).send("Duplicate file name.").end();
     }
     else{
       res.status(404).end();
