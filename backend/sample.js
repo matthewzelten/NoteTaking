@@ -63,19 +63,22 @@ app.post("/", async (req, res)=>{
 
     if((folder===undefined||folder.length==0)&&(keyword===undefined||keyword.length==0)){
         // if no folder
+        console.log(`Add folder post`);
         await addFolderPost(req, res);
     }else if(keyword===undefined||keyword.length==0){
         //open folder
+        console.log(`Open folder post`);
         await openFolderPost(req, res, folder);
     }else{
         //search folder
+        console.log(`Search folder post`);
         await searchFolderPost(req, res, keyword);
     }
 });
 
 async function addFolderPost(req, res) {
     const { name, color, isPrivate, password, contents} = req.body;
-    let isDup = await findFolder(req.body["name"]);
+    let isDup = await findFolder(name);
     if (isDup === undefined || isDup.length===0) {
 
         try {
@@ -84,13 +87,13 @@ async function addFolderPost(req, res) {
             if (result) {
                 res.status(201).send(folderToAdd).end();
             } else {
-                res.status(201).send(result).end();
+                res.status(404).send(result).end();
             }
         }catch(error) {
-            res.status(201).send(error).end();
+            res.status(404).send(error).end();
         }
     } else {
-        res.status(404).send("Duplicate file name. "+isDup).end();
+        res.status(409).send("Duplicate file name. "+isDup).end();
     }
 }
 

@@ -85,13 +85,14 @@ async function findNote(folderName, noteName) {
         return result[0];
     }
 }
+
 /**
  * Adds a new folder to the database. Folder must be structured correctly.
  * @param folder
- * @returns {Promise<boolean>} whether the folder was added
+ * @returns {Promise<boolean|(Document<any, any, unknown> & Require_id<unknown>)>}
  */
 async function addFolder(folder) {
-    const Folder = getFolderConnection().model("Folder", folderSchema);
+    const Folder = getConnection().model("Folder", folderSchema);
     let existingFolder = await Folder.findOne({"name" : folder.name});
     if(existingFolder) {
         throw `addFolder: folder with name "${folder.name}" already exists.`;
