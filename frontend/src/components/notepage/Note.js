@@ -74,12 +74,11 @@ function Note(props) {
                 <button>Return</button>
             </Link>
             <h1>{props.noteName}</h1>
-            <form>
-                <Editor handleUpdate={handleUpdate} placeholder={"Write something awesome..."} defaultValue={props.contents} />
-                <div>
-                    <button onClick={saveNote}>Save Note</button>
-                </div>
-            </form>
+
+            <Editor handleUpdate={handleUpdate} placeholder={"Write something awesome..."} defaultValue={props.contents} />
+            <div>
+                <button onClick={saveNote}>Save Note</button>
+            </div>
         </div>
     );
 }
