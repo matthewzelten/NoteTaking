@@ -110,7 +110,7 @@ test("test findFolder", async () => {
 
 test("test findNote", () => {});
 
-test("test addFolder", async () => {
+/*test('test addFolder', async () => {
     let allFolders = await connections.getAllFolders();
     expect(allFolders.length).toEqual(4);
 
@@ -139,8 +139,8 @@ test("test addFolder", async () => {
     finder = await connections.findFolder("testFolder2");
     expect(finder.color).toEqual("FF0000");
     expect(finder.isPrivate).toBeTruthy();
-    expect(finder.password).toEqual("csc307");
-});
+    expect(finder.password).toEqual('csc307');
+});*/
 
 test("test addNote", () => {
     //this looks like itll be refactored
@@ -151,19 +151,25 @@ test("test deleteFolder", async () => {
     expect(allFolders.length).toEqual(4);
 
     //basic delete
-    await connections.deleteFolder("public_folder_1");
+    let res = await connections.deleteFolder('public_folder_1');
+    expect(res).toBeTruthy();
+    allFolders = await connections.getAllFolders();
     expect(allFolders.length).toEqual(3);
 
     //basic delete 2
-    await connections.deleteFolder("private_folder_1");
+    res = await connections.deleteFolder('private_folder_1');
+    expect(res).toBeTruthy();
+    allFolders = await connections.getAllFolders();
     expect(allFolders.length).toEqual(2);
 
-    //delete previously deleted folder
-    await connections.deleteFolder("private_folder_1");
+    //delete previously deleted folder (shouldnt do anything)
+    expect((res = await connections.deleteFolder('private_folder_1'))).toThrow();
+    allFolders = await connections.getAllFolders();
     expect(allFolders.length).toEqual(2);
 
     //delete non exitent folder
-    await connections.deleteFolder("non existent folder");
+    expect((res = await connections.deleteFolder('non existent folder'))).toThrow();
+    allFolders = await connections.getAllFolders();
     expect(allFolders.length).toEqual(2);
 });
 
