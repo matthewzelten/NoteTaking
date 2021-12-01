@@ -54,7 +54,8 @@ app.post("/", async (req, res)=>{
     if (isDup===undefined||isDup.length==0) {
       try{const folderToAdd = new Folder(req.body);
       folderToAdd.save()
-      res.status(200).send(folderToAdd).end();}catch(error) {
+      res.status(200).send(folderToAdd).end();
+    }catch(error) {
         console.log(error);
         res.status(404).end();
     }   
@@ -72,8 +73,7 @@ app.post("/", async (req, res)=>{
       } else {
         let passw = req.body["password"];
         if (passw["password"] === result["password"]) {
-          //res.status(200).send(result);
-          res.status(200).send("get notes");
+          res.status(200).send(result);
           //res.status(200).send(findNotesByFolder(folderName));
         } else {
           //res.status(404).send(req.body);
@@ -90,7 +90,6 @@ app.post("/", async (req, res)=>{
       }else{
         res.status(200).send(docs).end();
       }});
-    //res.status(200).send(result).end();
   }
 })
 

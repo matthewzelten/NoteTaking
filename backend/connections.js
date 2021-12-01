@@ -42,11 +42,7 @@ async function addNote(note){
       return false;
     }
   }
-/*async function addNote(fName, noteToAdd) {
-    folders["folderList"]
-        .find((fold) => fold.name === fName)
-        .notes.push(noteToAdd);
-}*/
+
 async function deleteFolder(folderToDelete) {
     for (var i = 1; i < folders["folderList"].length; i++) {
         if (folders["folderList"][i].name === folderToDelete) {
