@@ -5,6 +5,7 @@ import CreateNote from "./CreateNote";
 import { Button } from "@chakra-ui/button";
 import { Center, Box, Heading } from "@chakra-ui/layout";
 import { Text } from "@chakra-ui/layout";
+import { Input } from "@chakra-ui/input";
 
 function Folder(props) {
     const [currentFolder, setCurrentFolder] = useState({
@@ -28,7 +29,6 @@ function Folder(props) {
             <Link to="/">
                 <Button
                     style={{
-                        width: "200px",
                         height: "50px",
                         background: `#${
                             currentFolder === undefined
@@ -44,7 +44,6 @@ function Folder(props) {
             </Link>
             <Button
                 style={{
-                    width: "200px",
                     height: "50px",
                     background: `#${currentFolder.color}`,
                     color: "black",
@@ -59,10 +58,9 @@ function Folder(props) {
                     ? props.folderName
                     : currentFolder.name}
             </Heading>
-            <input type="text" placeholder="Search" />
+            <Input placeholder="Search" />
             <Button
                 style={{
-                    width: "200px",
                     height: "50px",
                     background: `#${currentFolder.color}`,
                     color: "black",
@@ -76,7 +74,6 @@ function Folder(props) {
             <Modal isOpen={showNoteModal}>
                 <Button
                     style={{
-                        width: "200px",
                         height: "50px",
                         background: `#${currentFolder.color}`,
                         color: "black",
@@ -92,7 +89,7 @@ function Folder(props) {
                 />
             </Modal>
             <Modal
-                style={{ overlay: { left: "30%", right: "30%" } }}
+                style={{ overlay: { left: "30%", right: "30%", bottom:"50%" } }}
                 isOpen={showDeleteModal}
             >
                 <Text>
@@ -103,7 +100,6 @@ function Folder(props) {
                 <Link to="/">
                     <Button
                         style={{
-                            width: "200px",
                             height: "50px",
                             background: `#${currentFolder.color}`,
                             color: "black",
@@ -117,7 +113,6 @@ function Folder(props) {
 
                 <Button
                     style={{
-                        width: "200px",
                         height: "50px",
                         background: `#${currentFolder.color}`,
                         color: "black",
