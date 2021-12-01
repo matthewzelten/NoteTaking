@@ -17,7 +17,7 @@ beforeAll(async () => {
     useUnifiedTopology: true,
   };
 
-  conn = await mongoose.createConnection(uri, mongooseOpts);
+  conn = mongoose.createConnection(uri, mongooseOpts);
 
   folderModel = conn.model("Folder", FolderSchema);
 
@@ -73,31 +73,28 @@ afterEach(async () => {
 test("test getAllFolders", async () => {
     let folders = await connections.getAllFolders();
     expect(folders.length).toEqual(4);
-    expect(folder[0].name).toEqual('public_folder_1');
-    expect(folder[1].name).toEqual('private_folder_1');
-    expect(folder[2].name).toEqual('public_folder_2');
-    expect(folder[3].name).toEqual('private_folder_2');
+    expect(folders[0].name).toEqual('public_folder_1');
+    expect(folders[1].name).toEqual('private_folder_1');
+    expect(folders[2].name).toEqual('public_folder_2');
+    expect(folders[3].name).toEqual('private_folder_2');
 });
 
 test("test findFolder", async () => {
     let allFolders = await connections.getAllFolders();
     
-    //find with no parameters
-    let folders = await connections.findFolder({});
-    expect(folders.length).toEqual(4);
-    
     //find with public folder name
-    let pub1 = folders.findFolder('public_folder_1');
-    expect(pub1.name).toEqual('public_folder_1');
-    expect(pub1.isPrivate).toBeFalsy();
-    expect(pub1.color).toEqual('C83E4D');
+    let pub1 = await connections.findFolder('public_folder_1');
+    expect(pub1).toBeDefined();
+    expect(pub1[0].name).toEqual('public_folder_1');
+    expect(pub1[0].isPrivate).toBeFalsy();
+    expect(pub1[0].color).toEqual('C83E4D');
 
     //find with private folder name
-    let priv1 = folders.findFolder('private_folder_1');
-    expect(priv1.name).toEqual('private_folder_1');
-    expect(priv1.isPrivate).toBeTruthy();
-    expect(priv1.color).toEqual('C83E4D');
-    expect(priv1.password).toEqual('password');
+    let priv1 = await connections.findFolder('private_folder_1');
+    expect(priv1[0].name).toEqual('private_folder_1');
+    expect(priv1[0].isPrivate).toBeTruthy();
+    expect(priv1[0].color).toEqual('C83E4D');
+    expect(priv1[0].password).toEqual('password');
 });
 
 test('test findNote', () => {
