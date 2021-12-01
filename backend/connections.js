@@ -4,19 +4,14 @@ const folderSchema = require("./Database/Models/folderSchema");
 const noteSchema = require("./Database/Models/noteSchema");
 dotenv.config();
 
-let folderConn;
-let noteConn;
+let conn;
 
-function setFolderConnection(newConn) {
-    return (folderConn = newConn);
+function setConnection(newConn) {
+    return (conn = newConn);
 }
 
-function setNoteConnection(newConn) {
-    return (noteConn = newConn);
-}
-
-function getFolderConnection() {
-    if (!folderConn) {
+function getConnection() {
+    if (!conn) {
         let uri = "mongodb+srv://" +
             process.env.MONGO_USER +
             ":" +
@@ -26,13 +21,13 @@ function getFolderConnection() {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         };
-        folderConn = mongoose.createConnection(uri, params);
+        conn = mongoose.createConnection(uri, params);
     }
-    return folderConn;
+    return conn;
 }
 
-function getNoteConnection() {
-    if(!noteConn) {
+/*function getNoteConnection() {
+    if(!conn) {
         let uri = "mongodb+srv://" +
             process.env.MONGO_USER +
             ":" +
@@ -45,16 +40,17 @@ function getNoteConnection() {
         noteConn = mongoose.createConnection(uri, params);
     }
     return noteConn;
-}
+}*/
 
 async function getAllFolders() {
-    const tempF = getFolderConnection().model("Folder", folderSchema);
+    const tempF = getConnection().model("Folder", folderSchema);
     let result = await tempF.find({});
+    //console.log(result);
     return result;
 }
 
 async function findFolder(name) {
-    const tempF = getFolderConnection().model("Folder", folderSchema);
+    const tempF = getConnection().model("Folder", folderSchema);
     const result = await tempF.find({ name: name });
     return result;
 }
@@ -89,13 +85,18 @@ async function addNote(note){
 }*/
 
 async function deleteFolder(folderToDelete) {
-    Folder.deleteOne({ name: folderToDelete }, function (err, result) {
-        if (err) {
-            console.log(err);
-            throw err;
-            //return false;
+    const tempF = getConnection().model("Folder", folderSchema);
+    tempF.deleteOne({ name: folderToDelete }, function (err, result) {
+        //console.log(folderToDelete);
+        //console.log(result.deletedCount);
+        if (result.deletedCount === 0 || result.deletedCount === undefined) {
+            console.log(folderToDelete, ' + ', result.deletedCount, ' returning false');
+            //console.log(err);
+            //throw err;
+            return false;
         }
     });
+    console.log(folderToDelete, ' returning true');
     return true;
 }
 async function deleteNote(fName, nName) {
@@ -110,8 +111,8 @@ async function deleteNote(fName, nName) {
     }
 }
 
-const Folder = getFolderConnection().model("Folder", folderSchema);
-const Note = getNoteConnection().model("Note", noteSchema);
+const Folder = getConnection().model("Folder", folderSchema);
+const Note = getConnection().model("Note", noteSchema);
 
 module.exports = {
     Folder,
@@ -123,6 +124,5 @@ module.exports = {
     addNote,
     deleteFolder,
     deleteNote,
-    setFolderConnection,
-    setNoteConnection,
+    setConnection,
 };
