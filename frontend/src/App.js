@@ -107,6 +107,8 @@ function App() {
                         Close Modal
                     </Button>
                     <CreateFolder
+                        folders={folders}
+                        setFolders={setFolders}
                         folderName={folderName}
                         setFolderName={setFolderName}
                         setShowModal={setShowModal}

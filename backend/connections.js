@@ -66,11 +66,25 @@ async function addFolder(folder) {
     folder.save();
     //folderModel.insertOne(folder); (pre test changes)
 }
-async function addNote(fName, noteToAdd) {
+//add note
+async function addNote(note){
+    try{
+      //const folder = findFolder(note["folder"]);
+      const noteToAdd = new Note(note);
+      if(await noteToAdd.save()){
+      //if(await folder["notes"].insertOne(noteToAdd)){
+        return true;
+      }
+    }catch(error){
+      console.log(error);
+      return false;
+    }
+  }
+/*async function addNote(fName, noteToAdd) {
     folders["folderList"]
         .find((fold) => fold.name === fName)
         .notes.push(noteToAdd);
-}
+}*/
 async function deleteFolder(folderToDelete) {
     Folder.deleteOne({ name: folderToDelete }, function (err, result) {
         if (err) {
