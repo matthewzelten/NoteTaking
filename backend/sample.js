@@ -75,7 +75,8 @@ app.post("/", (req, res) => {
     isDup = findFolder(name);
     if (true) {
         const folderToAdd = new Folder({ name, color, isPrivate, password });
-        folderToAdd.save();
+        addFolder(folderToAdd);
+        //folderToAdd.save();
         res.status(201).send(folderToAdd).end();
     } else {
         res.status(404).send("Duplicate file name.").end();
@@ -96,7 +97,9 @@ app.post("/:folderName/:noteName", (req, res) => {
 });
 //delete folder
 app.delete("/", (req, res) => {
+    console.log(req.body)
     const folderToDelete = req.body["name"];
+    console.log(folderToDelete)
     let result = findFolder(folderToDelete);
     if (result === undefined || result.length == 0) {
         res.status(404).send(folderToDelete);
@@ -106,7 +109,7 @@ app.delete("/", (req, res) => {
     }
 });
 //delete note
-app.delete("/:folderName", (req, res) => {
+app.delete("/folder/:folderName", (req, res) => {
     const noteToDelete = req.body["name"];
     let result = findNote(folderName, noteToDelete);
     if (result === undefined || result.length == 0) {

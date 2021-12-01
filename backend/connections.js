@@ -1,18 +1,55 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const folderSchema = require("./Database/Models/folderSchema");
-const noteSchema = require("./Database/Models/noteSchema")
+const noteSchema = require("./Database/Models/noteSchema");
 dotenv.config();
 
+let folderConn;
+let noteConn;
+
+function setFolderConnection(newConn) {
+    return (folderConn = newConn);
+}
+
+function setNoteConnection(newConn) {
+    return (noteConn = newConn);
+}
+
+function getFolderConnection() {
+    if (!folderConn) {
+        folderConn = makeNewConnection(
+            "mongodb+srv://" +
+                process.env.MONGO_USER +
+                ":" +
+                process.env.MONGO_PWD +
+                "@cluster0.yohuh.mongodb.net/Folders?retryWrites=true&w=majority"
+        );
+    }
+    return folderConn;
+}
+
+function getNoteConnection() {
+    if(!noteConn) {
+        noteConn = makeNewConnection(
+            "mongodb+srv://" +
+                process.env.MONGO_USER +
+                ":" +
+                process.env.MONGO_PWD +
+                "@cluster0.yohuh.mongodb.net/Notes?retryWrites=true&w=majority"
+        );
+    }
+    return noteConn;
+}
+
 async function getAllFolders() {
-    const Folder = folderConnection.model("Folder", folderSchema);
-    let result = await Folder.find({});
+    const tempF = getFolderConnection().model("Folder", folderSchema);
+    let result = await tempF.find({});
     return result;
 }
 
 async function findFolder(name) {
-    const Folder = folderConnection.model("Folder", folderSchema);
-    const result = await Folder.find({name: name})
+    const tempF = getFolderConnection().model("Folder", folderSchema);
+    const result = await tempF.find({name: name})
     return result
 }
 async function findNote(folderName, noteName) {
@@ -26,7 +63,8 @@ async function findNote(folderName, noteName) {
     }
 }
 async function addFolder(folder) {
-    folderModel.insertOne(folder);
+    folder.save();
+    //folderModel.insertOne(folder); (pre test changes)
 }
 async function addNote(fName, noteToAdd) {
     folders["folderList"]
@@ -34,12 +72,11 @@ async function addNote(fName, noteToAdd) {
         .notes.push(noteToAdd);
 }
 async function deleteFolder(folderToDelete) {
-    for (var i = 1; i < folders["folderList"].length; i++) {
-        if (folders["folderList"][i].name === folderToDelete) {
-            result = folders["folderList"].splice(i, 1);
-            return;
+    Folder.deleteOne({ name: folderToDelete }, function (err, result) {
+        if (err) {
+            console.log(err);
         }
-    }
+    });
 }
 async function deleteNote(fName, nName) {
     let noteList = folders["folderList"].find(
@@ -54,14 +91,12 @@ async function deleteNote(fName, nName) {
 }
 
 function makeNewConnection(URI) {
-    const db = mongoose.createConnection(URI,
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        }
-    );
+    const db = mongoose.createConnection(URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
     db.on("connected", function () {
-        console.log(`MongoDB :: connected ${this.name}`);
+        //console.log(`MongoDB :: connected ${this.name}`);
     });
     db.on("error", function (error) {
         console.log(
@@ -71,16 +106,16 @@ function makeNewConnection(URI) {
             console.log(`MongoDB :: failed to close connection ${this.name}`)
         );
     });
-    return db
+    return db;
 }
 
-const folderConnection = makeNewConnection(
+/*const folderConnection = makeNewConnection(
     "mongodb+srv://" +
         process.env.MONGO_USER +
         ":" +
         process.env.MONGO_PWD +
         "@cluster0.yohuh.mongodb.net/Folders?retryWrites=true&w=majority"
-);
+);*/
 
 const noteConnection = makeNewConnection(
     "mongodb+srv://" +
@@ -90,7 +125,7 @@ const noteConnection = makeNewConnection(
         "@cluster0.yohuh.mongodb.net/Notes?retryWrites=true&w=majority"
 );
 
-const Folder = folderConnection.model("Folder", folderSchema);
+const Folder = getFolderConnection().model("Folder", folderSchema);
 const Note = noteConnection.model("Note", noteSchema);
 
 module.exports = {
@@ -102,5 +137,7 @@ module.exports = {
     addFolder,
     addNote,
     deleteFolder,
-    deleteNote
+    deleteNote,
+    setFolderConnection,
+    setNoteConnection
 }
