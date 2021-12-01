@@ -32,7 +32,8 @@ function Note(props) {
             isPrivate: null,
             password: null,
             contents: noteContents,
-            isLocked: null
+            isLocked: null,
+            toSave: true
         }
 
         console.log(`Updating note ${tempNote}`);
