@@ -48,9 +48,9 @@ async function getAllFolders() {
 }
 
 async function findFolder(name) {
-    const Folder = folderConnection.model("Folder", folderSchema);
-    const result = await Folder.find({ name: name });
-    return result;
+    const tempF = getFolderConnection().model("Folder", folderSchema);
+    const result = await tempF.find({name: name})
+    return result
 }
 async function findNote(folderName, noteName) {
     let result = folders["folderList"].find(
@@ -138,4 +138,6 @@ module.exports = {
     addNote,
     deleteFolder,
     deleteNote,
-};
+    setFolderConnection,
+    setNoteConnection
+}
