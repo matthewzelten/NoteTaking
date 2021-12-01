@@ -11,11 +11,11 @@ import Note from "./components/notepage/Note";
 import axios from "axios";
 import { Button } from "@chakra-ui/button";
 import { Box } from "@chakra-ui/layout";
-import { Text } from "@chakra-ui/layout";
 
 function App() {
     const [folderName, setFolderName] = useState("");
     const [folderURL, setFolderURL] = useState("");
+    const [currentFolder, setCurrentFolder] = useState({});
     const [noteName, setNoteName] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [folders, setFolders] = useState([]);
@@ -50,14 +50,20 @@ function App() {
 
     async function deleteFolder(folder) {
         try {
-            console.log(folder);
             const response = await axios.delete(`http://localhost:5000/`, {
                 data: folder,
+            }).then(() => {
+                window.location.reload();
             });
-            window.location.reload();
         } catch (error) {
             console.log(error);
         }
+    }
+
+    function getCurrentFolder() {
+        const folderURL = window.location.pathname.split("/")[2];
+        const replaced = folderURL.split("+").join(" ");
+        getFolder(replaced).then((data) => setCurrentFolder(data));
     }
 
     function redirectFolder(name) {
@@ -67,7 +73,7 @@ function App() {
     }
 
     return (
-        <Box bg="#216869">
+        <Box w="100%" h="100%" bg="#216869">
             <Router>
                 <Header />
                 <Switch>
@@ -93,6 +99,8 @@ function App() {
                             noteName={noteName}
                             getFolder={getFolder}
                             deleteFolder={deleteFolder}
+                            currentFolder={currentFolder}
+                            getCurrentFolder={getCurrentFolder}
                         />
                     </Route>
                     <Route path="/note">
@@ -101,14 +109,13 @@ function App() {
                 </Switch>
                 <Modal isOpen={showModal}>
                     <Button
-                        colorScheme="brand"
-                        onClick={() => setShowModal(false)}
-                    >
+                        onClick={() => setShowModal(false)}>
                         Close Modal
                     </Button>
                     <CreateFolder
                         folderName={folderName}
                         setFolderName={setFolderName}
+                        setCurrentFolder={setCurrentFolder}
                         setShowModal={setShowModal}
                     />
                 </Modal>

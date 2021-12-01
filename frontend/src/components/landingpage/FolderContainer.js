@@ -16,9 +16,7 @@ function ShowFolders(props) {
                     <Button
                         style={{
                             width: "200px",
-                            height: "50px",
                             background: `${buttonColor}`,
-                            margin: "5px",
                         }}
                         onClick={() => props.redirectFolder(row.name)}
                     >
@@ -44,8 +42,6 @@ function FolderContainer(props) {
                         colorScheme="brand.200"
                         style={{
                             width: "200px",
-                            height: "50px",
-                            margin: "5px",
                         }}
                         onClick={() => props.setShowModal(true)}
                     >

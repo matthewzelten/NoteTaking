@@ -3,18 +3,19 @@ import PropTypes from "prop-types";
 import ReactQuill from "react-quill";
 import { Link } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
+import { Button } from "@chakra-ui/button";
 
 function Note(props) {
     return (
         <div>
             <Link to="/folder">
-                <button>Return</button>
+                <Button>Return</Button>
             </Link>
             <h1>{props.noteName}</h1>
             <form>
                 <Editor placeholder={"Write something awesome..."} />
                 <div class="alter-height">
-                    <button onClick={saveNote()}>Save Note</button>
+                    <Button onClick={saveNote()}>Save Note</Button>
                 </div>
             </form>
         </div>

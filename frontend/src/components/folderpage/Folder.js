@@ -8,62 +8,35 @@ import { Text } from "@chakra-ui/layout";
 import { Input } from "@chakra-ui/input";
 
 function Folder(props) {
-    const [currentFolder, setCurrentFolder] = useState({
-        color: "white",
-    });
     const [showNoteModal, setShowNoteModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     useEffect(() => {
-        getCurrentFolder();
+        props.getCurrentFolder();
     }, []);
 
-    function getCurrentFolder() {
-        const folderURL = window.location.pathname.split("/")[2];
-        const replaced = folderURL.split("+").join(" ");
-        props.getFolder(replaced).then((data) => setCurrentFolder(data));
-    }
-
-    let folderColor = currentFolder === undefined ? "white" : currentFolder.color
+    let folderColor =
+        props.currentFolder === undefined ? "white" : props.currentFolder.color;
 
     return (
         <Box>
             <Link to="/">
-                <Button
-                    style={{
-                        height: "50px",
-                        background: `#${folderColor}`,
-                        color: "black",
-                        margin: "5px",
-                    }}
-                >
-                    Return
-                </Button>
+                <Button bg={`#${folderColor}`}>Return</Button>
             </Link>
             <Button
-                style={{
-                    height: "50px",
-                    background: `#${folderColor}`,
-                    color: "black",
-                    margin: "5px",
-                }}
+                bg={`#${folderColor}`}
                 onClick={() => setShowDeleteModal(true)}
             >
                 DELETE FOLDER
             </Button>
-            <Heading style={{color: "white"}}>
-                {currentFolder === undefined
+            <Heading style={{ color: "white" }}>
+                {props.currentFolder === undefined
                     ? props.folderName
-                    : currentFolder.name}
+                    : props.currentFolder.name}
             </Heading>
             <Input placeholder="Search" />
             <Button
-                style={{
-                    height: "50px",
-                    background: `#${folderColor}`,
-                    color: "black",
-                    margin: "5px",
-                }}
+                bg={`#${folderColor}`}
                 onClick={() => setShowNoteModal(true)}
             >
                 + Add New Note
@@ -71,23 +44,21 @@ function Folder(props) {
 
             <Modal isOpen={showNoteModal}>
                 <Button
-                    style={{
-                        height: "50px",
-                        background: `#${folderColor}`,
-                        color: "black",
-                        margin: "5px",
-                    }}
+                    bg={`#${folderColor}`}
                     onClick={() => setShowNoteModal(false)}
                 >
                     Close
                 </Button>
                 <CreateNote
+                    folderColor={folderColor}
                     setNoteName={props.setNoteName}
                     setShowNoteModal={setShowNoteModal}
                 />
             </Modal>
             <Modal
-                style={{ overlay: { left: "30%", right: "30%", bottom:"50%" } }}
+                style={{
+                    overlay: { left: "30%", right: "30%", bottom: "50%" },
+                }}
                 isOpen={showDeleteModal}
             >
                 <Text>
@@ -97,25 +68,15 @@ function Folder(props) {
                 </Text>
                 <Link to="/">
                     <Button
-                        style={{
-                            height: "50px",
-                            background: `#${folderColor}`,
-                            color: "black",
-                            margin: "5px",
-                        }}
-                        onClick={() => props.deleteFolder(currentFolder)}
+                        bg={`#${folderColor}`}
+                        onClick={() => props.deleteFolder(props.currentFolder)}
                     >
                         Yes, delete this folder
                     </Button>
                 </Link>
 
                 <Button
-                    style={{
-                        height: "50px",
-                        background: `#${folderColor}`,
-                        color: "black",
-                        margin: "5px",
-                    }}
+                    bg={`#${folderColor}`}
                     onClick={() => setShowDeleteModal(false)}
                 >
                     No, take me back

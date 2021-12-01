@@ -97,9 +97,7 @@ app.post("/:folderName/:noteName", (req, res) => {
 });
 //delete folder
 app.delete("/", (req, res) => {
-    console.log(req.body)
     const folderToDelete = req.body["name"];
-    console.log(folderToDelete)
     let result = findFolder(folderToDelete);
     if (result === undefined || result.length == 0) {
         res.status(404).send(folderToDelete);

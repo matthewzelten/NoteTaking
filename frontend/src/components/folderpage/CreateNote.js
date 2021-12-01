@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import FileSettings from "../shared/FileSettings";
-import axios from 'axios'
+import axios from "axios";
+import { Button } from "@chakra-ui/button";
 
 function CreateNote(props) {
     const [name, setName] = useState("");
@@ -22,38 +23,39 @@ function CreateNote(props) {
             isPrivate: isPrivate,
             password: passwordA,
             contents: [],
-            isLocked: false
-        }
-        postNewNote(note).then( result => {
-        if (result && result.status === 200)
-            //props.setFolders([...props.folders, newFolderName]);
-            // add this to the list of notes within the folder we are in
-            props.setShowNoteModal(false);
+            isLocked: false,
+        };
+        postNewNote(note).then((result) => {
+            if (result && result.status === 200)
+                //props.setFolders([...props.folders, newFolderName]);
+                // add this to the list of notes within the folder we are in
+                props.setShowNoteModal(false);
         });
     }
 
     async function postNewNote(note) {
         try {
             // --------------------this needs to post to /:foldername or something ---------------
-            const response = await axios.post('http://localhost:5000/folder', note);
+            const response = await axios.post(
+                "http://localhost:5000/folder",
+                note
+            );
             return response;
-       }
-       catch (error) {
+        } catch (error) {
             console.log(error);
             return false;
-       }
-      }
-
-    function verifyMatchingPasswords(){
-        if(!isPrivate){
-          return true;
         }
-        if(passwordA === passwordB && passwordA.length > 0) {
-          return true;
+    }
+
+    function verifyMatchingPasswords() {
+        if (!isPrivate) {
+            return true;
+        }
+        if (passwordA === passwordB && passwordA.length > 0) {
+            return true;
         }
         return false;
     }
-
 
     return (
         <div>
@@ -63,18 +65,23 @@ function CreateNote(props) {
                 placeholder="Enter Note Name"
                 onChange={(e) => setName(e.target.value)}
             />
-            <FileSettings 
-                isPrivate={isPrivate} 
-                setIsPrivate={setIsPrivate} 
-                color={color} setColor={setColor} 
-                setPasswordA={setPasswordA} 
+            <FileSettings
+                isPrivate={isPrivate}
+                setIsPrivate={setIsPrivate}
+                color={color}
+                setColor={setColor}
+                setPasswordA={setPasswordA}
                 setPasswordB={setPasswordB}
             />
             <Link to="/note">
-                <button disabled={!verifyMatchingPasswords()} onClick={() => submitNoteName()}>
+                <Button
+                    bg={`#${props.folderColor}`}
+                    disabled={!verifyMatchingPasswords()}
+                    onClick={() => submitNoteName()}
+                >
                     {" "}
                     Create Note{" "}
-                </button>
+                </Button>
             </Link>
         </div>
     );

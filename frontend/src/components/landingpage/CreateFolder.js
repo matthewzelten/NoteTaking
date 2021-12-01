@@ -6,8 +6,11 @@ import { Heading } from "@chakra-ui/layout";
 import { Input } from "@chakra-ui/input";
 import { Button } from "@chakra-ui/button";
 
+const letters = /^[0-9a-zA-Z]+$/;
+
 function CreateFolder(props) {
     const [newFolderName, setNewFolderName] = useState("");
+    const [validFolder, setValidFolder] = useState(false)
     const [color, setColor] = useState("");
     const [isPrivate, setIsPrivate] = useState(false);
     const [passwordA, setPasswordA] = useState("");
@@ -24,9 +27,19 @@ function CreateFolder(props) {
     }
 
     function submitFolderName() {
-        props.setFolderName(newFolderName);
-        props.setShowModal(false);
-        if (newFolderName !== "" && color !== "") {
+        if (
+            letters.test(newFolderName) &&
+            newFolderName !== "" &&
+            color !== ""
+        ) {
+            props.setFolderName(newFolderName);
+            props.setShowModal(false);
+            props.setCurrentFolder({
+                "name": newFolderName,
+                "color": color,
+                "password": passwordA
+            })
+            setValidFolder(true);
             const folder = {
                 name: newFolderName,
                 color: color,
@@ -38,6 +51,8 @@ function CreateFolder(props) {
                     props.setFolders([...props.folders, newFolderName]);
                     props.setShowModal(false);
                 }
+            }).then(() => {
+                window.location.reload()
             });
         }
     }
@@ -52,6 +67,16 @@ function CreateFolder(props) {
         }
     }
 
+    function updateFolderName(name) {
+        if(letters.test(name)) {
+            setValidFolder(true)
+            setNewFolderName(name)
+        }
+        else {
+            setValidFolder(false)
+        }
+    }
+
     return (
         <form margin="5px">
             <Heading as="h2" size="2xl">
@@ -59,8 +84,11 @@ function CreateFolder(props) {
             </Heading>
             <Input
                 placeholder="Enter Folder Name"
-                onChange={(e) => setNewFolderName(e.target.value)}
+                onChange={(e) => updateFolderName(e.target.value)}
                 size="lg"
+                isRequired={true}
+                isInvalid={!validFolder}
+                errorBorderColor='red.300'
             />
             <FileSettings
                 isPrivate={isPrivate}
@@ -72,7 +100,7 @@ function CreateFolder(props) {
             />
             <Link to={`/folder/${newFolderName}`}>
                 <Button
-                    disabled={!verifyMatchingPasswords()}
+                    disabled={!verifyMatchingPasswords() || !validFolder}
                     colorScheme="brand"
                     onClick={() => submitFolderName()}
                 >
