@@ -1,7 +1,7 @@
 import { Button } from "@chakra-ui/button";
 import React from "react";
 import { Link } from "react-router-dom";
-import { Box, Flex, Wrap, WrapItem } from "@chakra-ui/layout";
+import { Box, Flex, Text, Wrap, WrapItem } from "@chakra-ui/layout";
 
 function ShowFolders(props) {
     const folders = props.folderData.map((row, index) => {
@@ -14,13 +14,10 @@ function ShowFolders(props) {
             <WrapItem>
                 <Link to={`/folder/${replaced}`}>
                     <Button
-                        style={{
-                            width: "200px",
-                            height: "50px",
-                            background: `${buttonColor}`,
-                            margin: "5px",
-                        }}
-                        onClick={() => props.redirectFolder(row.name)}
+                        w="200px"
+                        h="100px"
+                        bg={`${buttonColor}`}
+                        onClick={() => props.setFolderName(row.name)}
                     >
                         {row.name}
                     </Button>
@@ -36,17 +33,15 @@ function FolderContainer(props) {
         <Flex direction="row">
             <Wrap marginLeft="90px" jusitfy="center">
                 <ShowFolders
+                    setFolderName={props.setFolderName}
                     redirectFolder={props.redirectFolder}
                     folderData={props.folderData}
                 />
                 <WrapItem>
                     <Button
                         colorScheme="brand.200"
-                        style={{
-                            width: "200px",
-                            height: "50px",
-                            margin: "5px",
-                        }}
+                        w="200px"
+                        h="100px"
                         onClick={() => props.setShowModal(true)}
                     >
                         Add New Folder

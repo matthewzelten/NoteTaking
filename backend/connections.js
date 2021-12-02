@@ -94,7 +94,7 @@ async function findNote(folderName, noteName) {
 async function getNotes(folderName) {
     let thisFolder = (await findFolder(folderName))[0];
     await thisFolder.populate('notes');
-    return thisFolder.notes;
+    return thisFolder;
 }
 
 /**

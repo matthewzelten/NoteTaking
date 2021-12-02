@@ -11,15 +11,15 @@ import Note from "./components/notepage/Note";
 import axios from "axios";
 import { Button } from "@chakra-ui/button";
 import { Box } from "@chakra-ui/layout";
-import { Text } from "@chakra-ui/layout";
+import { Flex } from "@chakra-ui/layout";
+import LandingPage from "./components/landingpage/LandingPage";
 
 function App() {
 
     const [folderName, setFolderName] = useState("");
-    const [folderURL, setFolderURL] = useState("");
+    const [currentFolder, setCurrentFolder] = useState({});
     const [noteName, setNoteName] = useState([]);
     const [noteContents, setNoteContents] = useState("");
-    const [showModal, setShowModal] = useState(false);
     const [folders, setFolders] = useState([]);
 
 
@@ -46,7 +46,7 @@ function App() {
     async function getFolder(name) {
         try {
             const response = await axios.get(`http://localhost:5000/${name}`);
-            const data = response.data[0];
+            const data = response.data;
             return data;
         } catch (error) {
             console.log(error);
@@ -55,41 +55,47 @@ function App() {
 
     async function deleteFolder(folder) {
         try {
-            console.log(folder);
-            const response = await axios.delete(`http://localhost:5000/`, {
-                data: folder,
-            });
-            window.location.reload();
+            const response = await axios
+                .delete(`http://localhost:5000/`, {
+                    data: folder,
+                })
+                .then(() => {
+                    window.location.reload();
+                });
         } catch (error) {
             console.log(error);
         }
     }
 
-    function redirectFolder(name) {
-        const replaced = name.split(" ").join("+");
-        setFolderName(name);
-        setFolderURL(replaced);
+    function getCurrentFolder() {
+        const folderURL = window.location.pathname.split("/")[2];
+        const replaced = folderURL.split("+").join(" ");
+        getFolder(replaced).then((data) => setCurrentFolder(data));
     }
 
+    function isDuplicate(name) {
+        for (let i = 0; i < folders.length; i++) {
+            const folder = folders[i];
+            if(folder.name === name) {
+                return true
+            }
+        }
+        return false
+    }
 
     return (
-        <Box bg="#216869">
+        <Box className="App">
             <Router>
                 <Header />
                 <Switch>
                     <Route exact path="/">
-                        <Box
-                            style={{
-                                display: "flex",
-                                flexDirection: "row",
-                            }}
-                        >
-                            <FolderContainer
-                                redirectFolder={redirectFolder}
-                                folderData={folders}
-                                setShowModal={setShowModal}
+                        <LandingPage 
+                            folders={folders}
+                            setFolderName={setFolderName}
+                            folderName={folderName}
+                            setCurrentFolder={setCurrentFolder}
+                            isDuplicate={isDuplicate}
                             />
-                        </Box>
                     </Route>
                     <Route path={`/folder/`}>
                         <Folder
@@ -100,27 +106,15 @@ function App() {
                             noteName={noteName}
                             getFolder={getFolder}
                             deleteFolder={deleteFolder}
+                            currentFolder={currentFolder}
+                            getCurrentFolder={getCurrentFolder}
+                            setCurrentFolder={setCurrentFolder}
                         />
                     </Route>
                     <Route path="/note">
                         <Note noteName={noteName} contents={noteContents} folderName={folderName}/>
                     </Route>
                 </Switch>
-                <Modal isOpen={showModal}>
-                    <Button
-                        colorScheme="brand"
-                        onClick={() => setShowModal(false)}
-                    >
-                        Close Modal
-                    </Button>
-                    <CreateFolder
-                        folders={folders}
-                        setFolders={setFolders}
-                        folderName={folderName}
-                        setFolderName={setFolderName}
-                        setShowModal={setShowModal}
-                    />
-                </Modal>
             </Router>
         </Box>
     );

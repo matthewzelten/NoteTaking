@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import FileSettings from "../shared/FileSettings";
-import axios from 'axios'
+import axios from "axios";
+import { Button } from "@chakra-ui/button";
 
 function CreateNote(props) {
     const [name, setName] = useState("");
@@ -41,9 +42,6 @@ function CreateNote(props) {
             isLocked: isPrivate
 
         }
-
-        console.log(`Submitting note ${note.name} to ${note.folder} with ${note.color}`);
-        console.log(note);
 
         postNewNote(note).then( result => {
             if (result && result.status === 200)

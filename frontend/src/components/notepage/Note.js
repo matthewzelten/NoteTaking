@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import ReactQuill from "react-quill";
 import { Link } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
+import { Button } from "@chakra-ui/button";
 import axios from "axios";
 
 
@@ -23,7 +24,6 @@ function Note(props) {
     );*/
 
     async function saveNote(){
-        console.log(`Saving current note`);
 
         const tempNote = {
             name: props.noteName,
@@ -35,8 +35,6 @@ function Note(props) {
             isLocked: null,
             toSave: true
         }
-
-        console.log(`Updating note ${tempNote}`);
         await postNoteUpdate(tempNote);
 
 
@@ -48,18 +46,12 @@ function Note(props) {
      * @returns {Promise<boolean|AxiosResponse<unknown>>} the response from the backend
      */
     async function postNoteUpdate(note) {
-        console.log(`Updating ${note} in ${props.folderName}`);
-        console.log(`Note name: ${props.noteName} contents: ${note.contents}`);
-        console.log(`Note name: ${note.name} contents: ${note.contents}`);
 
         try {
             const response = await axios.post('http://localhost:5000/notes', note);
-            console.log(response);
             return response;
         }
         catch (error) {
-            console.log(`Error updating note`);
-            console.log(error);
             return false;
         }
     }
@@ -71,7 +63,7 @@ function Note(props) {
     return (
         <div>
             <Link to="/folder">
-                <button>Return</button>
+                <Button>Return</Button>
             </Link>
             <h1>{props.noteName}</h1>
 
@@ -97,8 +89,6 @@ class Editor extends React.Component {
 
     handleChange(html) {
         //noteDelta = this.editor.getContents();
-        console.log("CHANGE");
-        console.log(html);
         this.props.handleUpdate(html);
         this.setState({ editorHtml: html });
 
