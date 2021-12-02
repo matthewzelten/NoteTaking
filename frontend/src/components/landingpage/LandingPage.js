@@ -15,6 +15,7 @@ function LandingPage(props) {
             }}
         >
             <FolderContainer
+                setFolderURL={props.setFolderURL}
                 setFolderName={props.setFolderName}
                 folderData={props.folders}
                 setShowModal={setShowModal}

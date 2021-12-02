@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import CreateNote from "./CreateNote";
 import { Button } from "@chakra-ui/button";
-import { Flex, Box, Heading } from "@chakra-ui/layout";
+import { Box, Heading } from "@chakra-ui/layout";
 import { Text } from "@chakra-ui/layout";
 import { Input } from "@chakra-ui/input";
 import axios from "axios";
@@ -69,12 +69,13 @@ function Folder(props) {
                 + Add New Note
             </Button>
             <NoteContainer
+                folderURL={props.folderURL}
                 noteData={notes}
             />
             <Modal isOpen={showNoteModal}>
                 <ModalOverlay />
                 <ModalContent>
-                    <Box>
+                    <Box m={3}>
                         <Button
                             bg={`#${folderColor}`}
                             onClick={() => setShowNoteModal(false)}
@@ -82,6 +83,7 @@ function Folder(props) {
                             Close
                         </Button>
                         <CreateNote
+                            folderURL={props.folderURL}
                             folderColor={folderColor}
                             setNoteName={props.setNoteName}
                             setShowNoteModal={setShowNoteModal}

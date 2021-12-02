@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import ReactQuill from "react-quill";
 import { Link } from "react-router-dom";
@@ -62,7 +62,7 @@ function Note(props) {
 
     return (
         <div>
-            <Link to="/folder">
+            <Link to={`/folder/${props.folderURL}`}>
                 <Button>Return</Button>
             </Link>
             <h1>{props.noteName}</h1>

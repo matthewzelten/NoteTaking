@@ -1,8 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Heading, Center } from "@chakra-ui/react";
-import { HamburgerIcon } from "@chakra-ui/icons";
-import { Box, Flex } from "@chakra-ui/react";
 
 function Header(props) {
     return (

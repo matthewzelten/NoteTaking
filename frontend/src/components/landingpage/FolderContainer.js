@@ -1,9 +1,13 @@
 import { Button } from "@chakra-ui/button";
 import React from "react";
 import { Link } from "react-router-dom";
-import { Box, Flex, Text, Wrap, WrapItem } from "@chakra-ui/layout";
+import { Flex, Wrap, WrapItem } from "@chakra-ui/layout";
 
 function ShowFolders(props) {
+    function updateNameAndURL(name, URL) {
+        props.setFolderName(name)
+        props.setFolderURL(URL)
+    }
     const folders = props.folderData.map((row, index) => {
         const buttonColor =
             row.color === undefined || row.color === ""
@@ -17,7 +21,7 @@ function ShowFolders(props) {
                         w="200px"
                         h="100px"
                         bg={`${buttonColor}`}
-                        onClick={() => props.setFolderName(row.name)}
+                        onClick={() => updateNameAndURL(row.name, replaced)}
                     >
                         {row.name}
                     </Button>
@@ -34,6 +38,7 @@ function FolderContainer(props) {
             <Wrap marginLeft="90px" jusitfy="center">
                 <ShowFolders
                     setFolderName={props.setFolderName}
+                    setFolderURL={props.setFolderURL}
                     redirectFolder={props.redirectFolder}
                     folderData={props.folderData}
                 />

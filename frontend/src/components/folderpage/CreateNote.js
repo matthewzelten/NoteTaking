@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import FileSettings from "../shared/FileSettings";
 import axios from "axios";
-import { Button } from "@chakra-ui/button";
+import { Button, Box, Heading, Input } from "@chakra-ui/react";
 
 function CreateNote(props) {
     const [name, setName] = useState("");
@@ -74,10 +74,9 @@ function CreateNote(props) {
     }
 
     return (
-        <div>
-            <h1>Add New Note</h1>
-            <input
-                type="text"
+        <Box>
+            <Heading>Add New Note</Heading>
+            <Input
                 placeholder="Enter Note Name"
                 onChange={(e) => setName(e.target.value)}
             />
@@ -89,15 +88,15 @@ function CreateNote(props) {
                 setPasswordA={setPasswordA}
                 setPasswordB={setPasswordB}
             />
-            <Link to="/note">
-                <button disabled={!verifyMatchingPasswords()} onClick={() => {
+            <Link to={`/folder/${props.folderURL}/note/${name.split(" ").join("+")}`}>
+                <Button disabled={!verifyMatchingPasswords()} onClick={() => {
                     props.setNoteName(name);
                     submitNote();
                 }}>
                     Submit Note
-                </button>
+                </Button>
             </Link>
-        </div>
+        </Box>
     );
 }
 

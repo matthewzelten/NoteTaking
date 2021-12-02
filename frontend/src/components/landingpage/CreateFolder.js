@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import FileSettings from "../shared/FileSettings";
 import axios from "axios";
 import { Heading } from "@chakra-ui/layout";
