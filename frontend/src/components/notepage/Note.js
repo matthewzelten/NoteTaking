@@ -10,7 +10,7 @@ import axios from "axios";
 
 function Note(props) {
     let noteContents = props.noteContents;
-
+    const folderPath = props.folderName.split(" ").join("+");
     /*
     const [note, setNote] = useState(
         {
@@ -65,7 +65,7 @@ function Note(props) {
 
     return (
         <div>
-            <Link to="/folder">
+            <Link to={`/folder/${folderPath}`}>
                 <Button>Return</Button>
             </Link>
             <h1>{props.noteName}</h1>
