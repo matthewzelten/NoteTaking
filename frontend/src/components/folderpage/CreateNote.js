@@ -14,27 +14,65 @@ function CreateNote(props) {
     const [passwordA, setPasswordA] = useState("");
     const [passwordB, setPasswordB] = useState("");
 
-    function submitNoteName() {
+
+
+    function verifyMatchingPasswords(){
+        if(!isPrivate){
+          return true;
+        }
+        if(passwordA === passwordB && passwordA.length > 0) {
+          return true;
+        }
+        return false;
+    }
+
+    /**
+     * Construct note for submission to backend
+     */
+    function submitNote() {
         props.setNoteName(name);
         props.setShowNoteModal(false);
         const note = {
             name: name,
+            folder: props.folderName,
             color: color,
             isPrivate: isPrivate,
             password: passwordA,
+<<<<<<< HEAD
             contents: [],
             isLocked: false,
         };
         postNewNote(note).then((result) => {
+=======
+            contents: props.noteContents,
+            isLocked: isPrivate
+
+        }
+
+        console.log(`Submitting note ${note.name} to ${note.folder} with ${note.color}`);
+        console.log(note);
+
+        postNewNote(note).then( result => {
+>>>>>>> origin/main
             if (result && result.status === 200)
                 //props.setFolders([...props.folders, newFolderName]);
                 // add this to the list of notes within the folder we are in
                 props.setShowNoteModal(false);
         });
+
     }
 
+
+    /**
+     * Post note to the backend
+     * @param note The pre-constructed note object to submit to the backend
+     * @returns {Promise<boolean|AxiosResponse<unknown>>} the response from the backend
+     */
     async function postNewNote(note) {
+        console.log(`Posting ${note} to ${props.folderName}`);
+
         try {
+<<<<<<< HEAD
             // --------------------this needs to post to /:foldername or something ---------------
             const response = await axios.post(
                 "http://localhost:5000/folder",
@@ -55,6 +93,17 @@ function CreateNote(props) {
             return true;
         }
         return false;
+=======
+            const response = await axios.post('http://localhost:5000/notes', note);
+            console.log(response);
+            return response;
+        }
+        catch (error) {
+            console.log(`Error posting new note`);
+            console.log(error);
+            return false;
+        }
+>>>>>>> origin/main
     }
 
     return (
@@ -74,6 +123,7 @@ function CreateNote(props) {
                 setPasswordB={setPasswordB}
             />
             <Link to="/note">
+<<<<<<< HEAD
                 <Button
                     bg={`#${props.folderColor}`}
                     disabled={!verifyMatchingPasswords()}
@@ -82,6 +132,14 @@ function CreateNote(props) {
                     {" "}
                     Create Note{" "}
                 </Button>
+=======
+                <button disabled={!verifyMatchingPasswords()} onClick={() => {
+                    props.setNoteName(name);
+                    submitNote();
+                }}>
+                    Submit Note
+                </button>
+>>>>>>> origin/main
             </Link>
         </div>
     );

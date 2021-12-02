@@ -9,12 +9,21 @@ import { Button } from "@chakra-ui/button";
 const letters = /^[0-9a-zA-Z\s]+$/;
 
 function CreateFolder(props) {
+<<<<<<< HEAD
     const [newFolderName, setNewFolderName] = useState("");
     const [validFolder, setValidFolder] = useState(false)
     const [color, setColor] = useState("");
     const [isPrivate, setIsPrivate] = useState(false);
     const [passwordA, setPasswordA] = useState("");
     const [passwordB, setPasswordB] = useState("");
+=======
+  const [newFolderName, setNewFolderName] = useState("");
+
+  const [color, setColor] = useState("");
+  const [isPrivate, setIsPrivate] = useState(false);
+  const [passwordA, setPasswordA] = useState("");
+  const [passwordB, setPasswordB] = useState("");
+>>>>>>> origin/main
 
     function verifyMatchingPasswords() {
         if (!isPrivate) {

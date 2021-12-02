@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const collectionName = "Folders";
+const Schema = mongoose.Schema;
 
-const folderSchema = new mongoose.Schema({
+const folderSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -20,6 +21,7 @@ const folderSchema = new mongoose.Schema({
         required: false,
         trim: true
     },
+    notes: [{ type: Schema.Types.ObjectId, ref: 'Note'}]
 }, {collection : collectionName});
 
 module.exports = folderSchema;

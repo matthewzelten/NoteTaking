@@ -14,11 +14,19 @@ import { Box } from "@chakra-ui/layout";
 import { Flex } from "@chakra-ui/layout";
 import LandingPage from "./components/landingpage/LandingPage";
 function App() {
+
     const [folderName, setFolderName] = useState("");
     const [folderURL, setFolderURL] = useState("");
     const [currentFolder, setCurrentFolder] = useState({});
     const [noteName, setNoteName] = useState([]);
+<<<<<<< HEAD
+=======
+    const [noteContents, setNoteContents] = useState("");
+    const [showModal, setShowModal] = useState(false);
+>>>>>>> origin/main
     const [folders, setFolders] = useState([]);
+
+
 
     useEffect(() => {
         fetchAllFolders().then((result) => {
@@ -26,6 +34,7 @@ function App() {
                 setFolders(result);
             }
         });
+
     }, []);
 
     async function fetchAllFolders() {
@@ -74,6 +83,7 @@ function App() {
         setFolderURL(replaced);
     }
 
+
     return (
         <Box className="App">
             <Router>
@@ -91,6 +101,7 @@ function App() {
                     <Route path={`/folder/`}>
                         <Folder
                             setNoteName={setNoteName}
+                            noteContents={noteContents}
                             setFolderName={setFolderName}
                             folderName={folderName}
                             noteName={noteName}
@@ -101,9 +112,27 @@ function App() {
                         />
                     </Route>
                     <Route path="/note">
-                        <Note noteName={noteName} />
+                        <Note noteName={noteName} contents={noteContents} folderName={folderName}/>
                     </Route>
                 </Switch>
+<<<<<<< HEAD
+=======
+                <Modal isOpen={showModal}>
+                    <Button
+                        colorScheme="brand"
+                        onClick={() => setShowModal(false)}
+                    >
+                        Close Modal
+                    </Button>
+                    <CreateFolder
+                        folders={folders}
+                        setFolders={setFolders}
+                        folderName={folderName}
+                        setFolderName={setFolderName}
+                        setShowModal={setShowModal}
+                    />
+                </Modal>
+>>>>>>> origin/main
             </Router>
         </Box>
     );
