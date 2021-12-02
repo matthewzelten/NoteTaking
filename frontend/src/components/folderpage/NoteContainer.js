@@ -13,6 +13,10 @@ function ShowNotes(props) {
             <WrapItem>
                 <Link to={`/note`}>
                     <Button
+                        onClick={() => {
+                            props.setNoteName(row.name);
+                            props.setNoteContents(row.contents);
+                        }}
                         style={{
                             width: "200px",
                             height: "50px",
@@ -35,6 +39,8 @@ function NoteContainer(props) {
             <Wrap marginLeft="90px" jusitfy="center">
                 <ShowNotes
                     noteData={props.noteData}
+                    setNoteName={props.setNoteName}
+                    setNoteContents={props.setNoteContents}
                 />
             </Wrap>
         </Flex>

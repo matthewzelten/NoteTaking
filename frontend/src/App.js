@@ -100,7 +100,7 @@ function App() {
                     <Route path={`/folder/`}>
                         <Folder
                             setNoteName={setNoteName}
-                            noteContents={noteContents}
+                            setNoteContents={setNoteContents}
                             setFolderName={setFolderName}
                             folderName={folderName}
                             noteName={noteName}
@@ -112,7 +112,7 @@ function App() {
                         />
                     </Route>
                     <Route path="/note">
-                        <Note noteName={noteName} contents={noteContents} folderName={folderName}/>
+                        <Note noteName={noteName} noteContents={noteContents} folderName={folderName} contents={noteContents}/>
                     </Route>
                 </Switch>
             </Router>
