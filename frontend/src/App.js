@@ -95,7 +95,8 @@ function App() {
                             folderName={folderName}
                             setCurrentFolder={setCurrentFolder}
                             isDuplicate={isDuplicate}
-                            />
+                            setFolders={setFolders}
+                        />
                     </Route>
                     <Route path={`/folder/`}>
                         <Folder
