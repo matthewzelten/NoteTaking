@@ -4,6 +4,7 @@ import axios from "axios";
 import { Box, Heading, Text } from "@chakra-ui/layout";
 import { Input } from "@chakra-ui/input";
 import { Button } from "@chakra-ui/button";
+import { useHistory } from 'react-router-dom';
 
 const letters = /^[0-9a-zA-Z\s]+$/;
 
@@ -25,8 +26,9 @@ function CreateFolder(props) {
     const [isPrivate, setIsPrivate] = useState(false);
     const [passwordA, setPasswordA] = useState("");
     const [passwordB, setPasswordB] = useState("");
-
     const [errorMessage, setErrorMessage] = useState("");
+
+    const history = useHistory();
 
     function verifyMatchingPasswords() {
         if (!isPrivate) {
@@ -38,7 +40,7 @@ function CreateFolder(props) {
         return false;
     }
 
-    function submitFolderName() {
+    async function submitFolderName() {
         if (
             letters.test(newFolderName) &&
             newFolderName !== "" &&
@@ -51,26 +53,25 @@ function CreateFolder(props) {
                 isPrivate: isPrivate,
                 notes: [],
             };
-            postNewFolder(folder)
-                .then((result) => {
-                    if (result && result.status === 201) {
-                        props.setFolders([...props.folders, result.data]);
-                        props.setShowModal(false);
-                    } else {
-                        throw "unable to create folder";
-                    }
-                })
-                .then(() => {
-                    props.setFolderName(newFolderName);
-                    props.setShowModal(false);
-                    props.setCurrentFolder({
-                        name: newFolderName,
-                        color: color,
-                        password: passwordA,
-                    });
+            setErrorMessage("Submitting folder...");
+            let result = await postNewFolder(folder)
+            if (result && result.status === 201) {
+                props.setFolders([...props.folders, result.data]);
+                //props.setShowModal(false);
 
-                    //window.location.reload();
+                props.setFolderName(newFolderName);
+                //props.setShowModal(false);
+                props.setCurrentFolder({
+                    name: newFolderName,
+                    color: color,
+                    password: passwordA,
                 });
+                setErrorMessage("");
+                return true;
+            } else {
+                setErrorMessage("Folder creation failed")
+                throw "Folder creation failed";
+            }
         }
     }
 
@@ -141,13 +142,13 @@ function CreateFolder(props) {
                         props.isDuplicate(newFolderName)
                     }
                     colorScheme="brand"
-                    onClick={() => {
+                    onClick={async () => {
                         try {
-                            submitFolderName();
-                            props.router.push(`/folder/${newFolderName.split(" ").join("+")}`);
-                            window.location.reload();
+                            await submitFolderName();
+                            props.setShowModal(false);
+                            history.push(`/folder/${newFolderName.split(" ").join("+")}`);
                         } catch (e) {
-
+                            setErrorMessage(e);
                         }
 
                     }}
