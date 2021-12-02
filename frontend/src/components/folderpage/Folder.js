@@ -70,6 +70,8 @@ function Folder(props) {
             </Button>
             <NoteContainer
                 noteData={notes}
+                setNoteName={props.setNoteName}
+                setNoteContents={props.setNoteContents}
             />
             <Modal isOpen={showNoteModal}>
                 <ModalOverlay />

@@ -9,7 +9,8 @@ import axios from "axios";
 
 
 function Note(props) {
-    let noteContents = "";
+    let noteContents = props.noteContents;
+    const folderPath = props.folderName.split(" ").join("+");
     /*
     const [note, setNote] = useState(
         {
@@ -60,14 +61,16 @@ function Note(props) {
         noteContents = html;
     }
 
+    //placeholder={"Write something awesome..."}
+
     return (
         <div>
-            <Link to="/folder">
+            <Link to={`/folder/${folderPath}`}>
                 <Button>Return</Button>
             </Link>
             <h1>{props.noteName}</h1>
 
-            <Editor handleUpdate={handleUpdate} placeholder={"Write something awesome..."} defaultValue={props.contents} />
+            <Editor handleUpdate={handleUpdate} value={noteContents} placeholder={"Write something awesome..."}/>
             <div>
                 <button onClick={saveNote}>Save Note</button>
             </div>
@@ -83,7 +86,7 @@ class Editor extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { editorHtml: "", theme: "snow" };
+        this.state = { editorHtml: props.value, theme: "snow" };
         this.handleChange = this.handleChange.bind(this);
     }
 

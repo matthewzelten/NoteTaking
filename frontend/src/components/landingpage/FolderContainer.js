@@ -1,10 +1,10 @@
 import { Button } from "@chakra-ui/button";
 import React from "react";
 import { Link } from "react-router-dom";
-import { Box, Flex, Text, Wrap, WrapItem } from "@chakra-ui/layout";
+import { Flex, Wrap, WrapItem } from "@chakra-ui/layout";
 
 function ShowFolders(props) {
-    const folders = props.folderData.map((row, index) => {
+    return props.folderData.map((row, index) => {
         const buttonColor =
             row.color === undefined || row.color === ""
                 ? "#0000FF"
@@ -25,7 +25,6 @@ function ShowFolders(props) {
             </WrapItem>
         );
     });
-    return folders;
 }
 
 function FolderContainer(props) {

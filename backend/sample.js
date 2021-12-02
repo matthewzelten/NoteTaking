@@ -22,6 +22,9 @@ app.use(cors());
 app.use(express.json());
 
 // main page: get all folders
+/**
+ * Get all folders
+ */
 app.get("/", async (req, res) => {
     const allFolders = await getAllFolders();
     res.send(allFolders);
