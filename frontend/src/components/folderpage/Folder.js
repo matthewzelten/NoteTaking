@@ -6,6 +6,9 @@ import { Button } from "@chakra-ui/button";
 import { Center, Box, Heading } from "@chakra-ui/layout";
 import { Text } from "@chakra-ui/layout";
 import { Input } from "@chakra-ui/input";
+import FolderContainer from "../landingpage/FolderContainer";
+import NoteContainer from "./NoteContainer";
+import axios from "axios";
 
 function Folder(props) {
     const [currentFolder, setCurrentFolder] = useState({
@@ -13,15 +16,32 @@ function Folder(props) {
     });
     const [showNoteModal, setShowNoteModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [notes, setNotes] = useState([]);
 
     useEffect(() => {
         getCurrentFolder();
+        fetchAllNotes().then((result) => {
+            if (result) {
+                setNotes(result);
+            }
+        });
     }, []);
+
 
     function getCurrentFolder() {
         const folderURL = window.location.pathname.split("/")[2];
         const replaced = folderURL.split("+").join(" ");
         props.getFolder(replaced).then((data) => setCurrentFolder(data));
+    }
+
+    async function fetchAllNotes() {
+        try {
+            const response = await axios.get("http://localhost:5000/" + props.folderName);
+            return response.data;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
     }
 
     let folderColor = currentFolder === undefined ? "white" : currentFolder.color
@@ -68,7 +88,9 @@ function Folder(props) {
             >
                 + Add New Note
             </Button>
-
+            <NoteContainer
+                noteData={notes}
+            />
             <Modal isOpen={showNoteModal}>
                 <Button
                     style={{

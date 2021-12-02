@@ -87,6 +87,17 @@ async function findNote(folderName, noteName) {
 }
 
 /**
+ *
+ * @param folderName
+ * @returns {Promise<[]|[{ref: string, type: *}]|*>}
+ */
+async function getNotes(folderName) {
+    let thisFolder = (await findFolder(folderName))[0];
+    await thisFolder.populate('notes');
+    return thisFolder.notes;
+}
+
+/**
  * Adds a new folder to the database. Folder must be structured correctly.
  * @param folder
  * @returns {Promise<boolean|(Document<any, any, unknown> & Require_id<unknown>)>}
@@ -219,4 +230,5 @@ module.exports = {
     deleteFolder,
     deleteNote,
     setConnection,
+    getNotes
 };

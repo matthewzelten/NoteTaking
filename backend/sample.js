@@ -7,7 +7,8 @@ const {
     addFolder,
     addNote,
     deleteFolder,
-    deleteNote} = require('./connections');
+    deleteNote,
+    getNotes} = require('./connections');
 const mongoose = require("mongoose");
 const Note = require("./Database/Models/noteSchema").note;
 const app = express();
@@ -27,7 +28,7 @@ app.get("/", async (req, res) => {
 });
 
 /**
- * Get all notes for the given folders
+ * Get all notes for the given folder
  * req parameters:
  * string folderName: name of the folder
  * string pass: given password
@@ -35,7 +36,7 @@ app.get("/", async (req, res) => {
 app.get("/:folderName", async (req, res) => {
     const folderName = req.params["folderName"];
     const passw = req.query["pass"];
-    const result = await findFolder(folderName);
+    const result = await getNotes(folderName);
     if (result === undefined || result.length === 0) {
         res.status(404).send("Folder not found.");
     } else {

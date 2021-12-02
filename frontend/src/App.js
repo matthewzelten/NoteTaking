@@ -22,12 +22,15 @@ function App() {
     const [showModal, setShowModal] = useState(false);
     const [folders, setFolders] = useState([]);
 
+
+
     useEffect(() => {
         fetchAllFolders().then((result) => {
             if (result) {
                 setFolders(result);
             }
         });
+
     }, []);
 
     async function fetchAllFolders() {
@@ -39,22 +42,6 @@ function App() {
             return false;
         }
     }
-
-  function updateNote(note) {
-    makePostCall(note).then( result => {
-      //if(result && result.status === 201) setCharacters([...characters, result.data]);
-    });
-  }
-
-  async function makePostCall(note) {
-    try {
-      return await axios.post('http://localhost:5000/notes', note);
-      console.log(`Posted ${note}`);
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
-  }
 
     async function getFolder(name) {
         try {
@@ -83,6 +70,7 @@ function App() {
         setFolderName(name);
         setFolderURL(replaced);
     }
+
 
     return (
         <Box bg="#216869">
