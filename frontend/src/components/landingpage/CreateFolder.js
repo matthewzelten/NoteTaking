@@ -6,7 +6,7 @@ import { Heading } from "@chakra-ui/layout";
 import { Input } from "@chakra-ui/input";
 import { Button } from "@chakra-ui/button";
 
-const letters = /^[0-9a-zA-Z]+$/;
+const letters = /^[0-9a-zA-Z\s]+$/;
 
 function CreateFolder(props) {
     const [newFolderName, setNewFolderName] = useState("");
@@ -79,7 +79,7 @@ function CreateFolder(props) {
 
     return (
         <form margin="5px">
-            <Heading as="h2" size="2xl">
+            <Heading size="xl">
                 Add New Folder
             </Heading>
             <Input
@@ -98,7 +98,7 @@ function CreateFolder(props) {
                 setPasswordA={setPasswordA}
                 setPasswordB={setPasswordB}
             />
-            <Link to={`/folder/${newFolderName}`}>
+            <Link to={`/folder/${newFolderName.split(" ").join("+")}`}>
                 <Button
                     disabled={!verifyMatchingPasswords() || !validFolder}
                     colorScheme="brand"

@@ -11,13 +11,13 @@ import Note from "./components/notepage/Note";
 import axios from "axios";
 import { Button } from "@chakra-ui/button";
 import { Box } from "@chakra-ui/layout";
-
+import { Flex } from "@chakra-ui/layout";
+import LandingPage from "./components/landingpage/LandingPage";
 function App() {
     const [folderName, setFolderName] = useState("");
     const [folderURL, setFolderURL] = useState("");
     const [currentFolder, setCurrentFolder] = useState({});
     const [noteName, setNoteName] = useState([]);
-    const [showModal, setShowModal] = useState(false);
     const [folders, setFolders] = useState([]);
 
     useEffect(() => {
@@ -50,11 +50,13 @@ function App() {
 
     async function deleteFolder(folder) {
         try {
-            const response = await axios.delete(`http://localhost:5000/`, {
-                data: folder,
-            }).then(() => {
-                window.location.reload();
-            });
+            const response = await axios
+                .delete(`http://localhost:5000/`, {
+                    data: folder,
+                })
+                .then(() => {
+                    window.location.reload();
+                });
         } catch (error) {
             console.log(error);
         }
@@ -73,23 +75,18 @@ function App() {
     }
 
     return (
-        <Box w="100%" h="100%" bg="#216869">
+        <Box className="App">
             <Router>
                 <Header />
                 <Switch>
                     <Route exact path="/">
-                        <Box
-                            style={{
-                                display: "flex",
-                                flexDirection: "row",
-                            }}
-                        >
-                            <FolderContainer
-                                redirectFolder={redirectFolder}
-                                folderData={folders}
-                                setShowModal={setShowModal}
+                        <LandingPage 
+                            redirectFolder={redirectFolder}
+                            folders={folders}
+                            setFolderName={setFolderName}
+                            folderName={folderName}
+                            setCurrentFolder={setCurrentFolder}
                             />
-                        </Box>
                     </Route>
                     <Route path={`/folder/`}>
                         <Folder
@@ -107,18 +104,6 @@ function App() {
                         <Note noteName={noteName} />
                     </Route>
                 </Switch>
-                <Modal isOpen={showModal}>
-                    <Button
-                        onClick={() => setShowModal(false)}>
-                        Close Modal
-                    </Button>
-                    <CreateFolder
-                        folderName={folderName}
-                        setFolderName={setFolderName}
-                        setCurrentFolder={setCurrentFolder}
-                        setShowModal={setShowModal}
-                    />
-                </Modal>
             </Router>
         </Box>
     );

@@ -19,9 +19,7 @@ function FileSettings(props) {
             </Heading>
             <RadioGroup value={props.color} onChange={handleColorChange}>
                 <Stack>
-                    <Radio value="C83E4D" color="brand.500">
-                        Brick Red
-                    </Radio>
+                    <Radio value="C83E4D">Brick Red</Radio>
                     <Radio value="F4B860">Sunray</Radio>
                     <Radio value="F4D6CC">Silk</Radio>
                 </Stack>

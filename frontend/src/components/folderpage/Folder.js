@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Modal from "react-modal";
 import CreateNote from "./CreateNote";
 import { Button } from "@chakra-ui/button";
-import { Center, Box, Heading } from "@chakra-ui/layout";
+import { Flex, Box, Heading } from "@chakra-ui/layout";
 import { Text } from "@chakra-ui/layout";
 import { Input } from "@chakra-ui/input";
+import {
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+  } from '@chakra-ui/react'
 
 function Folder(props) {
     const [showNoteModal, setShowNoteModal] = useState(false);
@@ -29,7 +37,7 @@ function Folder(props) {
             >
                 DELETE FOLDER
             </Button>
-            <Heading style={{ color: "white" }}>
+            <Heading style={{ color: `#${folderColor}` }}>
                 {props.currentFolder === undefined
                     ? props.folderName
                     : props.currentFolder.name}
@@ -55,32 +63,31 @@ function Folder(props) {
                     setShowNoteModal={setShowNoteModal}
                 />
             </Modal>
-            <Modal
-                style={{
-                    overlay: { left: "30%", right: "30%", bottom: "50%" },
-                }}
-                isOpen={showDeleteModal}
-            >
-                <Text>
-                    Are you sure you want to delete this folder? This folder and
-                    all it's notes will be deleted. This action is
-                    non-reversible
-                </Text>
-                <Link to="/">
-                    <Button
-                        bg={`#${folderColor}`}
-                        onClick={() => props.deleteFolder(props.currentFolder)}
-                    >
-                        Yes, delete this folder
-                    </Button>
-                </Link>
-
-                <Button
-                    bg={`#${folderColor}`}
-                    onClick={() => setShowDeleteModal(false)}
-                >
-                    No, take me back
-                </Button>
+            <Modal isOpen={showDeleteModal}>
+                <ModalOverlay/>
+                <ModalContent>
+                    <Box m={3}>
+                        <Text color="brand.100">
+                            Are you sure you want to delete this folder? This folder and
+                            all it's notes will be deleted. This action is
+                            non-reversible
+                        </Text>
+                        <Link to="/">
+                            <Button
+                                bg={`#${folderColor}`}
+                                onClick={() => props.deleteFolder(props.currentFolder)}
+                            >
+                                Yes, delete this folder
+                            </Button>
+                        </Link>
+                        <Button
+                            bg={`#${folderColor}`}
+                            onClick={() => setShowDeleteModal(false)}
+                        >
+                            No, take me back
+                        </Button>
+                    </Box>
+                </ModalContent>
             </Modal>
         </Box>
     );
