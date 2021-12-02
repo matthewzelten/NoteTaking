@@ -11,6 +11,7 @@ import Note from "./components/notepage/Note";
 import axios from "axios";
 import { Button } from "@chakra-ui/button";
 import { Box } from "@chakra-ui/layout";
+import { Flex } from "@chakra-ui/layout";
 
 function App() {
     const [folderName, setFolderName] = useState("");
@@ -50,11 +51,13 @@ function App() {
 
     async function deleteFolder(folder) {
         try {
-            const response = await axios.delete(`http://localhost:5000/`, {
-                data: folder,
-            }).then(() => {
-                window.location.reload();
-            });
+            const response = await axios
+                .delete(`http://localhost:5000/`, {
+                    data: folder,
+                })
+                .then(() => {
+                    window.location.reload();
+                });
         } catch (error) {
             console.log(error);
         }
@@ -73,7 +76,7 @@ function App() {
     }
 
     return (
-        <Box w="100%" h="100%" bg="#216869">
+        <Box className="App" h="100%" bg="#216869">
             <Router>
                 <Header />
                 <Switch>
@@ -108,8 +111,7 @@ function App() {
                     </Route>
                 </Switch>
                 <Modal isOpen={showModal}>
-                    <Button
-                        onClick={() => setShowModal(false)}>
+                    <Button onClick={() => setShowModal(false)}>
                         Close Modal
                     </Button>
                     <CreateFolder
