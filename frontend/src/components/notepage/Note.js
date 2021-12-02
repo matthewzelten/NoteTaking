@@ -1,31 +1,94 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import ReactQuill from "react-quill";
 import { Link } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
+import axios from "axios";
+
+
 
 function Note(props) {
+    let noteContents = "";
+    /*
+    const [note, setNote] = useState(
+        {
+            name: null,
+            contents: null,
+            folder: null,
+            color: null,
+            isPrivate: null,
+            password: null,
+            isLocked: null
+        }
+    );*/
+
+    async function saveNote(){
+        console.log(`Saving current note`);
+
+        const tempNote = {
+            name: props.noteName,
+            folder: props.folderName,
+            color: null,
+            isPrivate: null,
+            password: null,
+            contents: noteContents,
+            isLocked: null,
+            toSave: true
+        }
+
+        console.log(`Updating note ${tempNote}`);
+        await postNoteUpdate(tempNote);
+
+
+    }
+
+    /**
+     * Post note to the backend
+     * @param note The pre-constructed note object to submit to the backend
+     * @returns {Promise<boolean|AxiosResponse<unknown>>} the response from the backend
+     */
+    async function postNoteUpdate(note) {
+        console.log(`Updating ${note} in ${props.folderName}`);
+        console.log(`Note name: ${props.noteName} contents: ${note.contents}`);
+        console.log(`Note name: ${note.name} contents: ${note.contents}`);
+
+        try {
+            const response = await axios.post('http://localhost:5000/notes', note);
+            console.log(response);
+            return response;
+        }
+        catch (error) {
+            console.log(`Error updating note`);
+            console.log(error);
+            return false;
+        }
+    }
+
+    function handleUpdate(html) {
+        noteContents = html;
+    }
+
     return (
         <div>
             <Link to="/folder">
                 <button>Return</button>
             </Link>
             <h1>{props.noteName}</h1>
-            <form>
-                <Editor placeholder={"Write something awesome..."} />
-                <div class="alter-height">
-                    <button onClick={saveNote()}>Save Note</button>
-                </div>
-            </form>
+
+            <Editor handleUpdate={handleUpdate} placeholder={"Write something awesome..."} defaultValue={props.contents} />
+            <div>
+                <button onClick={saveNote}>Save Note</button>
+            </div>
         </div>
     );
 }
 
-function saveNote() {
-    //implement this to save to backend
-}
-
+/**
+ * The editor component
+ */
 class Editor extends React.Component {
+
+
     constructor(props) {
         super(props);
         this.state = { editorHtml: "", theme: "snow" };
@@ -33,7 +96,12 @@ class Editor extends React.Component {
     }
 
     handleChange(html) {
+        //noteDelta = this.editor.getContents();
+        console.log("CHANGE");
+        console.log(html);
+        this.props.handleUpdate(html);
         this.setState({ editorHtml: html });
+
     }
 
     render() {

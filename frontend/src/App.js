@@ -14,11 +14,15 @@ import { Box } from "@chakra-ui/layout";
 import { Text } from "@chakra-ui/layout";
 
 function App() {
+
     const [folderName, setFolderName] = useState("");
     const [folderURL, setFolderURL] = useState("");
     const [noteName, setNoteName] = useState([]);
+    const [noteContents, setNoteContents] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [folders, setFolders] = useState([]);
+
+
 
     useEffect(() => {
         fetchAllFolders().then((result) => {
@@ -26,6 +30,7 @@ function App() {
                 setFolders(result);
             }
         });
+
     }, []);
 
     async function fetchAllFolders() {
@@ -66,6 +71,7 @@ function App() {
         setFolderURL(replaced);
     }
 
+
     return (
         <Box bg="#216869">
             <Router>
@@ -88,6 +94,7 @@ function App() {
                     <Route path={`/folder/`}>
                         <Folder
                             setNoteName={setNoteName}
+                            noteContents={noteContents}
                             setFolderName={setFolderName}
                             folderName={folderName}
                             noteName={noteName}
@@ -96,7 +103,7 @@ function App() {
                         />
                     </Route>
                     <Route path="/note">
-                        <Note noteName={noteName} />
+                        <Note noteName={noteName} contents={noteContents} folderName={folderName}/>
                     </Route>
                 </Switch>
                 <Modal isOpen={showModal}>

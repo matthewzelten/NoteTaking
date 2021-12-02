@@ -7,11 +7,12 @@ import { Input } from "@chakra-ui/input";
 import { Button } from "@chakra-ui/button";
 
 function CreateFolder(props) {
-    const [newFolderName, setNewFolderName] = useState("");
-    const [color, setColor] = useState("");
-    const [isPrivate, setIsPrivate] = useState(false);
-    const [passwordA, setPasswordA] = useState("");
-    const [passwordB, setPasswordB] = useState("");
+  const [newFolderName, setNewFolderName] = useState("");
+
+  const [color, setColor] = useState("");
+  const [isPrivate, setIsPrivate] = useState(false);
+  const [passwordA, setPasswordA] = useState("");
+  const [passwordB, setPasswordB] = useState("");
 
     function verifyMatchingPasswords() {
         if (!isPrivate) {
