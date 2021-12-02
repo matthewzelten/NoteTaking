@@ -1,26 +1,28 @@
 const mongoose = require("mongoose");
-const {folderConnection} = require("../../connections")
 const collectionName = "Folders";
 
-const folderSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-        trim: true,
+const folderSchema = new mongoose.Schema(
+    {
+        name: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        color: {
+            type: String,
+            required: false,
+        },
+        isPrivate: {
+            type: Boolean,
+            required: true,
+        },
+        password: {
+            type: String,
+            required: false,
+            trim: true,
+        },
     },
-    color: {
-      type: String,
-      required: false
-    },
-    isPrivate: {
-      type: Boolean,
-        required: true
-    },
-    password: {
-      type: String,
-        required: false,
-        trim: true
-    },
-}, {collection : collectionName});
+    { collection: collectionName }
+);
 
 module.exports = folderSchema;
