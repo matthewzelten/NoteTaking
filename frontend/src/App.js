@@ -89,12 +89,13 @@ function App() {
                             folderName={folderName}
                             setCurrentFolder={setCurrentFolder}
                             isDuplicate={isDuplicate}
+                            setFolders={setFolders}
                         />
                     </Route>
                     <Route exact path={`/folder/${folderURL}`}>
                         <Folder
                             setNoteName={setNoteName}
-                            noteContents={noteContents}
+                            setNoteContents={setNoteContents}
                             setFolderName={setFolderName}
                             folderName={folderName}
                             noteName={noteName}
@@ -110,6 +111,7 @@ function App() {
                         <Note
                             folderURL={folderURL}
                             noteName={noteName}
+                            noteContents={noteContents}
                             contents={noteContents}
                             folderName={folderName}
                         />

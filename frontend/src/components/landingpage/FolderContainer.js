@@ -8,7 +8,8 @@ function ShowFolders(props) {
         props.setFolderName(name)
         props.setFolderURL(URL)
     }
-    const folders = props.folderData.map((row, index) => {
+    
+    return props.folderData.map((row, index) => {
         const buttonColor =
             row.color === undefined || row.color === ""
                 ? "#0000FF"
@@ -29,7 +30,6 @@ function ShowFolders(props) {
             </WrapItem>
         );
     });
-    return folders;
 }
 
 function FolderContainer(props) {

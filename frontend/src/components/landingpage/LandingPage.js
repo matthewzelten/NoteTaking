@@ -33,6 +33,8 @@ function LandingPage(props) {
                             setCurrentFolder={props.setCurrentFolder}
                             setShowModal={setShowModal}
                             isDuplicate={props.isDuplicate}
+                            setFolders={props.setFolders}
+                            folders={props.folders}
                         />
                     </Box>
                 </ModalContent>

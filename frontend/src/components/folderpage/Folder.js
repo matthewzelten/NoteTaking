@@ -71,6 +71,8 @@ function Folder(props) {
             <NoteContainer
                 folderURL={props.folderURL}
                 noteData={notes}
+                setNoteName={props.setNoteName}
+                setNoteContents={props.setNoteContents}
             />
             <Modal isOpen={showNoteModal}>
                 <ModalOverlay />

@@ -1,21 +1,22 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import FileSettings from "../shared/FileSettings";
 import axios from "axios";
-import { Heading } from "@chakra-ui/layout";
+import { Heading, Text } from "@chakra-ui/layout";
 import { Input } from "@chakra-ui/input";
 import { Button } from "@chakra-ui/button";
-import { Box } from "@chakra-ui/layout";
-import { Text } from "@chakra-ui/layout";
+import { useHistory } from 'react-router-dom';
 
 const letters = /^[0-9a-zA-Z\s]+$/;
 
 function CreateFolderError(props) {
-    let message = <Box></Box>;
+
+    return <Text color="red">{props.errorMessage}</Text>;
+
+    /*let message = <Box/>;
     if (props.isDuplicate(props.newFolderName)) {
-        message = <Text color="red">Folder name is a duplicate</Text>;
+        message = <Text color="red">{props.errorMessage}</Text>;
     }
-    return message;
+    return message;*/
 }
 
 function CreateFolder(props) {
@@ -25,6 +26,9 @@ function CreateFolder(props) {
     const [isPrivate, setIsPrivate] = useState(false);
     const [passwordA, setPasswordA] = useState("");
     const [passwordB, setPasswordB] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+
+    const history = useHistory();
 
     function verifyMatchingPasswords() {
         if (!isPrivate) {
@@ -36,19 +40,12 @@ function CreateFolder(props) {
         return false;
     }
 
-    function submitFolderName() {
+    async function submitFolderName() {
         if (
             letters.test(newFolderName) &&
             newFolderName !== "" &&
             color !== ""
         ) {
-            props.setFolderName(newFolderName);
-            props.setShowModal(false);
-            props.setCurrentFolder({
-                name: newFolderName,
-                color: color,
-                password: passwordA,
-            });
             setValidFolder(true);
             const folder = {
                 name: newFolderName,
@@ -56,23 +53,31 @@ function CreateFolder(props) {
                 isPrivate: isPrivate,
                 notes: [],
             };
-            postNewFolder(folder)
-                .then((result) => {
-                    if (result && result.status === 200) {
-                        props.setFolders([...props.folders, newFolderName]);
-                        props.setShowModal(false);
-                    }
-                })
-                .then(() => {
-                    window.location.reload();
+            setErrorMessage("Submitting folder...");
+            let result = await postNewFolder(folder)
+            if (result && result.status === 201) {
+                props.setFolders([...props.folders, result.data]);
+                //props.setShowModal(false);
+
+                props.setFolderName(newFolderName);
+                //props.setShowModal(false);
+                props.setCurrentFolder({
+                    name: newFolderName,
+                    color: color,
+                    password: passwordA,
                 });
+                setErrorMessage("");
+                return true;
+            } else {
+                setErrorMessage("Folder creation failed")
+                throw "Folder creation failed";
+            }
         }
     }
 
     async function postNewFolder(folder) {
         try {
-            const response = await axios.post("http://localhost:5000/", folder);
-            return response;
+            return await axios.post("http://localhost:5000/", folder);
         } catch (error) {
             console.log(error);
             return false;
@@ -80,12 +85,28 @@ function CreateFolder(props) {
     }
 
     function updateFolderName(name) {
-        if (letters.test(name)) {
-            setValidFolder(true);
-            setNewFolderName(name);
-        } else {
-            setValidFolder(false);
+        let err = "";
+        setValidFolder(false);
+        if (!letters.test(name)) {
+            err = "Name contains invalid character(s)";
+        } else if (props.isDuplicate(name)) {
+            err = "A folder with this name already exists";
         }
+
+        switch (err) {
+            case "Name contains invalid character(s)" :
+                break;
+            case "A folder with this name already exists":
+                break;
+            case "":
+                setValidFolder(true);
+                setNewFolderName(name);
+                break;
+            default:
+                err = "Unknown error";
+                break;
+        }
+        setErrorMessage(err);
     }
 
     return (
@@ -110,8 +131,9 @@ function CreateFolder(props) {
             <CreateFolderError
                 isDuplicate={props.isDuplicate}
                 newFolderName={newFolderName}
+                errorMessage={errorMessage}
             />
-            <Link to={`/folder/${newFolderName.split(" ").join("+")}`}>
+
                 <Button
                     disabled={
                         !verifyMatchingPasswords() ||
@@ -120,11 +142,20 @@ function CreateFolder(props) {
                         props.isDuplicate(newFolderName)
                     }
                     colorScheme="brand"
-                    onClick={() => submitFolderName()}
+                    onClick={async () => {
+                        try {
+                            await submitFolderName();
+                            props.setShowModal(false);
+                            history.push(`/folder/${newFolderName.split(" ").join("+")}`);
+                        } catch (e) {
+                            setErrorMessage(e);
+                        }
+
+                    }}
                 >
                     Create
                 </Button>
-            </Link>
+
         </form>
     );
 }

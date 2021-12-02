@@ -17,6 +17,10 @@ function ShowNotes(props) {
                         h='100px'
                         bg={`${buttonColor}`}
                         m={2}
+                        onClick={() => {
+                            props.setNoteName(row.name);
+                            props.setNoteContents(row.contents);
+                        }}
                     >
                         {row.name}
                     </Button>
@@ -34,6 +38,8 @@ function NoteContainer(props) {
                 <ShowNotes
                     folderURL={props.folderURL}
                     noteData={props.noteData}
+                    setNoteName={props.setNoteName}
+                    setNoteContents={props.setNoteContents}
                 />
             </Wrap>
         </Flex>
