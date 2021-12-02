@@ -15,7 +15,7 @@ function LandingPage(props) {
             }}
         >
             <FolderContainer
-                redirectFolder={props.redirectFolder}
+                setFolderName={props.setFolderName}
                 folderData={props.folders}
                 setShowModal={setShowModal}
             />
@@ -31,6 +31,7 @@ function LandingPage(props) {
                             setFolderName={props.setFolderName}
                             setCurrentFolder={props.setCurrentFolder}
                             setShowModal={setShowModal}
+                            isDuplicate={props.isDuplicate}
                         />
                     </Box>
                 </ModalContent>

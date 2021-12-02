@@ -5,21 +5,13 @@ import { Button } from "@chakra-ui/button";
 import { Flex, Box, Heading } from "@chakra-ui/layout";
 import { Text } from "@chakra-ui/layout";
 import { Input } from "@chakra-ui/input";
-<<<<<<< HEAD
+import axios from "axios";
+import NoteContainer from "./NoteContainer";
 import {
     Modal,
     ModalOverlay,
     ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
   } from '@chakra-ui/react'
-=======
-import FolderContainer from "../landingpage/FolderContainer";
-import NoteContainer from "./NoteContainer";
-import axios from "axios";
->>>>>>> origin/main
 
 function Folder(props) {
     const [showNoteModal, setShowNoteModal] = useState(false);
@@ -27,13 +19,6 @@ function Folder(props) {
     const [notes, setNotes] = useState([]);
 
     useEffect(() => {
-<<<<<<< HEAD
-        props.getCurrentFolder();
-    }, []);
-
-    let folderColor =
-        props.currentFolder === undefined ? "white" : props.currentFolder.color;
-=======
         getCurrentFolder();
         fetchAllNotes().then((result) => {
             if (result) {
@@ -46,21 +31,19 @@ function Folder(props) {
     function getCurrentFolder() {
         const folderURL = window.location.pathname.split("/")[2];
         const replaced = folderURL.split("+").join(" ");
-        props.getFolder(replaced).then((data) => setCurrentFolder(data));
+        props.getFolder(replaced).then((data) => props.setCurrentFolder(data));
     }
 
     async function fetchAllNotes() {
         try {
             const response = await axios.get("http://localhost:5000/" + props.folderName);
-            return response.data;
+            return response.data.notes;
         } catch (error) {
             console.log(error);
             return false;
         }
     }
-
-    let folderColor = currentFolder === undefined ? "white" : currentFolder.color
->>>>>>> origin/main
+    let folderColor = props.currentFolder === undefined ? "white" : props.currentFolder.color
 
     return (
         <Box>
@@ -89,19 +72,24 @@ function Folder(props) {
                 noteData={notes}
             />
             <Modal isOpen={showNoteModal}>
-                <Button
-                    bg={`#${folderColor}`}
-                    onClick={() => setShowNoteModal(false)}
-                >
-                    Close
-                </Button>
-                <CreateNote
-                    folderColor={folderColor}
-                    setNoteName={props.setNoteName}
-                    setShowNoteModal={setShowNoteModal}
-                    folderName = {props.folderName}
-                    noteContents={props.noteContents}
-                />
+                <ModalOverlay />
+                <ModalContent>
+                    <Box>
+                        <Button
+                            bg={`#${folderColor}`}
+                            onClick={() => setShowNoteModal(false)}
+                        >
+                            Close
+                        </Button>
+                        <CreateNote
+                            folderColor={folderColor}
+                            setNoteName={props.setNoteName}
+                            setShowNoteModal={setShowNoteModal}
+                            folderName = {props.folderName}
+                            noteContents={props.noteContents}
+                        />
+                    </Box>
+                </ModalContent>
             </Modal>
             <Modal isOpen={showDeleteModal}>
                 <ModalOverlay/>

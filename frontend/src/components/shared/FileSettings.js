@@ -9,7 +9,6 @@ function FileSettings(props) {
     const [disablePassword, setDisablePassword] = useState(true);
 
     function handleColorChange(selectedColor) {
-        console.log(`Setting color to ${selectedColor}`);
         props.setColor(selectedColor);
     }
 

@@ -17,7 +17,7 @@ function ShowFolders(props) {
                         w="200px"
                         h="100px"
                         bg={`${buttonColor}`}
-                        onClick={() => props.redirectFolder(row.name)}
+                        onClick={() => props.setFolderName(row.name)}
                     >
                         {row.name}
                     </Button>
@@ -33,6 +33,7 @@ function FolderContainer(props) {
         <Flex direction="row">
             <Wrap marginLeft="90px" jusitfy="center">
                 <ShowFolders
+                    setFolderName={props.setFolderName}
                     redirectFolder={props.redirectFolder}
                     folderData={props.folderData}
                 />

@@ -217,14 +217,6 @@ async function addNotePost(req, res) {
         console.log(`Duplicate note & not saving`);
         res.status(404).send("Duplicate note name.").end();
     }
-<<<<<<< HEAD
-});
-//delete folder
-app.delete("/", (req, res) => {
-    const folderToDelete = req.body["name"];
-    let result = findFolder(folderToDelete);
-    if (result === undefined || result.length == 0) {
-=======
 }
 
 function searchNotePost(req, res, keyword) {
@@ -245,7 +237,6 @@ app.delete("/", async (req, res) => {
     const folderToDelete = req.body["name"];
     let result = await findFolder(folderToDelete);
     if (result === undefined || result.length === 0) {
->>>>>>> origin/main
         res.status(404).send(folderToDelete);
     } else {
         await deleteFolder(folderToDelete);

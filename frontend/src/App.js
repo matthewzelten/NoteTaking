@@ -13,17 +13,13 @@ import { Button } from "@chakra-ui/button";
 import { Box } from "@chakra-ui/layout";
 import { Flex } from "@chakra-ui/layout";
 import LandingPage from "./components/landingpage/LandingPage";
+
 function App() {
 
     const [folderName, setFolderName] = useState("");
-    const [folderURL, setFolderURL] = useState("");
     const [currentFolder, setCurrentFolder] = useState({});
     const [noteName, setNoteName] = useState([]);
-<<<<<<< HEAD
-=======
     const [noteContents, setNoteContents] = useState("");
-    const [showModal, setShowModal] = useState(false);
->>>>>>> origin/main
     const [folders, setFolders] = useState([]);
 
 
@@ -50,7 +46,7 @@ function App() {
     async function getFolder(name) {
         try {
             const response = await axios.get(`http://localhost:5000/${name}`);
-            const data = response.data[0];
+            const data = response.data;
             return data;
         } catch (error) {
             console.log(error);
@@ -77,12 +73,15 @@ function App() {
         getFolder(replaced).then((data) => setCurrentFolder(data));
     }
 
-    function redirectFolder(name) {
-        const replaced = name.split(" ").join("+");
-        setFolderName(name);
-        setFolderURL(replaced);
+    function isDuplicate(name) {
+        for (let i = 0; i < folders.length; i++) {
+            const folder = folders[i];
+            if(folder.name === name) {
+                return true
+            }
+        }
+        return false
     }
-
 
     return (
         <Box className="App">
@@ -91,11 +90,11 @@ function App() {
                 <Switch>
                     <Route exact path="/">
                         <LandingPage 
-                            redirectFolder={redirectFolder}
                             folders={folders}
                             setFolderName={setFolderName}
                             folderName={folderName}
                             setCurrentFolder={setCurrentFolder}
+                            isDuplicate={isDuplicate}
                             />
                     </Route>
                     <Route path={`/folder/`}>
@@ -109,30 +108,13 @@ function App() {
                             deleteFolder={deleteFolder}
                             currentFolder={currentFolder}
                             getCurrentFolder={getCurrentFolder}
+                            setCurrentFolder={setCurrentFolder}
                         />
                     </Route>
                     <Route path="/note">
                         <Note noteName={noteName} contents={noteContents} folderName={folderName}/>
                     </Route>
                 </Switch>
-<<<<<<< HEAD
-=======
-                <Modal isOpen={showModal}>
-                    <Button
-                        colorScheme="brand"
-                        onClick={() => setShowModal(false)}
-                    >
-                        Close Modal
-                    </Button>
-                    <CreateFolder
-                        folders={folders}
-                        setFolders={setFolders}
-                        folderName={folderName}
-                        setFolderName={setFolderName}
-                        setShowModal={setShowModal}
-                    />
-                </Modal>
->>>>>>> origin/main
             </Router>
         </Box>
     );
