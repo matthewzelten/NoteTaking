@@ -178,29 +178,16 @@ async function addNote(fName, noteToAdd) {
  */
 async function deleteFolder(folderToDelete) {
     const tempF = getConnection().model("Folder", folderSchema);
-    tempF.deleteOne({ name: folderToDelete }, function (err, result) {
-        //console.log(folderToDelete);
-        //console.log(result.deletedCount);
-        if (result.deletedCount === 0 || result.deletedCount === undefined) {
-            console.log(folderToDelete, ' + ', result.deletedCount, ' returning false');
-            //console.log(err);
-            //throw err;
-            return false;
-        }
-    });
-    console.log(folderToDelete, ' returning true');
-    return true;
-}
-
-/*
-async function deleteFolder(folderToDelete) {
-    for (var i = 1; i < folders["folderList"].length; i++) {
-        if (folders["folderList"][i].name === folderToDelete) {
-            result = folders["folderList"].splice(i, 1);
-            return;
-        }
+    let returnval;
+    let vals = await tempF.deleteOne({ name: folderToDelete });
+    if(vals.deletedCount === 0) {
+        returnval = false;
     }
-}*/
+    else {
+        returnval = true;
+    }
+    return returnval;
+}
 
 /**
  * Deletes note in given folder with given name

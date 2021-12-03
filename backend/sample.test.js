@@ -6,9 +6,7 @@ const connections = require("./connections");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 
 let mongoServerA;
-let mongoServerB;
-let folderConn;
-let noteConn;
+let conn;
 let folderModel;
 
 beforeAll(async () => {
@@ -152,19 +150,19 @@ test("test deleteFolder", async () => {
     //basic delete 2
     let res2 = await connections.deleteFolder('private_folder_1');
     expect(res2).toBeTruthy();
-    //allFolders = await connections.getAllFolders();
-    //expect(allFolders.length).toEqual(2);
+    allFolders = await connections.getAllFolders();
+    expect(allFolders.length).toEqual(2);
 
     //delete previously deleted folder (shouldnt do anything)
-    //expect((res = await connections.deleteFolder('private_folder_1'))).toBeFalsy();
-    //allFolders = await connections.getAllFolders();
-    //expect(allFolders.length).toEqual(2);
+    expect((res = await connections.deleteFolder('private_folder_1'))).toBeFalsy();
+    allFolders = await connections.getAllFolders();
+    expect(allFolders.length).toEqual(2);
 
     //delete non exitent folder
     let res4 = await connections.deleteFolder('non existent folder');
     expect(res4).toBeFalsy();
-    //allFolders = await connections.getAllFolders();
-    //expect(allFolders.length).toEqual(2);
+    allFolders = await connections.getAllFolders();
+    expect(allFolders.length).toEqual(2);
 });
 
 test("test deleteNote", () => {
