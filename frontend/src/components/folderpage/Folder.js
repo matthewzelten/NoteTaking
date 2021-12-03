@@ -21,7 +21,7 @@ function Folder(props) {
     const [canAccess, setCanAccess] = useState(false);
     const [folderName, setFolderName] = useState("");
     const [wrongPw, setWrongPw] = useState(false);
-
+    const [keyword, setKeyword] = useState("");
     useEffect(async () => {
         await getCurrentFolder();
         fetchAllNotes().then((result) => {
@@ -59,6 +59,28 @@ function Folder(props) {
             return false;
         }
     }
+    async function cancelSearch(){
+        setKeyword("");
+        window.location.reload();
+    }
+    async function searchNote(){
+        const search = {keyword:keyword};
+        let result = await getNote(search);
+        if(result && result.status===200){
+            setNotes(result.data);
+        }
+
+    }
+    async function getNote(search){
+        try{
+            const name = window.location.pathname.split("/")[2]; 
+            const result = await axios.post(`http://localhost:5000/${name}`, search);
+            return result;
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
 
     let folderColor =
         props.currentFolder === undefined ? "white" : props.currentFolder.color;
@@ -79,7 +101,9 @@ function Folder(props) {
                     ? `${props.folderName.name}`
                     : `${props.currentFolder.name}`}
             </Heading>
-            <Input placeholder="Search" />
+            <Input placeholder="Search" onChange={(e)=>setKeyword(e.target.value)}/>
+                    <input type="button" value="Search" onClick={searchNote}/>
+                    <input type="button" value="Cancel" onClick={cancelSearch}/>
             <Button
                 bg={`#${folderColor}`}
                 onClick={() => setShowNoteModal(true)}
@@ -159,6 +183,7 @@ function Folder(props) {
                     </Heading>
                 )}
             </Box>
+
         );
     }
 }
