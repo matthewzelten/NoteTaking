@@ -1,7 +1,7 @@
 https://github.com/matthewzelten/NoteTaking
 
 # NoteTaking
-This is a simple application that can store your notes. The landing page serves as a location for users to create folders and access already created folders. 
+This is a simple application that can store your notes. The landing page serves as a location for users to create folders and access already created folders. Users can search for a folder by name.
 When creating a folder the user enters a name and a color with the option of making the folder private and entering a password which is encrypted once submitted. 
 When inside of a folder, the user can return to the landing page, delete the folder, search for notes within a folder, access a previously created note, or create a note. Creating a note has similar options to creating a folder: name and color.
 Inside of a note, the user can now take notes. They have the option return to the folderpage or take notes and to format their notes. Once ready, they are ready to save their Note!
@@ -66,6 +66,6 @@ https://drive.google.com/file/d/1xxpnmCXCTHxab4JEDS-5p60EsnmC_KMj/view?usp=shari
 
 # Code Coverage Report ........ WORK IN PROGRESS
 
-Update as of 12/2/21 9pm.
-Currently, 63% of our model function's lines are covered by tests, and 54% of our functions are covered by tests.
+Update as of 12/3/21 12:31am.
+Currently, 95% of our model function's lines are covered by tests, and 100% of our functions are covered by tests.
 

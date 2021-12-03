@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { Modal, ModalOverlay, ModalContent } from "@chakra-ui/react";
 
-function PirvateFolder(props) {
+function PrivateFolder(props) {
     const [showPassModal, setShowPassModal] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     if (props.isPrivate) {
@@ -102,7 +102,7 @@ function ShowFolders(props) {
         const replaced = row.name.split(" ").join("+");
         return (
             <WrapItem>
-                <PirvateFolder
+                <PrivateFolder
                     buttonColor={buttonColor}
                     updateNameAndURL={updateNameAndURL}
                     setFolderName={props.setFolderName}
@@ -129,6 +129,8 @@ function FolderContainer(props) {
                 />
                 <WrapItem>
                     <Button
+                        bg="brand.100"
+                        color="brand.300"
                         colorScheme="brand.200"
                         w="200px"
                         h="100px"

@@ -163,6 +163,8 @@ function CreateNote(props) {
                     isDuplicate(name) ||
                         !validNote
                 }
+                bg="brand.100"
+                color="brand.300"
                 colorScheme="brand"
                 onClick={async () => {
                     try {
@@ -172,6 +174,7 @@ function CreateNote(props) {
                         await submitNote();
                         props.setNoteName(name);
                         props.setNoteContents("");
+                        props.setNoteColor(color);
                         history.push(`/folder/${props.folderURL}/note/${name.split(" ").join("+")}`);
                     } catch (e) {
                         setErrorMessage(e);

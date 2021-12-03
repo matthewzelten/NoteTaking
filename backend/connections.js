@@ -73,7 +73,6 @@ async function findNote(folderName, noteName) {
     let noteFolder = (await findFolder(folderName))[0];
     await noteFolder.populate("notes");
     let result = noteFolder.notes.filter(note => note.name === noteName);
-    console.log(result);
     if (result.length < 1) {
         return undefined;
     } else {
@@ -92,8 +91,14 @@ async function getNotes(folderName) {
     return thisFolder;
 }
 async function getFolderID(folderName){
+    console.log('HERE1', folderName);
+    console.log('charcode', folderName.charCodeAt(8));
+    folderName.replace(String.fromCharCode(43), " ");
+
+    console.log('HERE2', folderName);
+    console.log('charcode', folderName.charCodeAt(8));
     let folder = await findFolder(folderName);
-    console.log(folder);
+    console.log('HERE', folder);
     return folder[0]._id;
 }
 /**
@@ -104,17 +109,8 @@ async function getFolderID(folderName){
 async function addFolder(folder) {
     const Folder = getConnection().model("Folder", folderSchema);
     let existingFolder = await Folder.findOne({"name" : folder.name});
-    if(existingFolder) {
-        throw `addFolder: folder with name "${folder.name}" already exists.`;
-    } else {
-        try {
-            const folderToAdd = new Folder(folder);
-            return folderToAdd.save();
-        } catch(e) {
-            console.log(e);
-            return false;
-        }
-    }
+    const folderToAdd = new Folder(folder);
+    return folderToAdd.save();
 }
 
 
@@ -125,32 +121,24 @@ async function addFolder(folder) {
  * @returns {Promise<boolean>} whether the note was added
  */
 async function addNote(fName, noteToAdd) {
-    const Note = getConnection().model("Note", noteSchema);
     let thisFolder = (await findFolder(fName))[0];
 
     await thisFolder.populate('notes');
-
+    console.log(thisFolder);
+    console.log(thisFolder.notes);
     let notesList = thisFolder.notes.filter(note => note.name === noteToAdd.name);
 
     if(notesList.length !== 0) {
-        //THIS IS THE SAVE FUNCTION
-        //FIX THIS
         notesList[0].contents = noteToAdd.contents;
         notesList[0].save();
         let contents = await getConnection().model("Note", noteSchema).findOne({name: noteToAdd.name}).contents;
         return contents;
 
     } else {
-        try {
-            const note = await new Note(noteToAdd);
-            await note.save();
-            console.log(note);
-            thisFolder.notes.push(note._id);
-            return await thisFolder.save();
-        } catch(e) {
-            console.log(e);
-            return false;
-        }
+        const note = await new Note(noteToAdd);
+        await note.save();
+        thisFolder.notes.push(note._id);
+        return await thisFolder.save();
 
     }
 }
@@ -161,7 +149,18 @@ async function addNote(fName, noteToAdd) {
  * @returns {Promise<void>}
  */
 async function deleteFolder(folderToDelete) {
+    const Note = getConnection().model("Note", noteSchema);
     const tempF = getConnection().model("Folder", folderSchema);
+    const folder = (await findFolder(folderToDelete))[0];
+    await folder.populate("notes");
+
+    console.log(`Deleting notes in ${folderToDelete}`);
+    for (const note of folder.notes) {
+        await Note.findOneAndDelete({_id: note._id});
+        console.log(`Deleted ${note.name}`);
+    }
+
+
     let returnval;
     let vals = await tempF.deleteOne({ name: folderToDelete });
     if(vals.deletedCount === 0) {
@@ -180,12 +179,14 @@ async function deleteFolder(folderToDelete) {
  * @returns {Promise<boolean>} whether or note the note seems to have been deleted
  */
 async function deleteNote(fName, nName) {
-    const Note = getConnection().model("Note", noteSchema);
     let thisFolder = (await findFolder(fName))[0];
     let originalLength = thisFolder.notes.length;
     await thisFolder.populate("notes");
+
+    let id = thisFolder.notes.filter(note => note.name === nName)[0]._id;
+    await Note.findOneAndDelete({_id: id});
     thisFolder.notes = thisFolder.notes.filter(note => note.name !== nName);
-    thisFolder.save();
+    await thisFolder.save();
     return thisFolder.notes.length < originalLength;
 }
 

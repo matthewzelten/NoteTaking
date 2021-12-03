@@ -11,6 +11,7 @@ let conn;
 let folderModel;
 let noteModel;
 let dummyNote1;
+let generalId;
 
 beforeAll(async () => {
     mongoServerA = await MongoMemoryServer.create();
@@ -64,6 +65,7 @@ beforeEach(async () => {
     await result.save();
 
     let id1 = new mongoose.Types.ObjectId();
+    generalId = id1;
 
     //notes
     dummyNote1 = {
@@ -116,6 +118,14 @@ test("test getAllFolders", async () => {
     expect(folders[3].name).toEqual("public_folder_1");
 });
 
+test("test getNotes", async () => {
+    let foldername = "public_folder_1";
+    let folderWithNotes = await connections.getNotes(foldername);
+    expect(folderWithNotes.notes.length).toEqual(2);
+    expect(folderWithNotes.notes[0].name).toEqual("note_1");
+    expect(folderWithNotes.notes[1].name).toEqual("note_2");
+})
+
 test("test findFolder", async () => {
     let allFolders = await connections.getAllFolders();
 
@@ -135,9 +145,8 @@ test("test findFolder", async () => {
 });
 
 test("test findNote", async () => {
-  console.log('this folder value should be equal to the next things id\n', dummyNote1);
-  let result = await connections.findNote('public_folder_1', 'note_1');
-  expect(result.name).toEqual('note_1');
+    let result = await connections.findNote('public_folder_1', 'note_1');
+    expect(result.name).toEqual('note_1');
 
     result = await connections.findNote('public_folder_1', 'note_x');
     expect(result).toEqual(undefined);
@@ -178,9 +187,50 @@ test('test addFolder', async () => {
     expect(finder[0].password).toEqual('csc307');
 });
 
-test("test addNote", () => {
-    //this looks like itll be refactored
+test("test addNote", async() => {
+  let newNote = {
+    name: "additionalNote",
+    contents: "",
+    color: "C83E4D",
+    folder: generalId,
+    isPrivate: "false",
+    isLocked: "false"
+  };
+  let folderToAddTo = 'public_folder_1';
+
+  let res = await connections.findFolder(folderToAddTo);
+  let notesList = res[0].notes;
+  expect(notesList.length).toEqual(2);
+
+  await connections.addNote(folderToAddTo, newNote);
+  res = await connections.findFolder(folderToAddTo);
+  notesList = res[0].notes;
+  expect(notesList.length).toEqual(3);
+
+
+  /*let newNote1 = {
+    name: "additionalNote",
+    contents: "",
+    color: "C83E4D",
+    folder: generalId,
+    isPrivate: "false",
+    isLocked: "false"
+  };
+  folderToAddTo = 'public_folder_1';
+
+  await connections.addNote(folderToAddTo, newNote1);
+  res = await connections.findFolder(folderToAddTo);
+  notesList = res[0].notes;
+  expect(notesList.length).toEqual(3);*/
+
+
+
 });
+
+test("test getFolderId", async () => {
+    let res = await connections.getFolderID('public_folder_1');
+    expect(res).toEqual(generalId);
+})
 
 test("test deleteFolder", async () => {
     let allFolders = await connections.getAllFolders();
@@ -210,6 +260,17 @@ test("test deleteFolder", async () => {
     expect(allFolders.length).toEqual(2);
 });
 
-test("test deleteNote", () => {
-    //this might not be implemented...
+test("test deleteNote", async () => {
+    let noteName = 'note_1';
+    let folderName = 'public_folder_1';
+    let res = await connections.findFolder(folderName);
+    //console.log(res[0]);
+    let notesList = res[0].notes;
+    expect(notesList.length).toEqual(2);
+
+    await connections.getNotes(folderName);
+    let res1 = await connections.deleteNote(folderName, noteName);
+    res = await connections.findFolder(folderName);
+    //console.log(res[0]);
+    expect(res).toBeTruthy();
 });
