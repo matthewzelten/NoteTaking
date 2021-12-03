@@ -227,6 +227,11 @@ test("test addNote", async() => {
 
 });
 
+test("test getFolderId", async () => {
+    let res = await connections.getFolderID('public_folder_1');
+    expect(res).toEqual(generalId);
+})
+
 test("test deleteFolder", async () => {
     let allFolders = await connections.getAllFolders();
     expect(allFolders.length).toEqual(4);

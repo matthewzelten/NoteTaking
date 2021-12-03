@@ -91,8 +91,14 @@ async function getNotes(folderName) {
     return thisFolder;
 }
 async function getFolderID(folderName){
+    console.log('HERE1', folderName);
+    console.log('charcode', folderName.charCodeAt(8));
+    folderName.replace(String.fromCharCode(43), " ");
+
+    console.log('HERE2', folderName);
+    console.log('charcode', folderName.charCodeAt(8));
     let folder = await findFolder(folderName);
-    console.log(folder);
+    console.log('HERE', folder);
     return folder[0]._id;
 }
 /**

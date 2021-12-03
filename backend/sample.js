@@ -261,7 +261,7 @@ async function addNotePost(req, res) {
 
 async function searchNotePost(req, res, keyword) {
     const fName = req.params["folderName"];
-    console.log(fName);
+    console.log('folderNAME:', fName);
     const folderID =await getFolderID(fName);
     console.log(folderID);
     Note.find({ name: { $regex: keyword, $options: "i" }, folder: folderID }).exec(function (
