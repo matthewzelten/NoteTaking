@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import ReactQuill from "react-quill";
 import { Link } from "react-router-dom";
-import "react-quill/dist/quill.snow2.css";
+import "react-quill/dist/quill.snow.css";
 import { Button } from "@chakra-ui/button";
 import axios from "axios";
 import { Heading } from "@chakra-ui/layout";
