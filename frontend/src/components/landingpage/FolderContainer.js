@@ -30,7 +30,7 @@ function ShowFolders(props) {
 function FolderContainer(props) {
     return (
         <Flex direction="row">
-            <Wrap marginLeft="90px" jusitfy="center">
+            <Wrap justify="center">
                 <ShowFolders
                     setFolderName={props.setFolderName}
                     redirectFolder={props.redirectFolder}
