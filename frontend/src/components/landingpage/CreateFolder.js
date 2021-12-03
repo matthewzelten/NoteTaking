@@ -121,6 +121,7 @@ function CreateFolder(props) {
                 setColor={setColor}
                 setPasswordA={setPasswordA}
                 setPasswordB={setPasswordB}
+                isFolderCreate={true}
             />
             <CreateFolderError
                 isDuplicate={props.isDuplicate}

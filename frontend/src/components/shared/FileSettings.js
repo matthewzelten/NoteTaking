@@ -28,12 +28,15 @@ function FileSettings(props) {
                     <Radio value="F4D6CC">Silk</Radio>
                 </Stack>
             </RadioGroup>
-            <PrivateNote
-                data={disablePassword}
-                setIsPrivate={props.setIsPrivate}
-                setPasswordA={props.setPasswordA}
-                setPasswordB={props.setPasswordB}
-            />
+            {props.isFolderCreate && (
+                <PrivateNote
+                    data={disablePassword}
+                    setIsPrivate={props.setIsPrivate}
+                    setPasswordA={props.setPasswordA}
+                    setPasswordB={props.setPasswordB}
+                    isFolderCreate={props.isFolderCreate}
+                />
+            )}
         </Box>
     );
 }

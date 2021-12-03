@@ -38,7 +38,9 @@ function PirvateFolder(props) {
                                 <Input
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Enter Password"
-                                    onChange={(e) => props.setCheckPass(e.target.value)}
+                                    onChange={(e) =>
+                                        props.setCheckPass(e.target.value)
+                                    }
                                 />
                                 <Checkbox
                                     onChange={() =>
@@ -51,7 +53,10 @@ function PirvateFolder(props) {
                             <Link to={`/folder/${props.replaced}`}>
                                 <Button
                                     onClick={() =>
-                                        props.setFolderName(props.name)
+                                        props.updateNameAndURL(
+                                            props.name,
+                                            props.replaced
+                                        )
                                     }
                                 >
                                     Submit Password
@@ -72,7 +77,9 @@ function PirvateFolder(props) {
                     w="200px"
                     h="100px"
                     bg={`${props.buttonColor}`}
-                    onClick={() => props.setFolderName(props.name)}
+                    onClick={() =>
+                        props.updateNameAndURL(props.name, props.replaced)
+                    }
                 >
                     {props.name}
                 </Button>

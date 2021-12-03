@@ -83,6 +83,7 @@ function CreateNote(props) {
                 setColor={setColor}
                 setPasswordA={setPasswordA}
                 setPasswordB={setPasswordB}
+                isFolderCreate={false}
             />
             <Link to={`/folder/${props.folderURL}/note/${name.split(" ").join("+")}`}>
                 <Button disabled={!verifyMatchingPasswords()} onClick={() => {
