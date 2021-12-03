@@ -64,7 +64,7 @@ Last Update: 10/22/21
 
 https://drive.google.com/file/d/1xxpnmCXCTHxab4JEDS-5p60EsnmC_KMj/view?usp=sharing
 
-# Code Coverage Report ........ WORK IN PROGRESS
+# Code Coverage Report
 
 Update as of 12/3/21 12:31am.
 Currently, 95% of our model function's lines are covered by tests, and 100% of our functions are covered by tests.
