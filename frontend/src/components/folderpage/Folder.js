@@ -102,6 +102,8 @@ function Folder(props) {
                             setShowNoteModal={setShowNoteModal}
                             folderName={props.folderName}
                             noteContents={props.noteContents}
+                            setNoteContents={props.setNoteContents}
+                            otherNotes={notes}
                         />
                     </Box>
                 </ModalContent>

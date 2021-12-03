@@ -76,44 +76,47 @@ function App() {
         <Box className="App">
             <Router>
                 <Header />
-                <Switch>
-                    <Route exact path="/">
-                        <LandingPage
-                            folders={folders}
-                            setFolderName={setFolderName}
-                            setFolderURL={setFolderURL}
-                            folderName={folderName}
-                            setCurrentFolder={setCurrentFolder}
-                            isDuplicate={isDuplicate}
-                            setFolders={setFolders}
-                        />
-                    </Route>
-                    <Route exact path={`/folder/:folder`}>
-                        <Folder
-                            setNoteName={setNoteName}
-                            setNoteContents={setNoteContents}
-                            setFolderName={setFolderName}
-                            folderName={folderName}
-                            noteName={noteName}
-                            folderURL={folderURL}
-                            getFolder={getFolder}
-                            deleteFolder={deleteFolder}
-                            currentFolder={currentFolder}
-                            setCurrentFolder={setCurrentFolder}
-                            setNoteColor={setNoteColor}
-                        />
-                    </Route>
-                    <Route exact path={`/folder/:folder/note/:note`}>
-                        <Note
-                            folderURL={folderURL}
-                            noteName={noteName}
-                            noteContents={noteContents}
-                            contents={noteContents}
-                            folderName={folderName}
-                            noteColor={noteColor}
-                        />
-                    </Route>
-                </Switch>
+                <Box style={{ width:"90%", margin:"auto", maxWidth:"1500px" }}>
+                    <Switch>
+                        <Route exact path="/">
+                            <LandingPage
+                                folders={folders}
+                                setFolderName={setFolderName}
+                                setFolderURL={setFolderURL}
+                                folderName={folderName}
+                                setCurrentFolder={setCurrentFolder}
+                                isDuplicate={isDuplicate}
+                                setFolders={setFolders}
+                            />
+                        </Route>
+                        <Route exact path={`/folder/:folder`}>
+                            <Folder
+                                setNoteName={setNoteName}
+                                setNoteContents={setNoteContents}
+                                setFolderName={setFolderName}
+                                folderName={folderName}
+                                noteName={noteName}
+                                folderURL={folderURL}
+                                getFolder={getFolder}
+                                deleteFolder={deleteFolder}
+                                currentFolder={currentFolder}
+                                setCurrentFolder={setCurrentFolder}
+                                setNoteColor={setNoteColor}
+                            />
+                        </Route>
+                        <Route exact path={`/folder/:folder/note/:note`}>
+                            <Note
+                                folderURL={folderURL}
+                                noteName={noteName}
+                                noteContents={noteContents}
+                                contents={noteContents}
+                                folderName={folderName}
+                                noteColor={noteColor}
+                            />
+                        </Route>
+                    </Switch>
+                </Box>
+
             </Router>
         </Box>
     );
