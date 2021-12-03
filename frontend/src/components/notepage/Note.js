@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import ReactQuill from "react-quill";
 import { Link } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
-import { Button } from "@chakra-ui/button";
+import { Button, Heading, Box } from "@chakra-ui/react";
 import axios from "axios";
 
 
@@ -68,12 +68,12 @@ function Note(props) {
             <Link to={`/folder/${props.folderURL}`}>
                 <Button>Return</Button>
             </Link>
-            <h1>{props.noteName}</h1>
+            <Heading>{props.noteName}</Heading>
 
             <Editor handleUpdate={handleUpdate} value={noteContents} placeholder={"Write something awesome..."}/>
-            <div>
-                <button onClick={saveNote}>Save Note</button>
-            </div>
+            <Box>
+                <Button onClick={saveNote}>Save Note</Button>
+            </Box>
         </div>
     );
 }
