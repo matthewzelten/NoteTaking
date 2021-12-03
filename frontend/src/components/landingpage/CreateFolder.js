@@ -9,18 +9,7 @@ import { useHistory } from 'react-router-dom';
 const letters = /^[0-9a-zA-Z\s]+$/;
 
 function CreateFolderError(props) {
-<<<<<<< HEAD
-
     return <Text color="red">{props.errorMessage}</Text>;
-
-    /*let message = <Box/>;
-    if (props.isDuplicate(props.newFolderName)) {
-        message = <Text color="red">{props.errorMessage}</Text>;
-    }
-    return message;*/
-=======
-    return <Text color="red">{props.errorMessage}</Text>;
->>>>>>> 08e44ae69a5e4027af9180d3fc2bebd93b44805f
 }
 
 function CreateFolder(props) {
@@ -139,14 +128,6 @@ function CreateFolder(props) {
                 newFolderName={newFolderName}
                 errorMessage={errorMessage}
             />
-<<<<<<< HEAD
-            <CreateFolderError
-                isDuplicate={props.isDuplicate}
-                newFolderName={newFolderName}
-                errorMessage={errorMessage}
-            />
-=======
->>>>>>> 08e44ae69a5e4027af9180d3fc2bebd93b44805f
 
                 <Button
                     disabled={

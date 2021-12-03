@@ -1,15 +1,5 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-<<<<<<< HEAD
-import { Flex, Wrap, WrapItem } from "@chakra-ui/layout";
-
-function ShowFolders(props) {
-    function updateNameAndURL(name, URL) {
-        props.setFolderName(name)
-        props.setFolderURL(URL)
-    }
-    
-=======
 import {
     Box,
     Text,
@@ -104,7 +94,6 @@ function ShowFolders(props) {
         props.setFolderURL(URL);
     }
 
->>>>>>> 08e44ae69a5e4027af9180d3fc2bebd93b44805f
     return props.folderData.map((row, index) => {
         const buttonColor =
             row.color === undefined || row.color === ""
@@ -113,18 +102,6 @@ function ShowFolders(props) {
         const replaced = row.name.split(" ").join("+");
         return (
             <WrapItem>
-<<<<<<< HEAD
-                <Link to={`/folder/${replaced}`}>
-                    <Button
-                        w="200px"
-                        h="100px"
-                        bg={`${buttonColor}`}
-                        onClick={() => updateNameAndURL(row.name, replaced)}
-                    >
-                        {row.name}
-                    </Button>
-                </Link>
-=======
                 <PirvateFolder
                     buttonColor={buttonColor}
                     updateNameAndURL={updateNameAndURL}
@@ -134,7 +111,6 @@ function ShowFolders(props) {
                     isPrivate={row.isPrivate}
                     setCheckPass={props.setCheckPass}
                 />
->>>>>>> 08e44ae69a5e4027af9180d3fc2bebd93b44805f
             </WrapItem>
         );
     });
