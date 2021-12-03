@@ -131,7 +131,7 @@ async function addNote(fName, noteToAdd) {
     if(notesList.length !== 0) {
         notesList[0].contents = noteToAdd.contents;
         notesList[0].save();
-        let contents = await getConnection().model("Note", noteSchema).findOne({name: noteToAdd.name}).contents;
+        let contents = (await getConnection().model("Note", noteSchema).findOne({name: noteToAdd.name})).contents;
         return contents;
 
     } else {
@@ -149,14 +149,23 @@ async function addNote(fName, noteToAdd) {
  * @returns {Promise<void>}
  */
 async function deleteFolder(folderToDelete) {
-    const Note = getConnection().model("Note", noteSchema);
+
     const tempF = getConnection().model("Folder", folderSchema);
-    const folder = (await findFolder(folderToDelete))[0];
-    await folder.populate("notes");
+    //const tempN = getConnection().model("Note", noteSchema);
+    const tempN = Note;
+
+    console.log(folderToDelete);
+
+    let folder = (await findFolder(folderToDelete))[0];
+    if(!folder) {
+        return undefined;
+    }
+    console.log(folder.name);
+    await folder.populate('notes');
 
     console.log(`Deleting notes in ${folderToDelete}`);
     for (const note of folder.notes) {
-        await Note.findOneAndDelete({_id: note._id});
+        await tempN.findOneAndDelete({_id: note._id});
         console.log(`Deleted ${note.name}`);
     }
 
