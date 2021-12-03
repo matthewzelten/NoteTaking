@@ -63,7 +63,7 @@ function Note(props) {
 
         const tempNote = {
             name: state.name,
-            folder: state.folderName,
+            folder: state.folder,
             color: null,
             isPrivate: null,
             password: null,
@@ -100,14 +100,14 @@ function Note(props) {
     return (
         <div>
             <Link to={`/folder/${state.folder.split(" ").join("+")}`}>
-                <Button bg={`#${state.noteColor}`}>Return</Button>
+                <Button bg={`#${state.color}`}>Return</Button>
             </Link>
-            <Heading style={{ color: `#${state.noteColor}` }}>
+            <Heading style={{ color: `#${state.color}` }}>
                 {state.name}
             </Heading>
             <Editor handleUpdate={handleUpdate} value={state.contents} placeholder={"Write something awesome..."}/>
             <div>
-                <Button bg={`#${state.noteColor}`} onClick={saveNote}>Save Note</Button>
+                <Button bg={`#${state.color}`} onClick={saveNote}>Save Note</Button>
             </div>
         </div>
     );
