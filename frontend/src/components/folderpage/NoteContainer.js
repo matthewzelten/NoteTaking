@@ -33,6 +33,8 @@ function ShowNotes(props) {
 }
 
 function NoteContainer(props) {
+    console.log(`Note container ${props.folderURL} ${props.noteData !== undefined}`)
+
     return (
         <Flex direction="row">
             <Wrap justify="center">

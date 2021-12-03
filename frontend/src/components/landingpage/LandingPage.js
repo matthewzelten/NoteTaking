@@ -8,6 +8,13 @@ import { Modal, ModalContent, ModalOverlay } from "@chakra-ui/modal";
 function LandingPage(props) {
     const [showModal, setShowModal] = useState(false);
     return (
+        <form>
+            <input
+                type="text"
+                placeholder="search"
+                onChange={(e)=>props.setKeyword(e.target.value)}/>
+            <input type="button" value="Search" onClick={props.searchFolder}/>
+            <input type="button" value="Cancel" onClick={props.cancelSearch}/>
         <Box
             style={{
                 display: "flex",
@@ -41,6 +48,7 @@ function LandingPage(props) {
                 </ModalContent>
             </Modal>
         </Box>
+        </form>
     );
 }
 

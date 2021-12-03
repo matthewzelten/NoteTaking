@@ -52,7 +52,7 @@ function Folder(props) {
         try {
             const folderURL = window.location.pathname.split("/")[2];
             const replaced = folderURL.split("+").join(" ");
-            const response = await props.getFolder(replaced);
+            const response = await props.getFolder(replaced, props.checkPass);
             return response.notes;
         } catch (error) {
             console.log(error);

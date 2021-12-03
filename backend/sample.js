@@ -99,7 +99,7 @@ async function addFolderPost(req, res) {
         try {
             bcrypt.hash(password, saltRounds, async function (err, hash) {
                 if (err) {
-                    res.status(404).send(error).end();
+                    res.status(404).send(err).end();
                 } else {
                     password = hash;
                     const folderToAdd = new Folder({
