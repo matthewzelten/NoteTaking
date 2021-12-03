@@ -19,6 +19,7 @@ function LandingPage(props) {
                 setFolderName={props.setFolderName}
                 folderData={props.folders}
                 setShowModal={setShowModal}
+                setCheckPass={props.setCheckPass}
             />
             <Modal w="100%" isOpen={showModal}>
                 <ModalOverlay />

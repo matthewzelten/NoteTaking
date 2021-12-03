@@ -59,16 +59,12 @@ function CreateNote(props) {
      * @returns {Promise<boolean|AxiosResponse<unknown>>} the response from the backend
      */
     async function postNewNote(note) {
-        console.log(`Posting ${note} to ${props.folderName}`);
 
         try {
             const response = await axios.post('http://localhost:5000/notes', note);
-            console.log(response);
             return response;
         }
         catch (error) {
-            console.log(`Error posting new note`);
-            console.log(error);
             return false;
         }
     }
@@ -87,6 +83,7 @@ function CreateNote(props) {
                 setColor={setColor}
                 setPasswordA={setPasswordA}
                 setPasswordB={setPasswordB}
+                isFolderCreate={false}
             />
             <Link to={`/folder/${props.folderURL}/note/${name.split(" ").join("+")}`}>
                 <Button disabled={!verifyMatchingPasswords()} onClick={() => {

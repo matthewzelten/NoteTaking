@@ -1,6 +1,12 @@
-import { Checkbox } from "@chakra-ui/checkbox";
-import { Heading, Stack } from "@chakra-ui/layout";
-import { Radio, RadioGroup } from "@chakra-ui/radio";
+import {
+    Checkbox,
+    Heading,
+    Stack,
+    Radio,
+    RadioGroup,
+    Box,
+    Input,
+} from "@chakra-ui/react";
 import React, { useState } from "react";
 
 function FileSettings(props) {
@@ -11,7 +17,7 @@ function FileSettings(props) {
     }
 
     return (
-        <div>
+        <Box>
             <Heading as="h3" size="lg">
                 Choose Color
             </Heading>
@@ -22,13 +28,16 @@ function FileSettings(props) {
                     <Radio value="F4D6CC">Silk</Radio>
                 </Stack>
             </RadioGroup>
-            <PrivateNote
-                data={disablePassword}
-                setIsPrivate={props.setIsPrivate}
-                setPasswordA={props.setPasswordA}
-                setPasswordB={props.setPasswordB}
-            />
-        </div>
+            {props.isFolderCreate && (
+                <PrivateNote
+                    data={disablePassword}
+                    setIsPrivate={props.setIsPrivate}
+                    setPasswordA={props.setPasswordA}
+                    setPasswordB={props.setPasswordB}
+                    isFolderCreate={props.isFolderCreate}
+                />
+            )}
+        </Box>
     );
 }
 
@@ -41,7 +50,7 @@ function PrivateNote(props) {
     }
 
     return (
-        <div>
+        <Box>
             <Checkbox onChange={() => handleDisablePassword()}>
                 Set as private?
             </Checkbox>
@@ -50,30 +59,32 @@ function PrivateNote(props) {
                 setPasswordA={props.setPasswordA}
                 setPasswordB={props.setPasswordB}
             />
-        </div>
+        </Box>
     );
 }
 
 function PasswordForm(props) {
+    const [showPassword, setShowPassword] = useState(false);
     if (!props.disablePassword) {
         return (
-            <div>
-                <input
-                    disabled={props.disablePassword}
-                    type="text"
+            <Box>
+                <Input
+                    type={showPassword ? "text" : "password"}
                     placeholder="Enter Password"
                     onChange={(e) => props.setPasswordA(e.target.value)}
                 />
-                <input
-                    disabled={props.disablePassword}
-                    type="text"
+                <Input
+                    type={showPassword ? "text" : "password"}
                     placeholder="Confirm Password"
                     onChange={(e) => props.setPasswordB(e.target.value)}
                 />
-            </div>
+                <Checkbox onChange={() => setShowPassword(!showPassword)}>
+                    Show Password
+                </Checkbox>
+            </Box>
         );
     } else {
-        return <div></div>;
+        return <Box></Box>;
     }
 }
 
