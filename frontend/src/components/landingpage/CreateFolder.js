@@ -136,6 +136,8 @@ function CreateFolder(props) {
                         color === "" ||
                         props.isDuplicate(newFolderName)
                     }
+                    bg="brand.100"
+                    color="brand.300"
                     colorScheme="brand"
                     onClick={async () => {
                         try {

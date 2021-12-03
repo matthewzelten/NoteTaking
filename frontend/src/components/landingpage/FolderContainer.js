@@ -129,6 +129,8 @@ function FolderContainer(props) {
                 />
                 <WrapItem>
                     <Button
+                        bg="brand.100"
+                        color="brand.300"
                         colorScheme="brand.200"
                         w="200px"
                         h="100px"

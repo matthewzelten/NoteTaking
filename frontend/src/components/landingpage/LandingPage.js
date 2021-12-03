@@ -13,8 +13,8 @@ function LandingPage(props) {
                 type="text"
                 placeholder="search"
                 onChange={(e)=>props.setKeyword(e.target.value)}/>
-            <input type="button" value="Search" onClick={props.searchFolder}/>
-            <input type="button" value="Cancel" onClick={props.cancelSearch}/>
+            <Button bg="brand.100" color="brand.300" onClick={props.searchFolder}>Search</Button>
+            <Button bg="brand.100" color="brand.300" onClick={props.searchFolder}>Cancel</Button>
         <Box
             style={{
                 display: "flex",
@@ -32,7 +32,10 @@ function LandingPage(props) {
                 <ModalOverlay />
                 <ModalContent>
                     <Box m={3}>
-                        <Button onClick={() => setShowModal(false)}>
+                        <Button
+                            bg="brand.100"
+                            color="brand.300"
+                            onClick={() => setShowModal(false)}>
                             Close Modal
                         </Button>
                         <CreateFolder
