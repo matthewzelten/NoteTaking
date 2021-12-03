@@ -64,7 +64,7 @@ function App() {
     }
     async function cancelSearch(){
         setKeyword("");
-        window.location.reload();
+        window.location.reload(false);
     }
     async function searchFolder() {
         const search = { keyword: keyword };

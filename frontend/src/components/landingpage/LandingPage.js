@@ -14,7 +14,7 @@ function LandingPage(props) {
                 placeholder="search"
                 onChange={(e)=>props.setKeyword(e.target.value)}/>
             <Button bg="brand.100" color="brand.300" onClick={props.searchFolder}>Search</Button>
-            <Button bg="brand.100" color="brand.300" onClick={props.searchFolder}>Cancel</Button>
+            <Button bg="brand.100" color="brand.300" onClick={props.cancelSearch}>Cancel</Button>
         <Box
             style={{
                 display: "flex",
