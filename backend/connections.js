@@ -91,7 +91,11 @@ async function getNotes(folderName) {
     await thisFolder.populate('notes');
     return thisFolder;
 }
-
+async function getFolderID(folderName){
+    let folder = await findFolder(folderName);
+    console.log(folder);
+    return folder[0]._id;
+}
 /**
  * Adds a new folder to the database. Folder must be structured correctly.
  * @param folder
@@ -213,5 +217,6 @@ module.exports = {
     deleteFolder,
     deleteNote,
     setConnection,
-    getNotes
+    getNotes,
+    getFolderID
 };

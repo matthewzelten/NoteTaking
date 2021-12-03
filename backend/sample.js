@@ -1,6 +1,7 @@
 const express = require("express");
 const {
     Folder,
+    Note,
     getAllFolders,
     findFolder,
     findNote,
@@ -9,9 +10,10 @@ const {
     deleteFolder,
     deleteNote,
     getNotes,
+    getFolderID
 } = require("./connections");
 const mongoose = require("mongoose");
-const Note = require("./Database/Models/noteSchema").note;
+//const Note = require("./Database/Models/noteSchema").note;
 const app = express();
 const cors = require("cors");
 const port = 5000;
@@ -257,8 +259,12 @@ async function addNotePost(req, res) {
     }
 }
 
-function searchNotePost(req, res, keyword) {
-    Note.find({ name: { $regex: keyword, $options: "i" } }).exec(function (
+async function searchNotePost(req, res, keyword) {
+    const fName = req.params["folderName"];
+    console.log(fName);
+    const folderID =await getFolderID(fName);
+    console.log(folderID);
+    Note.find({ name: { $regex: keyword, $options: "i" }, folder: folderID }).exec(function (
         err,
         docs
     ) {
