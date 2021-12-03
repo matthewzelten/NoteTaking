@@ -16,6 +16,7 @@ function Folder(props) {
     const [showNoteModal, setShowNoteModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [notes, setNotes] = useState([]);
+    const [canAccess, setCanAccess] = useState(true)
     const [folderName, setFolderName] = useState("");
 
     useEffect(async () => {
@@ -34,6 +35,7 @@ function Folder(props) {
         const folderURL = window.location.pathname.split("/")[2];
         const replaced = folderURL.split("+").join(" ");
         let folder = await props.getFolder(replaced);
+        setCanAccess(folder.isPrivate)
         props.setCurrentFolder(folder);
         props.setFolderName(folder.name);
         setFolderName(folder.name);
