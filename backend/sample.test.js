@@ -4,7 +4,7 @@ const FolderSchema = require("./Database/Models/folderSchema");
 const NoteSchema = require("./Database/Models/noteSchema");
 const connections = require("./connections");
 const { MongoMemoryServer } = require("mongodb-memory-server");
-const Folder = require('./connections');
+//const Folder = require('./connections');
 
 let mongoServerA;
 let conn;

@@ -102,8 +102,8 @@ function Folder(props) {
                     : `${props.currentFolder.name}`}
             </Heading>
             <Input placeholder="Search" onChange={(e)=>setKeyword(e.target.value)}/>
-                    <input type="button" value="Search" onClick={searchNote}/>
-                    <input type="button" value="Cancel" onClick={cancelSearch}/>
+                    <Button bg={`#${folderColor}`} onClick={searchNote}>Search</Button>
+                    <Button bg={`#${folderColor}`} onClick={cancelSearch}>Cancel</Button>
             <Button
                 bg={`#${folderColor}`}
                 onClick={() => setShowNoteModal(true)}
