@@ -44,6 +44,7 @@ function CreateFolder(props) {
                 name: newFolderName,
                 color: color,
                 isPrivate: isPrivate,
+                password: passwordA,
                 notes: [],
             };
             setErrorMessage("Submitting folder...");

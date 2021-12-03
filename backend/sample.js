@@ -16,7 +16,8 @@ const cors = require("cors");
 const port = 5000;
 const { json } = require("express");
 const { note } = require("./Database/Models/noteSchema");
-
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 app.use(cors());
 app.use(express.json());
@@ -81,18 +82,25 @@ app.post("/", async (req, res)=>{
 });
 
 async function addFolderPost(req, res) {
-    const { name, color, isPrivate, password, contents} = req.body;
+    const { name, color, isPrivate, contents } = req.body;
+    let { password } = req.body
     let isDup = await findFolder(name);
     if (isDup === undefined || isDup.length===0) {
-
         try {
-            const folderToAdd = new Folder({ name, color, isPrivate, password, contents});
-            let result = await addFolder(folderToAdd);
-            if (result) {
-                res.status(201).send(folderToAdd).end();
-            } else {
-                res.status(404).send(result).end();
-            }
+            bcrypt.hash(password, saltRounds, async function(err, hash) {
+                if (err) {
+                    res.status(404).send(error).end();
+                } else {
+                    password = hash
+                    const folderToAdd = new Folder({ name, color, isPrivate, password, contents});
+                    let result = await addFolder(folderToAdd);
+                    if (result) {
+                        res.status(201).send(folderToAdd).end();
+                    } else {
+                        res.status(404).send(result).end();
+                    }
+                }
+            });
         }catch(error) {
             res.status(404).send(error).end();
         }
