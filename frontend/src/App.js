@@ -129,8 +129,8 @@ function App() {
                                 isDuplicate={isDuplicate}
                                 setFolders={setFolders}
                                 setKeyword={setKeyword}
-                            cancelSearch={cancelSearch}
-                            searchFolder={searchFolder}setCheckPass={setCheckPass}
+                                cancelSearch={cancelSearch}
+                                searchFolder={searchFolder}setCheckPass={setCheckPass}
                             />
                         </Route>
                         <Route exact path={`/folder/:folder`}>

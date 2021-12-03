@@ -136,6 +136,7 @@ function Folder(props) {
                             noteContents={props.noteContents}
                             setNoteContents={props.setNoteContents}
                             otherNotes={notes}
+                            setNoteColor={props.setNoteColor}
                         />
                     </Box>
                 </ModalContent>

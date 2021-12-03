@@ -149,7 +149,18 @@ async function addNote(fName, noteToAdd) {
  * @returns {Promise<void>}
  */
 async function deleteFolder(folderToDelete) {
+    const Note = getConnection().model("Note", noteSchema);
     const tempF = getConnection().model("Folder", folderSchema);
+    const folder = (await findFolder(folderToDelete))[0];
+    await folder.populate("notes");
+
+    console.log(`Deleting notes in ${folderToDelete}`);
+    for (const note of folder.notes) {
+        await Note.findOneAndDelete({_id: note._id});
+        console.log(`Deleted ${note.name}`);
+    }
+
+
     let returnval;
     let vals = await tempF.deleteOne({ name: folderToDelete });
     if(vals.deletedCount === 0) {
@@ -171,8 +182,11 @@ async function deleteNote(fName, nName) {
     let thisFolder = (await findFolder(fName))[0];
     let originalLength = thisFolder.notes.length;
     await thisFolder.populate("notes");
+
+    let id = thisFolder.notes.filter(note => note.name === nName)[0]._id;
+    await Note.findOneAndDelete({_id: id});
     thisFolder.notes = thisFolder.notes.filter(note => note.name !== nName);
-    thisFolder.save();
+    await thisFolder.save();
     return thisFolder.notes.length < originalLength;
 }
 

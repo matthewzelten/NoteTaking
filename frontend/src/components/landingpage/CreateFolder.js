@@ -136,11 +136,14 @@ function CreateFolder(props) {
                         color === "" ||
                         props.isDuplicate(newFolderName)
                     }
+                    bg="brand.100"
+                    color="brand.300"
                     colorScheme="brand"
                     onClick={async () => {
                         try {
                             await submitFolderName();
                             props.setShowModal(false);
+                            props.setFolderURL(newFolderName.split(" ").join("+"));
                             history.push(`/folder/${newFolderName.split(" ").join("+")}`);
                         } catch (e) {
                             setErrorMessage(e);
