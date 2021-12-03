@@ -70,15 +70,11 @@ async function findFolder(name) {
  * @returns {Promise<undefined|T>} the found note
  */
 async function findNote(folderName, noteName) {
-    const Note = getConnection().model("Note", noteSchema);
-
     let noteFolder = (await findFolder(folderName))[0];
-
-    console.log(`populating in findNote`);
     await noteFolder.populate("notes");
-
+    console.log('this thing ^\n', noteFolder);
     let result = noteFolder.notes.filter(note => note.name === noteName);
-
+    console.log(result);
     if (result.length < 1) {
         return undefined;
     } else {
@@ -127,18 +123,9 @@ async function addFolder(folder) {
  */
 async function addNote(fName, noteToAdd) {
     const Note = getConnection().model("Note", noteSchema);
-
-    console.log(`Adding note to ${fName}`);
-    console.log(`Note: ${noteToAdd.name} ${noteToAdd.folder}`);
-
     let thisFolder = (await findFolder(fName))[0];
 
-    console.log("About to try and populate");
-    console.log(thisFolder);
-    console.log(typeof thisFolder);
-    console.log(thisFolder.constructor);
     await thisFolder.populate('notes');
-    //console.log(`POPULATED! ${thisFolder.populated("notes")}`);
 
     let notesList = thisFolder.notes.filter(note => note.name === noteToAdd.name);
 
@@ -147,21 +134,15 @@ async function addNote(fName, noteToAdd) {
         //FIX THIS
         notesList[0].contents = noteToAdd.contents;
         notesList[0].save();
-        //console.log(`UPDATED ${notesList[0].name}`);
         let contents = await getConnection().model("Note", noteSchema).findOne({name: noteToAdd.name}).contents;
-        //console.log(`NEW CONTENTS: ${contents}`);
-
         return contents;
 
     } else {
-        //console.log(`Checkpoint 1`);
         try {
             const note = await new Note(noteToAdd);
             await note.save();
-            //console.log(`Checkpoint 2`);
             console.log(note);
             thisFolder.notes.push(note._id);
-            //console.log(`Checkpoint 3`);
             return await thisFolder.save();
         } catch(e) {
             console.log(e);

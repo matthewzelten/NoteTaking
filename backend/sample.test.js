@@ -4,10 +4,12 @@ const FolderSchema = require("./Database/Models/folderSchema");
 const NoteSchema = require("./Database/Models/noteSchema");
 const connections = require("./connections");
 const { MongoMemoryServer } = require("mongodb-memory-server");
+const Folder = require('./connections');
 
 let mongoServerA;
 let conn;
 let folderModel;
+let dummyNote1;
 
 beforeAll(async () => {
     mongoServerA = await MongoMemoryServer.create();
@@ -32,10 +34,12 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
+    let id1 = new mongoose.Types.ObjectId();
     let dummyFolder = {
         name: "public_folder_1",
         color: "C83E4D",
         isPrivate: "false",
+        _id: id1
     };
     let result = new folderModel(dummyFolder);
     await result.save();
@@ -65,6 +69,33 @@ beforeEach(async () => {
     };
     result = new folderModel(dummyFolder);
     await result.save();
+
+
+
+    //notes
+    dummyNote1 = {
+      name: "note_1",
+      contents: "",
+      color: "C83E4D",
+      folder: id1,
+      isPrivate: "false",
+      isLocked: "false"
+    };
+    let x = new noteModel(dummyNote1);
+    await x.save();
+
+    let dummyNote2 = {
+      name: "note_2",
+      contents: "some content",
+      color: "C83E4D",
+      folder: id1,
+      isPrivate: "true",
+      password: "password",
+      isLocked: "false"
+    };
+    x = new noteModel(dummyNote2);
+    await x.save();
+
 });
 
 afterEach(async () => {
@@ -99,9 +130,14 @@ test("test findFolder", async () => {
     expect(priv1[0].password).toEqual("password");
 });
 
-test("test findNote", () => {});
+test("test findNote", async () => {
+  console.log('this folder value should be equal to the next things id\n', dummyNote1);
+  let result = await connections.findNote('public_folder_1', 'note_3');
+  expect(result.name).toEqual('note_1');
 
-/*test('test addFolder', async () => {
+});
+
+test('test addFolder', async () => {
     let allFolders = await connections.getAllFolders();
     expect(allFolders.length).toEqual(4);
 
@@ -111,12 +147,13 @@ test("test findNote", () => {});
         color: "0000FF",
         isPrivate: false,
     };
-    connections.addFolder(new connections.Folder(newFolder1));
+    newFolder1 = new connections.Folder(newFolder1);
+    await connections.addFolder(newFolder1);
     allFolders = await connections.getAllFolders();
     expect(allFolders.length).toEqual(5);
     let finder = await connections.findFolder("testFolder1");
-    expect(finder.color).toEqual("0000FF");
-
+    expect(finder[0].color).toEqual("0000FF");
+    
     //add private folder
     let newFolder2 = {
         name: "testFolder2",
@@ -124,14 +161,15 @@ test("test findNote", () => {});
         isPrivate: true,
         password: "csc307",
     };
-    connections.addFolder(new connections.Folder(newFolder2));
+    newFolder2 = new connections.Folder(newFolder2);
+    await connections.addFolder(newFolder2);
     allFolders = await connections.getAllFolders();
     expect(allFolders.length).toEqual(6);
     finder = await connections.findFolder("testFolder2");
-    expect(finder.color).toEqual("FF0000");
-    expect(finder.isPrivate).toBeTruthy();
-    expect(finder.password).toEqual('csc307');
-});*/
+    expect(finder[0].color).toEqual("FF0000");
+    expect(finder[0].isPrivate).toBeTruthy();
+    expect(finder[0].password).toEqual('csc307');
+});
 
 test("test addNote", () => {
     //this looks like itll be refactored
