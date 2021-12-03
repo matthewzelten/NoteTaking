@@ -82,6 +82,7 @@ function App() {
             console.log(error);
         }
     }
+    
     function isDuplicate(name) {
         for (let i = 0; i < folders.length; i++) {
             const folder = folders[i];
