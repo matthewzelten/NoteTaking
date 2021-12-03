@@ -238,6 +238,7 @@ function searchNotePost(req, res, keyword) {
  */
 app.delete("/", async (req, res) => {
     const folderToDelete = req.body["name"];
+    console.log(`Deleting folder ${folderToDelete}`);
     let result = await findFolder(folderToDelete);
     if (result === undefined || result.length === 0) {
         res.status(404).send(folderToDelete);
@@ -253,15 +254,18 @@ app.delete("/", async (req, res) => {
 app.delete("/:folderName", async (req, res) => {
     const noteToDelete = req.body["name"];
     const folderN = req.params["folderName"];
+    console.log(`Deleting note ${noteToDelete} in folder ${folderN}`);
     let noteExists = await findNote(folderN, noteToDelete);
     if (noteExists) {
         let noteDeleted = await deleteNote(folderN, noteToDelete);
         if (noteDeleted) {
             res.status(204).send(noteToDelete);
         } else {
+            console.log(`Delete note failed 1`);
             res.status(404).send(noteDeleted);
         }
     } else {
+        console.log(`Delete note failed 2`);
         res.status(404).send(noteToDelete);
     }
 

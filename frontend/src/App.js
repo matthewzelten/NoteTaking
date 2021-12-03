@@ -62,6 +62,25 @@ function App() {
         }
     }
 
+    async function deleteNote(noteName, folderName) {
+        console.log(`Deleting note ${noteName} in folder ${folderName}`);
+
+        try {
+            await axios
+                .delete(`http://localhost:5000/${folderName}`, {
+                    data: {
+                        name: noteName
+                    }
+                }
+            )
+                .then(() => {
+                    window.location.reload();
+                });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     function isDuplicate(name) {
         for (let i = 0; i < folders.length; i++) {
             const folder = folders[i];
@@ -112,6 +131,7 @@ function App() {
                                 contents={noteContents}
                                 folderName={folderName}
                                 noteColor={noteColor}
+                                deleteNote={deleteNote}
                             />
                         </Route>
                     </Switch>

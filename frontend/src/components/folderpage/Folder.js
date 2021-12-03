@@ -114,8 +114,8 @@ function Folder(props) {
                     <Box m={3}>
                         <Text color="brand.100">
                             Are you sure you want to delete this folder? This
-                            folder and all it's notes will be deleted. This
-                            action is non-reversible
+                            folder and all its notes will be deleted. This
+                            action is non-reversible.
                         </Text>
                         <Link to="/">
                             <Button

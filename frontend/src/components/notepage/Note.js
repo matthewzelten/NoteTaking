@@ -3,8 +3,9 @@ import PropTypes from "prop-types";
 import ReactQuill from "react-quill";
 import { Link } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
-import { Button, Heading, Box } from "@chakra-ui/react";
+import { Button, Heading, Box, ModalOverlay, ModalContent, Modal } from "@chakra-ui/react";
 import axios from "axios";
+import { Text } from "@chakra-ui/layout";
 
 
 const loadState = () => {
@@ -39,6 +40,8 @@ const persistedState = loadState();
 
 function Note(props) {
 
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
     let stateValue;
 
     if(props.noteName && props.noteName.length > 0) {
@@ -56,6 +59,7 @@ function Note(props) {
 
     const [state, setState] = useState(stateValue);
     console.log(`TEST ${state.name} ${state.folder} ${state} `);
+
 
 
     async function saveNote(){
@@ -101,6 +105,12 @@ function Note(props) {
             <Link to={`/folder/${state.folder.split(" ").join("+")}`}>
                 <Button bg={`#${state.color}`}>Return</Button>
             </Link>
+            <Button
+                bg={`#${state.color}`}
+                onClick={() => setShowDeleteModal(true)}
+            >
+                Delete Note
+            </Button>
             <Heading style={{ color: `#${state.color}` }}>
                 {state.name}
             </Heading>
@@ -108,6 +118,34 @@ function Note(props) {
             <Box>
                 <Button bg={`#${state.color}`} onClick={saveNote}>Save Note</Button>
             </Box>
+            <Modal isOpen={showDeleteModal}>
+                <ModalOverlay />
+                <ModalContent>
+                    <Box m={3}>
+                        <Text color="brand.100">
+                            Are you sure you want to delete this note? This
+                            folder and all its content will be deleted. This
+                            action is non-reversible.
+                        </Text>
+                        <Link to="/">
+                            <Button
+                                bg={`#${state.color}`}
+                                onClick={() =>
+                                    props.deleteNote(state.name, state.folder)
+                                }
+                            >
+                                Yes, delete this note
+                            </Button>
+                        </Link>
+                        <Button
+                            bg={`#${state.color}`}
+                            onClick={() => setShowDeleteModal(false)}
+                        >
+                            No, take me back
+                        </Button>
+                    </Box>
+                </ModalContent>
+            </Modal>
         </Box>
     );
 }
