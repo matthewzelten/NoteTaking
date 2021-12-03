@@ -19,6 +19,7 @@ function App() {
     const [folderName, setFolderName] = useState("");
     const [currentFolder, setCurrentFolder] = useState({});
     const [noteName, setNoteName] = useState([]);
+    const [noteColor, setNoteColor] = useState("white");
     const [noteContents, setNoteContents] = useState("");
     const [folders, setFolders] = useState([]);
 
@@ -67,12 +68,6 @@ function App() {
         }
     }
 
-    function getCurrentFolder() {
-        const folderURL = window.location.pathname.split("/")[2];
-        const replaced = folderURL.split("+").join(" ");
-        getFolder(replaced).then((data) => setCurrentFolder(data));
-    }
-
     function isDuplicate(name) {
         for (let i = 0; i < folders.length; i++) {
             const folder = folders[i];
@@ -87,35 +82,41 @@ function App() {
         <Box className="App">
             <Router>
                 <Header />
-                <Switch>
-                    <Route exact path="/">
-                        <LandingPage 
-                            folders={folders}
-                            setFolderName={setFolderName}
-                            folderName={folderName}
-                            setCurrentFolder={setCurrentFolder}
-                            isDuplicate={isDuplicate}
-                            setFolders={setFolders}
-                        />
-                    </Route>
-                    <Route path={`/folder/`}>
-                        <Folder
-                            setNoteName={setNoteName}
-                            setNoteContents={setNoteContents}
-                            setFolderName={setFolderName}
-                            folderName={folderName}
-                            noteName={noteName}
-                            getFolder={getFolder}
-                            deleteFolder={deleteFolder}
-                            currentFolder={currentFolder}
-                            getCurrentFolder={getCurrentFolder}
-                            setCurrentFolder={setCurrentFolder}
-                        />
-                    </Route>
-                    <Route path="/note">
-                        <Note noteName={noteName} noteContents={noteContents} folderName={folderName} contents={noteContents}/>
-                    </Route>
-                </Switch>
+                <div style={{width: "95%", margin: "auto", maxWidth: "1200px"}}>
+                    <Switch>
+                        <Route exact path="/">
+                            <LandingPage
+                                folders={folders}
+                                setFolderName={setFolderName}
+                                folderName={folderName}
+                                setCurrentFolder={setCurrentFolder}
+                                isDuplicate={isDuplicate}
+                                setFolders={setFolders}
+                            />
+                        </Route>
+                        <Route path={`/folder/`}>
+                            <Folder
+                                setNoteName={setNoteName}
+                                setNoteContents={setNoteContents}
+                                setNoteColor={setNoteColor}
+                                setFolderName={setFolderName}
+                                folderName={folderName}
+                                noteName={noteName}
+                                getFolder={getFolder}
+                                deleteFolder={deleteFolder}
+                                currentFolder={currentFolder}
+                                setCurrentFolder={setCurrentFolder}
+                            />
+                        </Route>
+                        <Route path="/note">
+                            <Note
+                                noteName={noteName}
+                                noteContents={noteContents}
+                                folderName={folderName}
+                                noteColor={noteColor}/>
+                        </Route>
+                    </Switch>
+                </div>
             </Router>
         </Box>
     );

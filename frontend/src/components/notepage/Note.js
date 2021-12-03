@@ -1,43 +1,77 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import ReactQuill from "react-quill";
 import { Link } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
 import { Button } from "@chakra-ui/button";
 import axios from "axios";
+import { Heading } from "@chakra-ui/layout";
 
 
+const loadState = () => {
+    try {
+        const data = localStorage.getItem('state');
+        if (data) {
+            return JSON.parse(data);
+        } else {
+            return undefined;
+        }
+    } catch (e) {
+        return undefined;
+    }
+}
+
+const saveState = (state) => {
+    try {
+        if (state.name && state.name.length > 0) {
+            localStorage.setItem('state', JSON.stringify({
+                name: state.name,
+                contents: state.contents,
+                folder: state.folder,
+                color: state.color
+            }));
+        }
+
+    } catch (e) {
+    }
+}
+
+const persistedState = loadState();
 
 function Note(props) {
-    let noteContents = props.noteContents;
-    const folderPath = props.folderName.split(" ").join("+");
-    /*
-    const [note, setNote] = useState(
-        {
-            name: null,
-            contents: null,
-            folder: null,
-            color: null,
-            isPrivate: null,
-            password: null,
-            isLocked: null
+
+    let stateValue;
+
+    if(props.noteName && props.noteName.length > 0) {
+        stateValue = {
+            name:props.noteName,
+            contents: props.noteContents,
+            folder: props.folderName,
+            color: props.noteColor
         }
-    );*/
+        console.log(`Saving state`);
+        saveState(stateValue);
+    } else {
+        stateValue = persistedState;
+    }
+
+    const [state, setState] = useState(stateValue);
+    console.log(`TEST ${state.name} ${state.folder} ${state.color} `);
+
 
     async function saveNote(){
 
         const tempNote = {
-            name: props.noteName,
-            folder: props.folderName,
+            name: state.name,
+            folder: state.folder,
             color: null,
             isPrivate: null,
             password: null,
-            contents: noteContents,
+            contents: state.contents,
             isLocked: null,
             toSave: true
         }
         await postNoteUpdate(tempNote);
-
 
     }
 
@@ -49,8 +83,7 @@ function Note(props) {
     async function postNoteUpdate(note) {
 
         try {
-            const response = await axios.post('http://localhost:5000/notes', note);
-            return response;
+            return await axios.post('http://localhost:5000/notes', note);
         }
         catch (error) {
             return false;
@@ -58,25 +91,31 @@ function Note(props) {
     }
 
     function handleUpdate(html) {
-        noteContents = html;
+        state.contents = html;
+        saveState(state);
     }
 
     //placeholder={"Write something awesome..."}
 
     return (
         <div>
-            <Link to={`/folder/${folderPath}`}>
-                <Button>Return</Button>
+            <Link to={`/folder/${state.folder.split(" ").join("+")}`}>
+                <Button bg={`#${state.color}`}>Return</Button>
             </Link>
-            <h1>{props.noteName}</h1>
-
-            <Editor handleUpdate={handleUpdate} value={noteContents} placeholder={"Write something awesome..."}/>
+            <Heading style={{ color: `#${state.color}` }}>
+                {state.name}
+            </Heading>
+            <Editor handleUpdate={handleUpdate} value={state.contents} placeholder={"Write something awesome..."}/>
             <div>
-                <button onClick={saveNote}>Save Note</button>
+                <Button bg={`#${state.color}`} onClick={saveNote}>Save Note</Button>
             </div>
         </div>
     );
 }
+
+
+
+
 
 /**
  * The editor component
@@ -99,7 +138,7 @@ class Editor extends React.Component {
 
     render() {
         return (
-            <div>
+            <div style={{backgroundColor: "white", width: "95%", margin: "auto"}}>
                 <ReactQuill
                     theme={this.state.theme}
                     onChange={this.handleChange}
