@@ -1,10 +1,15 @@
 import { Button } from "@chakra-ui/button";
 import React from "react";
 import { Link } from "react-router-dom";
-import { Box, Flex, Wrap, WrapItem } from "@chakra-ui/layout";
+import { Flex, Wrap, WrapItem } from "@chakra-ui/layout";
 
 function ShowFolders(props) {
-    const folders = props.folderData.map((row, index) => {
+    function updateNameAndURL(name, URL) {
+        props.setFolderName(name)
+        props.setFolderURL(URL)
+    }
+    
+    return props.folderData.map((row, index) => {
         const buttonColor =
             row.color === undefined || row.color === ""
                 ? "#0000FF"
@@ -14,13 +19,10 @@ function ShowFolders(props) {
             <WrapItem>
                 <Link to={`/folder/${replaced}`}>
                     <Button
-                        style={{
-                            width: "200px",
-                            height: "50px",
-                            background: `${buttonColor}`,
-                            margin: "5px",
-                        }}
-                        onClick={() => props.redirectFolder(row.name)}
+                        w="200px"
+                        h="100px"
+                        bg={`${buttonColor}`}
+                        onClick={() => updateNameAndURL(row.name, replaced)}
                     >
                         {row.name}
                     </Button>
@@ -28,25 +30,23 @@ function ShowFolders(props) {
             </WrapItem>
         );
     });
-    return folders;
 }
 
 function FolderContainer(props) {
     return (
         <Flex direction="row">
-            <Wrap marginLeft="90px" jusitfy="center">
+            <Wrap justify="center">
                 <ShowFolders
+                    setFolderName={props.setFolderName}
+                    setFolderURL={props.setFolderURL}
                     redirectFolder={props.redirectFolder}
                     folderData={props.folderData}
                 />
                 <WrapItem>
                     <Button
                         colorScheme="brand.200"
-                        style={{
-                            width: "200px",
-                            height: "50px",
-                            margin: "5px",
-                        }}
+                        w="200px"
+                        h="100px"
                         onClick={() => props.setShowModal(true)}
                     >
                         Add New Folder

@@ -1,25 +1,24 @@
 import React from "react";
-import FolderContainer from "./components/landingpage/FolderContainer";
 import "./App.css";
 import Header from "./components/shared/header";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import CreateFolder from "./components/landingpage/CreateFolder";
 import Folder from "./components/folderpage/Folder";
 import { useState, useEffect } from "react";
-import Modal from "react-modal";
 import Note from "./components/notepage/Note";
 import axios from "axios";
-import { Button } from "@chakra-ui/button";
-import { Box } from "@chakra-ui/layout";
-import { Text } from "@chakra-ui/layout";
+import { Box } from "@chakra-ui/react";
+import LandingPage from "./components/landingpage/LandingPage";
 
 function App() {
     const [folderName, setFolderName] = useState("");
+    const [currentFolder, setCurrentFolder] = useState({});
     const [folderURL, setFolderURL] = useState("");
+    const [noteURL, setNoteURL] = useState("")
     const [noteName, setNoteName] = useState([]);
-    const [showModal, setShowModal] = useState(false);
+    const [noteColor, setNoteColor] = useState("white");
+    const [noteContents, setNoteContents] = useState("");
     const [folders, setFolders] = useState([]);
-
+    const [keyword, setKeyword] = useState("");
     useEffect(() => {
         fetchAllFolders().then((result) => {
             if (result) {
@@ -41,7 +40,8 @@ function App() {
     async function getFolder(name) {
         try {
             const response = await axios.get(`http://localhost:5000/${name}`);
-            const data = response.data[0];
+            const data = response.data;
+            console.log(data)
             return data;
         } catch (error) {
             console.log(error);
@@ -50,70 +50,93 @@ function App() {
 
     async function deleteFolder(folder) {
         try {
-            console.log(folder);
-            const response = await axios.delete(`http://localhost:5000/`, {
-                data: folder,
-            });
-            window.location.reload();
+            await axios
+                .delete(`http://localhost:5000/`, {
+                    data: folder,
+                })
+                .then(() => {
+                    window.location.reload();
+                });
         } catch (error) {
             console.log(error);
         }
     }
+    async function cancelSearch(){
+        setKeyword("");
+        window.location.reload();
+    }
+    async function searchFolder(){
+        const search = {keyword:keyword};
+        let result = await getSearch(search);
+        if(result && result.status===200){
+            setFolders(result.data);
+        }
 
-    function redirectFolder(name) {
-        const replaced = name.split(" ").join("+");
-        setFolderName(name);
-        setFolderURL(replaced);
+    }
+    async function getSearch(search){
+        try{
+            const result = await axios.post("http://localhost:5000/", search);
+            return result;
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
+    function isDuplicate(name) {
+        for (let i = 0; i < folders.length; i++) {
+            const folder = folders[i];
+            if (folder.name === name) {
+                return true;
+            }
+        }
+        return false;
     }
 
     return (
-        <Box bg="#216869">
+        <Box className="App">
             <Router>
                 <Header />
                 <Switch>
                     <Route exact path="/">
-                        <Box
-                            style={{
-                                display: "flex",
-                                flexDirection: "row",
-                            }}
-                        >
-                            <FolderContainer
-                                redirectFolder={redirectFolder}
-                                folderData={folders}
-                                setShowModal={setShowModal}
-                            />
-                        </Box>
+                        <LandingPage
+                            folders={folders}
+                            setFolderName={setFolderName}
+                            setFolderURL={setFolderURL}
+                            folderName={folderName}
+                            setCurrentFolder={setCurrentFolder}
+                            isDuplicate={isDuplicate}
+                            setFolders={setFolders}
+                            setKeyword={setKeyword}
+                            cancelSearch={cancelSearch}
+                            searchFolder={searchFolder}
+                        />
                     </Route>
-                    <Route path={`/folder/`}>
+                    <Route exact path={`/folder/:folder`}>
                         <Folder
                             setNoteName={setNoteName}
+                            setNoteContents={setNoteContents}
                             setFolderName={setFolderName}
                             folderName={folderName}
                             noteName={noteName}
+                            folderURL={folderURL}
                             getFolder={getFolder}
                             deleteFolder={deleteFolder}
+                            currentFolder={currentFolder}
+                            setCurrentFolder={setCurrentFolder}
+                            setNoteColor={setNoteColor}
                         />
                     </Route>
-                    <Route path="/note">
-                        <Note noteName={noteName} />
+                    <Route exact path={`/folder/:folder/note/:note`}>
+                        <Note
+                            folderURL={folderURL}
+                            noteName={noteName}
+                            noteContents={noteContents}
+                            contents={noteContents}
+                            folderName={folderName}
+                            noteColor={noteColor}
+                        />
                     </Route>
                 </Switch>
-                <Modal isOpen={showModal}>
-                    <Button
-                        colorScheme="brand"
-                        onClick={() => setShowModal(false)}
-                    >
-                        Close Modal
-                    </Button>
-                    <CreateFolder
-                        folders={folders}
-                        setFolders={setFolders}
-                        folderName={folderName}
-                        setFolderName={setFolderName}
-                        setShowModal={setShowModal}
-                    />
-                </Modal>
             </Router>
         </Box>
     );

@@ -1,8 +1,6 @@
 import { Checkbox } from "@chakra-ui/checkbox";
 import { Heading, Stack } from "@chakra-ui/layout";
 import { Radio, RadioGroup } from "@chakra-ui/radio";
-import { Table, Th, Thead, Tr } from "@chakra-ui/table";
-import { Tab } from "@chakra-ui/tabs";
 import React, { useState } from "react";
 
 function FileSettings(props) {
@@ -19,9 +17,7 @@ function FileSettings(props) {
             </Heading>
             <RadioGroup value={props.color} onChange={handleColorChange}>
                 <Stack>
-                    <Radio value="C83E4D" color="brand.500">
-                        Brick Red
-                    </Radio>
+                    <Radio value="C83E4D">Brick Red</Radio>
                     <Radio value="F4B860">Sunray</Radio>
                     <Radio value="F4D6CC">Silk</Radio>
                 </Stack>

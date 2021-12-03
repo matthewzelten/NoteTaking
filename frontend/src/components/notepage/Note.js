@@ -1,44 +1,139 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import ReactQuill from "react-quill";
 import { Link } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
+import { Button, Heading, Box } from "@chakra-ui/react";
+import axios from "axios";
+
+
+const loadState = () => {
+    try {
+        const data = localStorage.getItem('state');
+        if (data) {
+            return JSON.parse(data);
+        } else {
+            return undefined;
+        }
+    } catch (e) {
+        return undefined;
+    }
+}
+
+const saveState = (state) => {
+    try {
+        if (state.name && state.name.length > 0) {
+            localStorage.setItem('state', JSON.stringify({
+                name: state.name,
+                contents: state.contents,
+                folder: state.folder,
+                color: state.color
+            }));
+        }
+
+    } catch (e) {
+    }
+}
+
+const persistedState = loadState();
 
 function Note(props) {
+
+    let stateValue;
+
+    if(props.noteName && props.noteName.length > 0) {
+        stateValue = {
+            name:props.noteName,
+            contents: props.noteContents,
+            folder: props.folderName,
+            color: props.noteColor
+        }
+        console.log(`Saving state`);
+        saveState(stateValue);
+    } else {
+        stateValue = persistedState;
+    }
+
+    const [state, setState] = useState(stateValue);
+    console.log(`TEST ${state.name} ${state.folder} ${state} `);
+
+
+    async function saveNote(){
+
+        const tempNote = {
+            name: state.name,
+            folder: state.folder,
+            color: null,
+            isPrivate: null,
+            password: null,
+            contents: state.contents,
+            isLocked: null,
+            toSave: true
+        }
+        await postNoteUpdate(tempNote);
+
+    }
+
+    /**
+     * Post note to the backend
+     * @param note The pre-constructed note object to submit to the backend
+     * @returns {Promise<boolean|AxiosResponse<unknown>>} the response from the backend
+     */
+    async function postNoteUpdate(note) {
+
+        try {
+            return await axios.post('http://localhost:5000/notes', note);
+        }
+        catch (error) {
+            return false;
+        }
+    }
+
+    function handleUpdate(html) {
+        state.contents = html;
+        saveState(state);
+    }
+
+    //placeholder={"Write something awesome..."}
+
     return (
-        <div>
-            <Link to="/folder">
-                <button>Return</button>
+        <Box>
+            <Link to={`/folder/${state.folder.split(" ").join("+")}`}>
+                <Button bg={`#${state.color}`}>Return</Button>
             </Link>
-            <h1>{props.noteName}</h1>
-            <form>
-                <Editor placeholder={"Write something awesome..."} />
-                <div class="alter-height">
-                    <button onClick={saveNote()}>Save Note</button>
-                </div>
-            </form>
-        </div>
+            <Heading style={{ color: `#${state.color}` }}>
+                {state.name}
+            </Heading>
+            <Editor handleUpdate={handleUpdate} value={state.contents} placeholder={"Write something awesome..."}/>
+            <Box>
+                <Button bg={`#${state.color}`} onClick={saveNote}>Save Note</Button>
+            </Box>
+        </Box>
     );
 }
 
-function saveNote() {
-    //implement this to save to backend
-}
-
+/**
+ * The editor component
+ */
 class Editor extends React.Component {
+
+
     constructor(props) {
         super(props);
-        this.state = { editorHtml: "", theme: "snow" };
+        this.state = { editorHtml: props.value, theme: "snow" };
         this.handleChange = this.handleChange.bind(this);
     }
 
     handleChange(html) {
+        //noteDelta = this.editor.getContents();
+        this.props.handleUpdate(html);
         this.setState({ editorHtml: html });
+
     }
 
     render() {
         return (
-            <div>
+            <Box bg="white" w="95%" m="auto">
                 <ReactQuill
                     theme={this.state.theme}
                     onChange={this.handleChange}
@@ -48,7 +143,7 @@ class Editor extends React.Component {
                     bounds={".app"}
                     placeholder={this.props.placeholder}
                 />
-            </div>
+            </Box>
         );
     }
 }

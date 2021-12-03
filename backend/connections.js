@@ -4,19 +4,14 @@ const folderSchema = require("./Database/Models/folderSchema");
 const noteSchema = require("./Database/Models/noteSchema");
 dotenv.config();
 
-let folderConn;
-let noteConn;
+let conn;
 
-function setFolderConnection(newConn) {
-    return (folderConn = newConn);
+function setConnection(newConn) {
+    return (conn = newConn);
 }
 
-function setNoteConnection(newConn) {
-    return (noteConn = newConn);
-}
-
-function getFolderConnection() {
-    if (!folderConn) {
+function getConnection() {
+    if (!conn) {
         let uri = "mongodb+srv://" +
             process.env.MONGO_USER +
             ":" +
@@ -26,13 +21,13 @@ function getFolderConnection() {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         };
-        folderConn = mongoose.createConnection(uri, params);
+        conn = mongoose.createConnection(uri, params);
     }
-    return folderConn;
+    return conn;
 }
 
-function getNoteConnection() {
-    if(!noteConn) {
+/*function getNoteConnection() {
+    if(!conn) {
         let uri = "mongodb+srv://" +
             process.env.MONGO_USER +
             ":" +
@@ -45,68 +40,152 @@ function getNoteConnection() {
         noteConn = mongoose.createConnection(uri, params);
     }
     return noteConn;
-}
-
-async function getAllFolders() {
-    const tempF = getFolderConnection().model("Folder", folderSchema);
-    let result = await tempF.find({});
-    return result;
-}
-
-async function findFolder(name) {
-    const tempF = getFolderConnection().model("Folder", folderSchema);
-    const result = await tempF.find({ name: name });
-    return result;
-}
-
-async function findNote(folderName, noteName) {
-    const result = await Note.find({name: noteName});
-    return result;
-}
-
-async function addNote(note){
-    try{
-      //const folder = findFolder(note["folder"]);
-      const noteToAdd = new Note(note);
-      if(await noteToAdd.save()){
-      //if(await folder["notes"].insertOne(noteToAdd)){
-        return true;
-      }
-    }catch(error){
-      console.log(error);
-      return false;
-    }
-}
-/*async function addNote(fName, noteToAdd) {
-    folders["folderList"]
-        .find((fold) => fold.name === fName)
-        .notes.push(noteToAdd);
 }*/
 
-async function deleteFolder(folderToDelete) {
-    Folder.deleteOne({ name: folderToDelete }, function (err, result) {
-        if (err) {
-            console.log(err);
-            throw err;
-            //return false;
-        }
-    });
-    return true;
+/**
+ * Returns all folders
+ * @returns {Promise<*>} Array of all folders
+ */
+async function getAllFolders() {
+    const tempF = getConnection().model("Folder", folderSchema);
+    return tempF.find({});
 }
-async function deleteNote(fName, nName) {
-    let noteList = folders["folderList"].find(
-        (folder) => folder["name"] === fName
-    ).notes;
-    for (var i = 1; i < noteList.length; i++) {
-        if (noteList[i].name === nName) {
-            result = noteList.splice(i, 1);
-            return;
+
+/**
+ * Finds the folders with the specified name
+ * @param name
+ * @returns {Promise<*>} Array of found folders
+ */
+async function findFolder(name) {
+    const tempF = getConnection().model("Folder", folderSchema);
+    return tempF.find({ name: name });
+}
+
+
+
+/**
+ * Returns the note with the given name in the given folder
+ * @param folderName
+ * @param noteName
+ * @returns {Promise<undefined|T>} the found note
+ */
+async function findNote(folderName, noteName) {
+    let noteFolder = (await findFolder(folderName))[0];
+    await noteFolder.populate("notes");
+    console.log('this thing ^\n', noteFolder);
+    let result = noteFolder.notes.filter(note => note.name === noteName);
+    console.log(result);
+    if (result.length < 1) {
+        return undefined;
+    } else {
+        return result[0];
+    }
+}
+
+/**
+ * Returns a folder with a populated notes field
+ * @param folderName
+ * @returns {Promise<[]|[{ref: string, type: *}]|*>}
+ */
+async function getNotes(folderName) {
+    let thisFolder = (await findFolder(folderName))[0];
+    await thisFolder.populate('notes');
+    return thisFolder;
+}
+
+/**
+ * Adds a new folder to the database. Folder must be structured correctly.
+ * @param folder
+ * @returns {Promise<boolean|(Document<any, any, unknown> & Require_id<unknown>)>}
+ */
+async function addFolder(folder) {
+    const Folder = getConnection().model("Folder", folderSchema);
+    let existingFolder = await Folder.findOne({"name" : folder.name});
+    if(existingFolder) {
+        throw `addFolder: folder with name "${folder.name}" already exists.`;
+    } else {
+        try {
+            const folderToAdd = new Folder(folder);
+            return folderToAdd.save();
+        } catch(e) {
+            console.log(e);
+            return false;
         }
     }
 }
 
-const Folder = getFolderConnection().model("Folder", folderSchema);
-const Note = getNoteConnection().model("Note", noteSchema);
+
+/**
+ * Adds a new note to the database
+ * @param fName
+ * @param noteToAdd
+ * @returns {Promise<boolean>} whether the note was added
+ */
+async function addNote(fName, noteToAdd) {
+    const Note = getConnection().model("Note", noteSchema);
+    let thisFolder = (await findFolder(fName))[0];
+
+    await thisFolder.populate('notes');
+
+    let notesList = thisFolder.notes.filter(note => note.name === noteToAdd.name);
+
+    if(notesList.length !== 0) {
+        //THIS IS THE SAVE FUNCTION
+        //FIX THIS
+        notesList[0].contents = noteToAdd.contents;
+        notesList[0].save();
+        let contents = await getConnection().model("Note", noteSchema).findOne({name: noteToAdd.name}).contents;
+        return contents;
+
+    } else {
+        try {
+            const note = await new Note(noteToAdd);
+            await note.save();
+            console.log(note);
+            thisFolder.notes.push(note._id);
+            return await thisFolder.save();
+        } catch(e) {
+            console.log(e);
+            return false;
+        }
+
+    }
+}
+
+/**
+ * Deletes the given folder
+ * @param folderToDelete name of folder to delete
+ * @returns {Promise<void>}
+ */
+async function deleteFolder(folderToDelete) {
+    const tempF = getConnection().model("Folder", folderSchema);
+    let returnval;
+    let vals = await tempF.deleteOne({ name: folderToDelete });
+    if(vals.deletedCount === 0) {
+        returnval = false;
+    }
+    else {
+        returnval = true;
+    }
+    return returnval;
+}
+
+/**
+ * Deletes note in given folder with given name
+ * @param fName
+ * @param nName
+ * @returns {Promise<boolean>} whether or note the note seems to have been deleted
+ */
+async function deleteNote(fName, nName) {
+    let thisFolder = await findFolder(fName);
+    let originalLength = this.folder.notes.length;
+    thisFolder.notes = thisFolder.notes.filter(note => note.name !== nName);
+    thisFolder.save();
+    return this.folder.notes.length < originalLength;
+}
+
+const Folder = getConnection().model("Folder", folderSchema);
+const Note = getConnection().model("Note", noteSchema);
 
 module.exports = {
     Folder,
@@ -114,10 +193,10 @@ module.exports = {
     getAllFolders,
     findFolder,
     findNote,
-    //addFolder,
+    addFolder,
     addNote,
     deleteFolder,
     deleteNote,
-    setFolderConnection,
-    setNoteConnection,
+    setConnection,
+    getNotes
 };
