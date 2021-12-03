@@ -19,7 +19,7 @@ function App() {
     const [noteContents, setNoteContents] = useState("");
     const [checkPass, setCheckPass] = useState("")
     const [folders, setFolders] = useState([]);
-
+    const [keyword, setKeyword] = useState("");
     useEffect(() => {
         fetchAllFolders().then((result) => {
             if (result) {
@@ -61,7 +61,27 @@ function App() {
             console.log(error);
         }
     }
+    async function cancelSearch(){
+        setKeyword("");
+        window.location.reload();
+    }
+    async function searchFolder(){
+        const search = {keyword:keyword};
+        let result = await getSearch(search);
+        if(result && result.status===200){
+            setFolders(result.data);
+        }
 
+    }
+    async function getSearch(search){
+        try{
+            const result = await axios.post("http://localhost:5000/", search);
+            return result;
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
     function isDuplicate(name) {
         for (let i = 0; i < folders.length; i++) {
             const folder = folders[i];
@@ -86,6 +106,9 @@ function App() {
                             setCurrentFolder={setCurrentFolder}
                             isDuplicate={isDuplicate}
                             setFolders={setFolders}
+                            setKeyword={setKeyword}
+                            cancelSearch={cancelSearch}
+                            searchFolder={searchFolder}
                             setCheckPass={setCheckPass}
                         />
                     </Route>
