@@ -297,7 +297,7 @@ app.delete("/", async (req, res) => {
 app.delete("/:folderName", async (req, res) => {
     const noteToDelete = req.body["name"];
     const folderN = req.params["folderName"];
-    //console.log(`Deleting note ${noteToDelete} in folder ${folderN}`);
+    console.log(`Deleting note ${noteToDelete} in folder ${folderN}`);
     let noteExists = await findNote(folderN, noteToDelete);
     if (noteExists) {
         let noteDeleted = await deleteNote(folderN, noteToDelete);
