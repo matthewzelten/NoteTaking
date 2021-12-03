@@ -7,11 +7,7 @@ import { Text } from "@chakra-ui/layout";
 import { Input } from "@chakra-ui/input";
 import axios from "axios";
 import NoteContainer from "./NoteContainer";
-import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-  } from '@chakra-ui/react'
+import { Modal, ModalOverlay, ModalContent } from "@chakra-ui/react";
 
 function Folder(props) {
     const [showNoteModal, setShowNoteModal] = useState(false);
@@ -27,7 +23,6 @@ function Folder(props) {
         });
     }, []);
 
-
     function getCurrentFolder() {
         const folderURL = window.location.pathname.split("/")[2];
         const replaced = folderURL.split("+").join(" ");
@@ -36,15 +31,18 @@ function Folder(props) {
 
     async function fetchAllNotes() {
         try {
-            const response = await axios.get("http://localhost:5000/" + props.folderName);
+            const response = await axios.get(
+                "http://localhost:5000/" + props.folderName
+            );
             return response.data.notes;
         } catch (error) {
             console.log(error);
             return false;
         }
     }
-    let folderColor = props.currentFolder === undefined ? "white" : props.currentFolder.color
-
+    let folderColor =
+        props.currentFolder === undefined ? "white" : props.currentFolder.color;
+    console.log(props.currentFolder)
     return (
         <Box>
             <Link to="/">
@@ -89,25 +87,27 @@ function Folder(props) {
                             folderColor={folderColor}
                             setNoteName={props.setNoteName}
                             setShowNoteModal={setShowNoteModal}
-                            folderName = {props.folderName}
+                            folderName={props.folderName}
                             noteContents={props.noteContents}
                         />
                     </Box>
                 </ModalContent>
             </Modal>
             <Modal isOpen={showDeleteModal}>
-                <ModalOverlay/>
+                <ModalOverlay />
                 <ModalContent>
                     <Box m={3}>
                         <Text color="brand.100">
-                            Are you sure you want to delete this folder? This folder and
-                            all it's notes will be deleted. This action is
-                            non-reversible
+                            Are you sure you want to delete this folder? This
+                            folder and all it's notes will be deleted. This
+                            action is non-reversible
                         </Text>
                         <Link to="/">
                             <Button
                                 bg={`#${folderColor}`}
-                                onClick={() => props.deleteFolder(props.currentFolder)}
+                                onClick={() =>
+                                    props.deleteFolder(props.currentFolder)
+                                }
                             >
                                 Yes, delete this folder
                             </Button>

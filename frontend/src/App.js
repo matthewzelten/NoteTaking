@@ -40,6 +40,7 @@ function App() {
         try {
             const response = await axios.get(`http://localhost:5000/${name}`);
             const data = response.data;
+            console.log(data)
             return data;
         } catch (error) {
             console.log(error);
@@ -92,7 +93,7 @@ function App() {
                             setFolders={setFolders}
                         />
                     </Route>
-                    <Route exact path={`/folder/${folderURL}`}>
+                    <Route exact path={`/folder/:folder`}>
                         <Folder
                             setNoteName={setNoteName}
                             setNoteContents={setNoteContents}
@@ -107,7 +108,7 @@ function App() {
                             setCurrentFolder={setCurrentFolder}
                         />
                     </Route>
-                    <Route path={`/folder/${folderURL}/note`}>
+                    <Route exact path={`/folder/:folder/note/:note`}>
                         <Note
                             folderURL={folderURL}
                             noteName={noteName}
