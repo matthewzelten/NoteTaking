@@ -68,12 +68,6 @@ function App() {
         }
     }
 
-    function getCurrentFolder() {
-        const folderURL = window.location.pathname.split("/")[2];
-        const replaced = folderURL.split("+").join(" ");
-        getFolder(replaced).then((data) => setCurrentFolder(data));
-    }
-
     function isDuplicate(name) {
         for (let i = 0; i < folders.length; i++) {
             const folder = folders[i];
@@ -111,7 +105,6 @@ function App() {
                                 getFolder={getFolder}
                                 deleteFolder={deleteFolder}
                                 currentFolder={currentFolder}
-                                getCurrentFolder={getCurrentFolder}
                                 setCurrentFolder={setCurrentFolder}
                             />
                         </Route>

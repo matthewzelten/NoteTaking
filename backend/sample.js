@@ -31,7 +31,7 @@ app.get("/", async (req, res) => {
 });
 
 /**
- * Get all notes for the given folder
+ * Get the given folder
  * req parameters:
  * string folderName: name of the folder
  * string pass: given password
