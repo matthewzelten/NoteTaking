@@ -52,7 +52,7 @@ function Folder(props) {
         try {
             const folderURL = window.location.pathname.split("/")[2];
             const replaced = folderURL.split("+").join(" ");
-            const response = await props.getFolder(replaced);
+            const response = await props.getFolder(replaced, props.checkPass);
             return response.notes;
         } catch (error) {
             console.log(error);
@@ -85,67 +85,69 @@ function Folder(props) {
     let folderColor =
         props.currentFolder === undefined ? "white" : props.currentFolder.color;
     if (canAccess) {
-        return (
-            <Box>
-                <Link to="/">
-                    <Button bg={`#${folderColor}`}>Return</Button>
-                </Link>
-                <Button
-                    bg={`#${folderColor}`}
-                    onClick={() => setShowDeleteModal(true)}
-                >
-                    DELETE FOLDER
-                </Button>
-                <Heading style={{ color: `#${folderColor}` }}>
-                    {props.currentFolder === undefined
-                        ? `${props.folderName.name}`
-                        : `${props.currentFolder.name}`}
-                </Heading>
-                <Input placeholder="Search" onChange={(e)=>setKeyword(e.target.value)}/>
+    return (
+        <Box>
+            <Link to="/">
+                <Button bg={`#${folderColor}`}>Return</Button>
+            </Link>
+            <Button
+                bg={`#${folderColor}`}
+                onClick={() => setShowDeleteModal(true)}
+            >
+                DELETE FOLDER
+            </Button>
+            <Heading style={{ color: `#${folderColor}` }}>
+                {props.currentFolder === undefined
+                    ? `${props.folderName.name}`
+                    : `${props.currentFolder.name}`}
+            </Heading>
+            <Input placeholder="Search" onChange={(e)=>setKeyword(e.target.value)}/>
                     <input type="button" value="Search" onClick={searchNote}/>
                     <input type="button" value="Cancel" onClick={cancelSearch}/>
-                <Button
-                    bg={`#${folderColor}`}
-                    onClick={() => setShowNoteModal(true)}
-                >
-                    + Add New Note
-                </Button>
-                <NoteContainer
-                    folderURL={props.folderURL}
-                    noteData={notes}
-                    setNoteName={props.setNoteName}
-                    setNoteContents={props.setNoteContents}
-                    setNoteColor={props.setNoteColor}
-                />
-                <Modal isOpen={showNoteModal}>
-                    <ModalOverlay />
-                    <ModalContent>
-                        <Box m={3}>
-                            <Button
-                                bg={`#${folderColor}`}
-                                onClick={() => setShowNoteModal(false)}
-                            >
-                                Close
-                            </Button>
-                            <CreateNote
-                                folderURL={props.folderURL}
-                                folderColor={folderColor}
-                                setNoteName={props.setNoteName}
-                                setShowNoteModal={setShowNoteModal}
-                                folderName={props.folderName}
-                                noteContents={props.noteContents}
-                            />
-                        </Box>
-                    </ModalContent>
-                </Modal>
-                <Modal isOpen={showDeleteModal}>
-                    <ModalOverlay />
-                    <ModalContent>
-                        <Box m={3}>
-                            <Text color="brand.100">
-                                Are you sure you want to delete this folder?
-                                This folder and all it's notes will be deleted.
-                                This action is non-reversible
+            <Button
+                bg={`#${folderColor}`}
+                onClick={() => setShowNoteModal(true)}
+            >
+                + Add New Note
+            </Button>
+            <NoteContainer
+                folderURL={props.folderURL}
+                noteData={notes}
+                setNoteName={props.setNoteName}
+                setNoteContents={props.setNoteContents}
+                setNoteColor={props.setNoteColor}
+            />
+            <Modal isOpen={showNoteModal}>
+                <ModalOverlay />
+                <ModalContent>
+                    <Box m={3}>
+                        <Button
+                            bg={`#${folderColor}`}
+                            onClick={() => setShowNoteModal(false)}
+                        >
+                            Close
+                        </Button>
+                        <CreateNote
+                            folderURL={props.folderURL}
+                            folderColor={folderColor}
+                            setNoteName={props.setNoteName}
+                            setShowNoteModal={setShowNoteModal}
+                            folderName={props.folderName}
+                            noteContents={props.noteContents}
+                            setNoteContents={props.setNoteContents}
+                            otherNotes={notes}
+                        />
+                    </Box>
+                </ModalContent>
+            </Modal>
+            <Modal isOpen={showDeleteModal}>
+                <ModalOverlay />
+                <ModalContent>
+                    <Box m={3}>
+                        <Text color="brand.100">
+                            Are you sure you want to delete this folder? This
+                            folder and all its notes will be deleted.
+                                This action is non-reversible.
                             </Text>
                             <Link to="/">
                                 <Button
