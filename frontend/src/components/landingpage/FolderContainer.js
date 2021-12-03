@@ -8,7 +8,7 @@ import {
     WrapItem,
     Button,
     Input,
-    Checkbox
+    Checkbox,
 } from "@chakra-ui/react";
 import { Modal, ModalOverlay, ModalContent } from "@chakra-ui/react";
 
@@ -35,16 +35,28 @@ function PirvateFolder(props) {
                                     This folder is private. Please enter the
                                     password to gain access
                                 </Text>
-                                <Input placeholder="Enter Password" />
+                                <Input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Enter Password"
+                                    onChange={(e) => props.setCheckPass(e.target.value)}
+                                />
                                 <Checkbox
-                                    onChange={() => setShowPassword(!showPassword)}
+                                    onChange={() =>
+                                        setShowPassword(!showPassword)
+                                    }
                                 >
                                     Show Password
                                 </Checkbox>
                             </Box>
-                            <Button onClick={() => setShowPassModal(false)}>
-                                Submit Password
-                            </Button>
+                            <Link to={`/folder/${props.replaced}`}>
+                                <Button
+                                    onClick={() =>
+                                        props.setFolderName(props.name)
+                                    }
+                                >
+                                    Submit Password
+                                </Button>
+                            </Link>
                             <Button onClick={() => setShowPassModal(false)}>
                                 Close
                             </Button>
@@ -90,6 +102,7 @@ function ShowFolders(props) {
                     name={row.name}
                     replaced={replaced}
                     isPrivate={row.isPrivate}
+                    setCheckPass={props.setCheckPass}
                 />
             </WrapItem>
         );
@@ -105,6 +118,7 @@ function FolderContainer(props) {
                     setFolderURL={props.setFolderURL}
                     redirectFolder={props.redirectFolder}
                     folderData={props.folderData}
+                    setCheckPass={props.setCheckPass}
                 />
                 <WrapItem>
                     <Button
