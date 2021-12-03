@@ -9,13 +9,19 @@ import axios from "axios";
 import NoteContainer from "./NoteContainer";
 import { Modal, ModalOverlay, ModalContent } from "@chakra-ui/react";
 
+
 function Folder(props) {
+
+
     const [showNoteModal, setShowNoteModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [notes, setNotes] = useState([]);
+    const [folderName, setFolderName] = useState("");
 
-    useEffect(() => {
-        getCurrentFolder();
+    useEffect(async () => {
+        await getCurrentFolder();
+        console.log(`other stuff ${props.folderName}`)
+        console.log(`CURRENT FOLDER RETRIEVED ${folderName}`);
         fetchAllNotes().then((result) => {
             if (result) {
                 setNotes(result);
@@ -23,26 +29,32 @@ function Folder(props) {
         });
     }, []);
 
-    function getCurrentFolder() {
+
+    async function getCurrentFolder() {
         const folderURL = window.location.pathname.split("/")[2];
         const replaced = folderURL.split("+").join(" ");
-        props.getFolder(replaced).then((data) => props.setCurrentFolder(data));
+        let folder = await props.getFolder(replaced);
+        props.setCurrentFolder(folder);
+        props.setFolderName(folder.name);
+        setFolderName(folder.name);
+        //await props.getFolder(replaced).then(async (data) => await props.setCurrentFolder(data));
+
     }
 
     async function fetchAllNotes() {
         try {
-            const response = await axios.get(
-                "http://localhost:5000/" + props.folderName
-            );
+            const folderURL = window.location.pathname.split("/")[2];
+            const replaced = folderURL.split("+").join(" ");
+            const response = await axios.get("http://localhost:5000/" + replaced);
             return response.data.notes;
         } catch (error) {
             console.log(error);
             return false;
         }
     }
-    let folderColor =
-        props.currentFolder === undefined ? "white" : props.currentFolder.color;
-    console.log(props.currentFolder)
+
+    let folderColor = (props.currentFolder === undefined ? "white" : props.currentFolder.color)
+
     return (
         <Box>
             <Link to="/">
@@ -56,8 +68,8 @@ function Folder(props) {
             </Button>
             <Heading style={{ color: `#${folderColor}` }}>
                 {props.currentFolder === undefined
-                    ? props.folderName
-                    : props.currentFolder.name}
+                    ? `${props.folderName.name}`
+                    : `${props.currentFolder.name}`}
             </Heading>
             <Input placeholder="Search" />
             <Button
@@ -71,6 +83,7 @@ function Folder(props) {
                 noteData={notes}
                 setNoteName={props.setNoteName}
                 setNoteContents={props.setNoteContents}
+                setNoteColor={props.setNoteColor}
             />
             <Modal isOpen={showNoteModal}>
                 <ModalOverlay />

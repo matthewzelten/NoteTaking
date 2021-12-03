@@ -87,7 +87,7 @@ async function findNote(folderName, noteName) {
 }
 
 /**
- *
+ * Returns a folder with a populated notes field
  * @param folderName
  * @returns {Promise<[]|[{ref: string, type: *}]|*>}
  */

@@ -20,6 +20,7 @@ function ShowNotes(props) {
                         onClick={() => {
                             props.setNoteName(row.name);
                             props.setNoteContents(row.contents);
+                            props.setNoteColor(row.color);
                         }}
                     >
                         {row.name}
@@ -34,12 +35,13 @@ function ShowNotes(props) {
 function NoteContainer(props) {
     return (
         <Flex direction="row">
-            <Wrap marginLeft="90px" jusitfy="center">
+            <Wrap justify="center">
                 <ShowNotes
                     folderURL={props.folderURL}
                     noteData={props.noteData}
                     setNoteName={props.setNoteName}
                     setNoteContents={props.setNoteContents}
+                    setNoteColor={props.setNoteColor}
                 />
             </Wrap>
         </Flex>
