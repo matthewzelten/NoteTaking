@@ -79,7 +79,6 @@ function CreateNote(props) {
             name !== "" &&
             color !== ""
         ) {
-            console.log(`Posting ${note} to ${props.folderName}`);
             setErrorMessage("Submitting note...");
 
             try {
@@ -151,6 +150,7 @@ function CreateNote(props) {
                 setColor={setColor}
                 setPasswordA={setPasswordA}
                 setPasswordB={setPasswordB}
+                isFolderCreate={false}
             />
 
             <CreateNoteError

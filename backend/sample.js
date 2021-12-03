@@ -8,7 +8,8 @@ const {
     addNote,
     deleteFolder,
     deleteNote,
-    getNotes} = require('./connections');
+    getNotes,
+} = require("./connections");
 const mongoose = require("mongoose");
 const Note = require("./Database/Models/noteSchema").note;
 const app = express();
@@ -16,7 +17,8 @@ const cors = require("cors");
 const port = 5000;
 const { json } = require("express");
 const { note } = require("./Database/Models/noteSchema");
-
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 
 app.use(cors());
 app.use(express.json());
@@ -46,12 +48,18 @@ app.get("/:folderName", async (req, res) => {
         if (!result["isPrivate"]) {
             res.status(201).send(result);
         } else {
-            if (passw["password"] === result["password"]) {
-                res.status(201).send(result);
-            } else {
-                //res.status(404).send(req.body);
-                res.status(404).send("Wrong password. Access denied.");
-            }
+            hash = result["password"];
+            bcrypt.compare(passw, hash, function (err, success) {
+                if (err) {
+                    res.status(404).send("Password Comparison Failed");
+                } else {
+                    if (success) {
+                        res.status(201).send(result);
+                    } else {
+                        res.status(404).send("Wrong password. Access denied.");
+                    }
+                }
+            });
         }
     }
 });
@@ -61,19 +69,22 @@ app.get("/:folderName", async (req, res) => {
  * string folderName: name of folder to add, open or search
  * string keyword: keyword to search for
  */
-app.post("/", async (req, res)=>{
+app.post("/", async (req, res) => {
     const folder = req.body["folderName"];
     const keyword = req.body["keyword"];
 
-    if((folder===undefined||folder.length==0)&&(keyword===undefined||keyword.length==0)){
+    if (
+        (folder === undefined || folder.length == 0) &&
+        (keyword === undefined || keyword.length == 0)
+    ) {
         // if no folder
         console.log(`Add folder post`);
         await addFolderPost(req, res);
-    }else if(keyword===undefined||keyword.length==0){
+    } else if (keyword === undefined || keyword.length == 0) {
         //open folder
         console.log(`Open folder post`);
         await openFolderPost(req, res, folder);
-    }else{
+    } else {
         //search folder
         console.log(`Search folder post`);
         await searchFolderPost(req, res, keyword);
@@ -81,23 +92,38 @@ app.post("/", async (req, res)=>{
 });
 
 async function addFolderPost(req, res) {
-    const { name, color, isPrivate, password, contents} = req.body;
+    const { name, color, isPrivate, contents } = req.body;
+    let { password } = req.body;
     let isDup = await findFolder(name);
-    if (isDup === undefined || isDup.length===0) {
-
+    if (isDup === undefined || isDup.length === 0) {
         try {
-            const folderToAdd = new Folder({ name, color, isPrivate, password, contents});
-            let result = await addFolder(folderToAdd);
-            if (result) {
-                res.status(201).send(folderToAdd).end();
-            } else {
-                res.status(404).send(result).end();
-            }
-        }catch(error) {
+            bcrypt.hash(password, saltRounds, async function (err, hash) {
+                if (err) {
+                    res.status(404).send(error).end();
+                } else {
+                    password = hash;
+                    const folderToAdd = new Folder({
+                        name,
+                        color,
+                        isPrivate,
+                        password,
+                        contents,
+                    });
+                    let result = await addFolder(folderToAdd);
+                    if (result) {
+                        res.status(201).send(folderToAdd).end();
+                    } else {
+                        res.status(404).send(result).end();
+                    }
+                }
+            });
+        } catch (error) {
             res.status(404).send(error).end();
         }
     } else {
-        res.status(409).send("Duplicate file name. "+isDup).end();
+        res.status(409)
+            .send("Duplicate file name. " + isDup)
+            .end();
     }
 }
 
@@ -123,12 +149,16 @@ async function openFolderPost(req, res, folder) {
 }
 
 async function searchFolderPost(req, res, keyword) {
-    Folder.find({"name":{"$regex": keyword, "$options":"i"}}).exec(function (err, docs) {
-        if (err){
+    Folder.find({ name: { $regex: keyword, $options: "i" } }).exec(function (
+        err,
+        docs
+    ) {
+        if (err) {
             console.log(err);
-        }else{
+        } else {
             res.status(200).send(docs).end();
-        }});
+        }
+    });
     //res.status(200).send(result).end();
 }
 
@@ -140,11 +170,11 @@ async function searchFolderPost(req, res, keyword) {
  */
 app.post("/:folderName", async (req, res) => {
     const keyword = req.body["keyword"];
-    if(keyword===undefined || keyword.length===0){
+    if (keyword === undefined || keyword.length === 0) {
         //add/save note
         console.log(`ADD/SAVE NOTE`);
         await addNotePost(req, res);
-    }else{
+    } else {
         //search note
         console.log(`SEARCH NOTE`);
         searchNotePost(req, res, keyword);
@@ -187,51 +217,58 @@ async function addNotePost(req, res) {
     const noteToAdd = req.body;
 
     console.log(`Posting note to ${noteToAdd.folder}`);
-    console.log(`Random data ${noteToAdd.name} ${noteToAdd.isPrivate} ${noteToAdd.color} \"${noteToAdd.contents}\"`);
+    console.log(
+        `Random data ${noteToAdd.name} ${noteToAdd.isPrivate} ${noteToAdd.color} \"${noteToAdd.contents}\"`
+    );
 
     let folder = await findFolder(noteToAdd.folder);
     console.log(`FOLDER ID: ${folder[0]._id}`);
 
     let result = await findNote(noteToAdd.folder, noteToAdd.name);
-    console.log(`Duplicate? ${result!==undefined}, Save? ${noteToAdd.toSave !==undefined}`);
-    if(result===undefined || noteToAdd.toSave !== undefined){
+    console.log(
+        `Duplicate? ${result !== undefined}, Save? ${
+            noteToAdd.toSave !== undefined
+        }`
+    );
+    if (result === undefined || noteToAdd.toSave !== undefined) {
         console.log(`No duplicate OR Saving`);
 
         let newNote = {
-            "name": noteToAdd.name,
-            "contents": noteToAdd.contents,
-            "folder": folder[0]._id,
-            "color": noteToAdd.color,
-            "isPrivate": noteToAdd.isPrivate,
-            "password": noteToAdd.password,
-            "isLocked": noteToAdd.isLocked
+            name: noteToAdd.name,
+            contents: noteToAdd.contents,
+            folder: folder[0]._id,
+            color: noteToAdd.color,
+            isPrivate: noteToAdd.isPrivate,
+            password: noteToAdd.password,
+            isLocked: noteToAdd.isLocked,
         };
 
         let result = await addNote(noteToAdd.folder, newNote);
 
-        if(result){
+        if (result) {
             res.status(201).send(result).end();
             //res.status(201).send(noteToAdd).end();
-        }
-        else{
+        } else {
             res.status(404).end();
         }
-    }else{
+    } else {
         console.log(`Duplicate note & not saving`);
         res.status(404).send("Duplicate note name.").end();
     }
 }
 
 function searchNotePost(req, res, keyword) {
-    Note.find({"name":{"$regex": keyword, "$options":"i"}}).exec(function (err, docs) {
-        if (err){
+    Note.find({ name: { $regex: keyword, $options: "i" } }).exec(function (
+        err,
+        docs
+    ) {
+        if (err) {
             console.log(err);
-        }else{
+        } else {
             res.status(200).send(docs).end();
-        }});
+        }
+    });
 }
-
-
 
 /**
  * delete folder
@@ -254,7 +291,7 @@ app.delete("/", async (req, res) => {
 app.delete("/:folderName", async (req, res) => {
     const noteToDelete = req.body["name"];
     const folderN = req.params["folderName"];
-    console.log(`Deleting note ${noteToDelete} in folder ${folderN}`);
+    //console.log(`Deleting note ${noteToDelete} in folder ${folderN}`);
     let noteExists = await findNote(folderN, noteToDelete);
     if (noteExists) {
         let noteDeleted = await deleteNote(folderN, noteToDelete);
@@ -268,7 +305,6 @@ app.delete("/:folderName", async (req, res) => {
         console.log(`Delete note failed 2`);
         res.status(404).send(noteToDelete);
     }
-
 });
 
 app.listen(port, () => {

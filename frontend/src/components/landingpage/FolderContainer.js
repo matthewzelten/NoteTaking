@@ -1,14 +1,99 @@
-import { Button } from "@chakra-ui/button";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Flex, Wrap, WrapItem } from "@chakra-ui/layout";
+import {
+    Box,
+    Text,
+    Flex,
+    Wrap,
+    WrapItem,
+    Button,
+    Input,
+    Checkbox,
+} from "@chakra-ui/react";
+import { Modal, ModalOverlay, ModalContent } from "@chakra-ui/react";
+
+function PirvateFolder(props) {
+    const [showPassModal, setShowPassModal] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    if (props.isPrivate) {
+        return (
+            <Box>
+                <Button
+                    w="200px"
+                    h="100px"
+                    bg={`${props.buttonColor}`}
+                    onClick={() => setShowPassModal(true)}
+                >
+                    {props.name}
+                </Button>
+                <Modal isOpen={showPassModal}>
+                    <ModalOverlay />
+                    <ModalContent>
+                        <Box m={3}>
+                            <Box>
+                                <Text color="brand.100">
+                                    This folder is private. Please enter the
+                                    password to gain access
+                                </Text>
+                                <Input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Enter Password"
+                                    onChange={(e) =>
+                                        props.setCheckPass(e.target.value)
+                                    }
+                                />
+                                <Checkbox
+                                    onChange={() =>
+                                        setShowPassword(!showPassword)
+                                    }
+                                >
+                                    Show Password
+                                </Checkbox>
+                            </Box>
+                            <Link to={`/folder/${props.replaced}`}>
+                                <Button
+                                    onClick={() =>
+                                        props.updateNameAndURL(
+                                            props.name,
+                                            props.replaced
+                                        )
+                                    }
+                                >
+                                    Submit Password
+                                </Button>
+                            </Link>
+                            <Button onClick={() => setShowPassModal(false)}>
+                                Close
+                            </Button>
+                        </Box>
+                    </ModalContent>
+                </Modal>
+            </Box>
+        );
+    } else {
+        return (
+            <Link to={`/folder/${props.replaced}`}>
+                <Button
+                    w="200px"
+                    h="100px"
+                    bg={`${props.buttonColor}`}
+                    onClick={() =>
+                        props.updateNameAndURL(props.name, props.replaced)
+                    }
+                >
+                    {props.name}
+                </Button>
+            </Link>
+        );
+    }
+}
 
 function ShowFolders(props) {
     function updateNameAndURL(name, URL) {
-        props.setFolderName(name)
-        props.setFolderURL(URL)
+        props.setFolderName(name);
+        props.setFolderURL(URL);
     }
-    
+
     return props.folderData.map((row, index) => {
         const buttonColor =
             row.color === undefined || row.color === ""
@@ -17,16 +102,15 @@ function ShowFolders(props) {
         const replaced = row.name.split(" ").join("+");
         return (
             <WrapItem>
-                <Link to={`/folder/${replaced}`}>
-                    <Button
-                        w="200px"
-                        h="100px"
-                        bg={`${buttonColor}`}
-                        onClick={() => updateNameAndURL(row.name, replaced)}
-                    >
-                        {row.name}
-                    </Button>
-                </Link>
+                <PirvateFolder
+                    buttonColor={buttonColor}
+                    updateNameAndURL={updateNameAndURL}
+                    setFolderName={props.setFolderName}
+                    name={row.name}
+                    replaced={replaced}
+                    isPrivate={row.isPrivate}
+                    setCheckPass={props.setCheckPass}
+                />
             </WrapItem>
         );
     });
@@ -41,6 +125,7 @@ function FolderContainer(props) {
                     setFolderURL={props.setFolderURL}
                     redirectFolder={props.redirectFolder}
                     folderData={props.folderData}
+                    setCheckPass={props.setCheckPass}
                 />
                 <WrapItem>
                     <Button

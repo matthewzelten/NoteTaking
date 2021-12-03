@@ -51,14 +51,12 @@ function Note(props) {
             folder: props.folderName,
             color: props.noteColor
         }
-        console.log(`Saving state`);
         saveState(stateValue);
     } else {
         stateValue = persistedState;
     }
 
     const [state, setState] = useState(stateValue);
-    console.log(`TEST ${state.name} ${state.folder} ${state} `);
 
 
 
