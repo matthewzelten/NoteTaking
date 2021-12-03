@@ -17,6 +17,7 @@ function App() {
     const [noteName, setNoteName] = useState([]);
     const [noteColor, setNoteColor] = useState("white");
     const [noteContents, setNoteContents] = useState("");
+    const [checkPass, setCheckPass] = useState("")
     const [folders, setFolders] = useState([]);
     const [keyword, setKeyword] = useState("");
     useEffect(() => {
@@ -37,11 +38,10 @@ function App() {
         }
     }
 
-    async function getFolder(name) {
+    async function getFolder(name,password="") {
         try {
-            const response = await axios.get(`http://localhost:5000/${name}`);
+            const response = await axios.get(`http://localhost:5000/${name}?pass=${password}`);
             const data = response.data;
-            console.log(data)
             return data;
         } catch (error) {
             console.log(error);
@@ -109,6 +109,7 @@ function App() {
                             setKeyword={setKeyword}
                             cancelSearch={cancelSearch}
                             searchFolder={searchFolder}
+                            setCheckPass={setCheckPass}
                         />
                     </Route>
                     <Route exact path={`/folder/:folder`}>
@@ -124,6 +125,7 @@ function App() {
                             currentFolder={currentFolder}
                             setCurrentFolder={setCurrentFolder}
                             setNoteColor={setNoteColor}
+                            checkPass={checkPass}
                         />
                     </Route>
                     <Route exact path={`/folder/:folder/note/:note`}>

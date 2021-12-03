@@ -48,14 +48,20 @@ function Note(props) {
             folder: props.folderName,
             color: props.noteColor
         }
+<<<<<<< HEAD
         console.log(`Saving state`);
+=======
+>>>>>>> 08e44ae69a5e4027af9180d3fc2bebd93b44805f
         saveState(stateValue);
     } else {
         stateValue = persistedState;
     }
 
     const [state, setState] = useState(stateValue);
+<<<<<<< HEAD
     console.log(`TEST ${state.name} ${state.folder} ${state} `);
+=======
+>>>>>>> 08e44ae69a5e4027af9180d3fc2bebd93b44805f
 
 
     async function saveNote(){
