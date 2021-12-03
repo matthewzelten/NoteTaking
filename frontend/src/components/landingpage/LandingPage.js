@@ -38,6 +38,7 @@ function LandingPage(props) {
                         <CreateFolder
                             folderName={props.folderName}
                             setFolderName={props.setFolderName}
+                            setFolderURL={props.setFolderURL}
                             setCurrentFolder={props.setCurrentFolder}
                             setShowModal={setShowModal}
                             isDuplicate={props.isDuplicate}
