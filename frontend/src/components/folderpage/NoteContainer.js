@@ -1,7 +1,6 @@
-import { Button } from "@chakra-ui/button";
 import React from "react";
 import { Link } from "react-router-dom";
-import { Box, Flex, Wrap, WrapItem } from "@chakra-ui/layout";
+import { Button, Flex, Wrap, WrapItem } from "@chakra-ui/react";
 
 function ShowNotes(props) {
     const notes = props.noteData.map((row, index) => {
@@ -9,20 +8,19 @@ function ShowNotes(props) {
             row.color === undefined || row.color === ""
                 ? "#0000FF"
                 : `#${row.color}`;
+        const replaced = row.name.split(" ").join("+");
         return (
             <WrapItem>
-                <Link to={`/note`}>
+                <Link to={`/folder/${props.folderURL}/note/${replaced}`}>
                     <Button
+                        w="200px"
+                        h='100px'
+                        bg={`${buttonColor}`}
+                        m={2}
                         onClick={() => {
                             props.setNoteName(row.name);
                             props.setNoteContents(row.contents);
                             props.setNoteColor(row.color);
-                        }}
-                        style={{
-                            width: "200px",
-                            height: "50px",
-                            background: `${buttonColor}`,
-                            margin: "5px",
                         }}
                     >
                         {row.name}
@@ -39,6 +37,7 @@ function NoteContainer(props) {
         <Flex direction="row">
             <Wrap justify="center">
                 <ShowNotes
+                    folderURL={props.folderURL}
                     noteData={props.noteData}
                     setNoteName={props.setNoteName}
                     setNoteContents={props.setNoteContents}

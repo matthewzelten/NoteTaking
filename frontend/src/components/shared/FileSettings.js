@@ -1,8 +1,6 @@
 import { Checkbox } from "@chakra-ui/checkbox";
 import { Heading, Stack } from "@chakra-ui/layout";
 import { Radio, RadioGroup } from "@chakra-ui/radio";
-import { Table, Th, Thead, Tr } from "@chakra-ui/table";
-import { Tab } from "@chakra-ui/tabs";
 import React, { useState } from "react";
 
 function FileSettings(props) {

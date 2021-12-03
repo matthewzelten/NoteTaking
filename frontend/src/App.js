@@ -1,29 +1,23 @@
 import React from "react";
-import FolderContainer from "./components/landingpage/FolderContainer";
 import "./App.css";
 import Header from "./components/shared/header";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import CreateFolder from "./components/landingpage/CreateFolder";
 import Folder from "./components/folderpage/Folder";
 import { useState, useEffect } from "react";
-import Modal from "react-modal";
 import Note from "./components/notepage/Note";
 import axios from "axios";
-import { Button } from "@chakra-ui/button";
-import { Box } from "@chakra-ui/layout";
-import { Flex } from "@chakra-ui/layout";
+import { Box } from "@chakra-ui/react";
 import LandingPage from "./components/landingpage/LandingPage";
 
 function App() {
-
     const [folderName, setFolderName] = useState("");
     const [currentFolder, setCurrentFolder] = useState({});
+    const [folderURL, setFolderURL] = useState("");
+    const [noteURL, setNoteURL] = useState("")
     const [noteName, setNoteName] = useState([]);
     const [noteColor, setNoteColor] = useState("white");
     const [noteContents, setNoteContents] = useState("");
     const [folders, setFolders] = useState([]);
-
-
 
     useEffect(() => {
         fetchAllFolders().then((result) => {
@@ -31,7 +25,6 @@ function App() {
                 setFolders(result);
             }
         });
-
     }, []);
 
     async function fetchAllFolders() {
@@ -48,6 +41,7 @@ function App() {
         try {
             const response = await axios.get(`http://localhost:5000/${name}`);
             const data = response.data;
+            console.log(data)
             return data;
         } catch (error) {
             console.log(error);
@@ -56,7 +50,7 @@ function App() {
 
     async function deleteFolder(folder) {
         try {
-            const response = await axios
+            await axios
                 .delete(`http://localhost:5000/`, {
                     data: folder,
                 })
@@ -71,52 +65,55 @@ function App() {
     function isDuplicate(name) {
         for (let i = 0; i < folders.length; i++) {
             const folder = folders[i];
-            if(folder.name === name) {
-                return true
+            if (folder.name === name) {
+                return true;
             }
         }
-        return false
+        return false;
     }
 
     return (
         <Box className="App">
             <Router>
                 <Header />
-                <div style={{width: "95%", margin: "auto", maxWidth: "1200px"}}>
-                    <Switch>
-                        <Route exact path="/">
-                            <LandingPage
-                                folders={folders}
-                                setFolderName={setFolderName}
-                                folderName={folderName}
-                                setCurrentFolder={setCurrentFolder}
-                                isDuplicate={isDuplicate}
-                                setFolders={setFolders}
-                            />
-                        </Route>
-                        <Route path={`/folder/`}>
-                            <Folder
-                                setNoteName={setNoteName}
-                                setNoteContents={setNoteContents}
-                                setNoteColor={setNoteColor}
-                                setFolderName={setFolderName}
-                                folderName={folderName}
-                                noteName={noteName}
-                                getFolder={getFolder}
-                                deleteFolder={deleteFolder}
-                                currentFolder={currentFolder}
-                                setCurrentFolder={setCurrentFolder}
-                            />
-                        </Route>
-                        <Route path="/note">
-                            <Note
-                                noteName={noteName}
-                                noteContents={noteContents}
-                                folderName={folderName}
-                                noteColor={noteColor}/>
-                        </Route>
-                    </Switch>
-                </div>
+                <Switch>
+                    <Route exact path="/">
+                        <LandingPage
+                            folders={folders}
+                            setFolderName={setFolderName}
+                            setFolderURL={setFolderURL}
+                            folderName={folderName}
+                            setCurrentFolder={setCurrentFolder}
+                            isDuplicate={isDuplicate}
+                            setFolders={setFolders}
+                        />
+                    </Route>
+                    <Route exact path={`/folder/:folder`}>
+                        <Folder
+                            setNoteName={setNoteName}
+                            setNoteContents={setNoteContents}
+                            setFolderName={setFolderName}
+                            folderName={folderName}
+                            noteName={noteName}
+                            folderURL={folderURL}
+                            getFolder={getFolder}
+                            deleteFolder={deleteFolder}
+                            currentFolder={currentFolder}
+                            setCurrentFolder={setCurrentFolder}
+                            setNoteColor={setNoteColor}
+                        />
+                    </Route>
+                    <Route exact path={`/folder/:folder/note/:note`}>
+                        <Note
+                            folderURL={folderURL}
+                            noteName={noteName}
+                            noteContents={noteContents}
+                            contents={noteContents}
+                            folderName={folderName}
+                            noteColor={noteColor}
+                        />
+                    </Route>
+                </Switch>
             </Router>
         </Box>
     );

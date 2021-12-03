@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import FileSettings from "../shared/FileSettings";
 import axios from "axios";
-import { Box, Heading, Text } from "@chakra-ui/layout";
+import { Heading, Text } from "@chakra-ui/layout";
 import { Input } from "@chakra-ui/input";
 import { Button } from "@chakra-ui/button";
 import { useHistory } from 'react-router-dom';

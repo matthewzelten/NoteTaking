@@ -3,9 +3,8 @@ import PropTypes from "prop-types";
 import ReactQuill from "react-quill";
 import { Link } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
-import { Button } from "@chakra-ui/button";
+import { Button, Heading, Box } from "@chakra-ui/react";
 import axios from "axios";
-import { Heading } from "@chakra-ui/layout";
 
 
 const loadState = () => {
@@ -56,7 +55,7 @@ function Note(props) {
     }
 
     const [state, setState] = useState(stateValue);
-    console.log(`TEST ${state.name} ${state.folder} ${state.color} `);
+    console.log(`TEST ${state.name} ${state.folder} ${state} `);
 
 
     async function saveNote(){
@@ -98,7 +97,7 @@ function Note(props) {
     //placeholder={"Write something awesome..."}
 
     return (
-        <div>
+        <Box>
             <Link to={`/folder/${state.folder.split(" ").join("+")}`}>
                 <Button bg={`#${state.color}`}>Return</Button>
             </Link>
@@ -106,16 +105,12 @@ function Note(props) {
                 {state.name}
             </Heading>
             <Editor handleUpdate={handleUpdate} value={state.contents} placeholder={"Write something awesome..."}/>
-            <div>
+            <Box>
                 <Button bg={`#${state.color}`} onClick={saveNote}>Save Note</Button>
-            </div>
-        </div>
+            </Box>
+        </Box>
     );
 }
-
-
-
-
 
 /**
  * The editor component
@@ -138,7 +133,7 @@ class Editor extends React.Component {
 
     render() {
         return (
-            <div style={{backgroundColor: "white", width: "95%", margin: "auto"}}>
+            <Box bg="white" w="95%" m="auto">
                 <ReactQuill
                     theme={this.state.theme}
                     onChange={this.handleChange}
@@ -148,7 +143,7 @@ class Editor extends React.Component {
                     bounds={".app"}
                     placeholder={this.props.placeholder}
                 />
-            </div>
+            </Box>
         );
     }
 }

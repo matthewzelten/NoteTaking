@@ -2,16 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import CreateNote from "./CreateNote";
 import { Button } from "@chakra-ui/button";
-import { Flex, Box, Heading } from "@chakra-ui/layout";
+import { Box, Heading } from "@chakra-ui/layout";
 import { Text } from "@chakra-ui/layout";
 import { Input } from "@chakra-ui/input";
 import axios from "axios";
 import NoteContainer from "./NoteContainer";
-import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-  } from '@chakra-ui/react'
+import { Modal, ModalOverlay, ModalContent } from "@chakra-ui/react";
 
 
 function Folder(props) {
@@ -83,6 +79,7 @@ function Folder(props) {
                 + Add New Note
             </Button>
             <NoteContainer
+                folderURL={props.folderURL}
                 noteData={notes}
                 setNoteName={props.setNoteName}
                 setNoteContents={props.setNoteContents}
@@ -91,7 +88,7 @@ function Folder(props) {
             <Modal isOpen={showNoteModal}>
                 <ModalOverlay />
                 <ModalContent>
-                    <Box>
+                    <Box m={3}>
                         <Button
                             bg={`#${folderColor}`}
                             onClick={() => setShowNoteModal(false)}
@@ -99,28 +96,31 @@ function Folder(props) {
                             Close
                         </Button>
                         <CreateNote
+                            folderURL={props.folderURL}
                             folderColor={folderColor}
                             setNoteName={props.setNoteName}
                             setShowNoteModal={setShowNoteModal}
-                            folderName = {props.folderName}
+                            folderName={props.folderName}
                             noteContents={props.noteContents}
                         />
                     </Box>
                 </ModalContent>
             </Modal>
             <Modal isOpen={showDeleteModal}>
-                <ModalOverlay/>
+                <ModalOverlay />
                 <ModalContent>
                     <Box m={3}>
                         <Text color="brand.100">
-                            Are you sure you want to delete this folder? This folder and
-                            all it's notes will be deleted. This action is
-                            non-reversible
+                            Are you sure you want to delete this folder? This
+                            folder and all it's notes will be deleted. This
+                            action is non-reversible
                         </Text>
                         <Link to="/">
                             <Button
                                 bg={`#${folderColor}`}
-                                onClick={() => props.deleteFolder(props.currentFolder)}
+                                onClick={() =>
+                                    props.deleteFolder(props.currentFolder)
+                                }
                             >
                                 Yes, delete this folder
                             </Button>
