@@ -9,6 +9,7 @@ const Folder = require('./connections');
 let mongoServerA;
 let conn;
 let folderModel;
+let noteModel;
 let dummyNote1;
 
 beforeAll(async () => {
@@ -34,23 +35,15 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-    let id1 = new mongoose.Types.ObjectId();
-    let dummyFolder = {
-        name: "public_folder_1",
-        color: "C83E4D",
-        isPrivate: "false",
-        _id: id1
-    };
-    let result = new folderModel(dummyFolder);
-    await result.save();
 
-    dummyFolder = {
+
+    let dummyFolder = {
         name: "private_folder_1",
         color: "C83E4D",
         isPrivate: "true",
         password: "password",
     };
-    result = new folderModel(dummyFolder);
+    let result = new folderModel(dummyFolder);
     await result.save();
 
     dummyFolder = {
@@ -70,7 +63,7 @@ beforeEach(async () => {
     result = new folderModel(dummyFolder);
     await result.save();
 
-
+    let id1 = new mongoose.Types.ObjectId();
 
     //notes
     dummyNote1 = {
@@ -81,8 +74,8 @@ beforeEach(async () => {
       isPrivate: "false",
       isLocked: "false"
     };
-    let x = new noteModel(dummyNote1);
-    await x.save();
+    let a = new noteModel(dummyNote1);
+    await a.save();
 
     let dummyNote2 = {
       name: "note_2",
@@ -93,8 +86,19 @@ beforeEach(async () => {
       password: "password",
       isLocked: "false"
     };
-    x = new noteModel(dummyNote2);
-    await x.save();
+    let b = new noteModel(dummyNote2);
+    await b.save();
+
+
+    dummyFolder = {
+        name: "public_folder_1",
+        color: "C83E4D",
+        isPrivate: "false",
+        _id: id1,
+        notes: [a._id, b._id],
+    };
+    result = new folderModel(dummyFolder);
+    await result.save();
 
 });
 
@@ -106,10 +110,10 @@ afterEach(async () => {
 test("test getAllFolders", async () => {
     let folders = await connections.getAllFolders();
     expect(folders.length).toEqual(4);
-    expect(folders[0].name).toEqual("public_folder_1");
-    expect(folders[1].name).toEqual("private_folder_1");
-    expect(folders[2].name).toEqual("public_folder_2");
-    expect(folders[3].name).toEqual("private_folder_2");
+    expect(folders[0].name).toEqual("private_folder_1");
+    expect(folders[1].name).toEqual("public_folder_2");
+    expect(folders[2].name).toEqual("private_folder_2");
+    expect(folders[3].name).toEqual("public_folder_1");
 });
 
 test("test findFolder", async () => {
@@ -132,8 +136,11 @@ test("test findFolder", async () => {
 
 test("test findNote", async () => {
   console.log('this folder value should be equal to the next things id\n', dummyNote1);
-  let result = await connections.findNote('public_folder_1', 'note_3');
+  let result = await connections.findNote('public_folder_1', 'note_1');
   expect(result.name).toEqual('note_1');
+
+    result = await connections.findNote('public_folder_1', 'note_x');
+    expect(result).toEqual(undefined);
 
 });
 

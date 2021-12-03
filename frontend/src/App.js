@@ -20,6 +20,7 @@ function App() {
     const [checkPass, setCheckPass] = useState("")
     const [folders, setFolders] = useState([]);
     const [keyword, setKeyword] = useState("");
+
     useEffect(() => {
         fetchAllFolders().then((result) => {
             if (result) {
@@ -65,14 +66,14 @@ function App() {
         setKeyword("");
         window.location.reload();
     }
-    async function searchFolder(){
-        const search = {keyword:keyword};
+    async function searchFolder() {
+        const search = { keyword: keyword };
         let result = await getSearch(search);
-        if(result && result.status===200){
+        if (result && result.status === 200) {
             setFolders(result.data);
         }
-
     }
+
     async function getSearch(search){
         try{
             const result = await axios.post("http://localhost:5000/", search);
@@ -82,6 +83,26 @@ function App() {
             console.log(error);
         }
     }
+
+    async function deleteNote(noteName, folderName) {
+        console.log(`Deleting note ${noteName} in folder ${folderName}`);
+
+        try {
+            await axios
+                .delete(`http://localhost:5000/${folderName}`, {
+                        data: {
+                            name: noteName
+                        }
+                    }
+                )
+                .then(() => {
+                    window.location.reload();
+                });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     function isDuplicate(name) {
         for (let i = 0; i < folders.length; i++) {
             const folder = folders[i];
@@ -96,49 +117,51 @@ function App() {
         <Box className="App">
             <Router>
                 <Header />
-                <Switch>
-                    <Route exact path="/">
-                        <LandingPage
-                            folders={folders}
-                            setFolderName={setFolderName}
-                            setFolderURL={setFolderURL}
-                            folderName={folderName}
-                            setCurrentFolder={setCurrentFolder}
-                            isDuplicate={isDuplicate}
-                            setFolders={setFolders}
-                            setKeyword={setKeyword}
+                <Box style={{ width:"90%", margin:"auto", maxWidth:"1500px" }}>
+                    <Switch>
+                        <Route exact path="/">
+                            <LandingPage
+                                folders={folders}
+                                setFolderName={setFolderName}
+                                setFolderURL={setFolderURL}
+                                folderName={folderName}
+                                setCurrentFolder={setCurrentFolder}
+                                isDuplicate={isDuplicate}
+                                setFolders={setFolders}
+                                setKeyword={setKeyword}
                             cancelSearch={cancelSearch}
-                            searchFolder={searchFolder}
-                            setCheckPass={setCheckPass}
-                        />
-                    </Route>
-                    <Route exact path={`/folder/:folder`}>
-                        <Folder
-                            setNoteName={setNoteName}
-                            setNoteContents={setNoteContents}
-                            setFolderName={setFolderName}
-                            folderName={folderName}
-                            noteName={noteName}
-                            folderURL={folderURL}
-                            getFolder={getFolder}
-                            deleteFolder={deleteFolder}
-                            currentFolder={currentFolder}
-                            setCurrentFolder={setCurrentFolder}
-                            setNoteColor={setNoteColor}
-                            checkPass={checkPass}
-                        />
-                    </Route>
-                    <Route exact path={`/folder/:folder/note/:note`}>
-                        <Note
-                            folderURL={folderURL}
-                            noteName={noteName}
-                            noteContents={noteContents}
-                            contents={noteContents}
-                            folderName={folderName}
-                            noteColor={noteColor}
-                        />
-                    </Route>
-                </Switch>
+                            searchFolder={searchFolder}setCheckPass={setCheckPass}
+                            />
+                        </Route>
+                        <Route exact path={`/folder/:folder`}>
+                            <Folder
+                                setNoteName={setNoteName}
+                                setNoteContents={setNoteContents}
+                                setFolderName={setFolderName}
+                                folderName={folderName}
+                                noteName={noteName}
+                                folderURL={folderURL}
+                                getFolder={getFolder}
+                                deleteFolder={deleteFolder}
+                                currentFolder={currentFolder}
+                                setCurrentFolder={setCurrentFolder}
+                                setNoteColor={setNoteColor}
+                                checkPass={checkPass}
+                            />
+                        </Route>
+                        <Route exact path={`/folder/:folder/note/:note`}>
+                            <Note
+                                folderURL={folderURL}
+                                noteName={noteName}
+                                noteContents={noteContents}
+                                contents={noteContents}
+                                folderName={folderName}
+                                noteColor={noteColor}
+                                deleteNote={deleteNote}
+                            />
+                        </Route>
+                    </Switch>
+                </Box>
             </Router>
         </Box>
     );

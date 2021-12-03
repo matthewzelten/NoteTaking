@@ -72,7 +72,6 @@ async function findFolder(name) {
 async function findNote(folderName, noteName) {
     let noteFolder = (await findFolder(folderName))[0];
     await noteFolder.populate("notes");
-    console.log('this thing ^\n', noteFolder);
     let result = noteFolder.notes.filter(note => note.name === noteName);
     console.log(result);
     if (result.length < 1) {
@@ -177,11 +176,13 @@ async function deleteFolder(folderToDelete) {
  * @returns {Promise<boolean>} whether or note the note seems to have been deleted
  */
 async function deleteNote(fName, nName) {
-    let thisFolder = await findFolder(fName);
-    let originalLength = this.folder.notes.length;
+    const Note = getConnection().model("Note", noteSchema);
+    let thisFolder = (await findFolder(fName))[0];
+    let originalLength = thisFolder.notes.length;
+    await thisFolder.populate("notes");
     thisFolder.notes = thisFolder.notes.filter(note => note.name !== nName);
     thisFolder.save();
-    return this.folder.notes.length < originalLength;
+    return thisFolder.notes.length < originalLength;
 }
 
 const Folder = getConnection().model("Folder", folderSchema);
